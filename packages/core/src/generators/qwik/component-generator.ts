@@ -1,34 +1,34 @@
+import { ToQwikOptions } from '@/generators/qwik/types';
+import { convertTypeScriptToJS } from '@/helpers/babel-transform';
+import { fastClone } from '@/helpers/fast-clone';
+import { initializeOptions } from '@/helpers/merge-options';
+import { getOnEventHandlerName, processOnEventHooksPlugin } from '@/helpers/on-event';
+import { CODE_PROCESSOR_PLUGIN } from '@/helpers/plugins/process-code';
+import { transformImportPath } from '@/helpers/render-imports';
+import { replaceIdentifiers, replaceStateIdentifier } from '@/helpers/replace-identifiers';
+import { checkHasState } from '@/helpers/state';
+import { collectCss } from '@/helpers/styles/collect-css';
+import { MitosisComponent } from '@/types/mitosis-component';
+import { TranspilerGenerator } from '@/types/transpiler';
 import { format } from 'prettier/standalone';
-import { convertTypeScriptToJS } from '../../helpers/babel-transform';
-import { fastClone } from '../../helpers/fast-clone';
-import { initializeOptions } from '../../helpers/merge-options';
-import { CODE_PROCESSOR_PLUGIN } from '../../helpers/plugins/process-code';
-import { transformImportPath } from '../../helpers/render-imports';
-import { replaceIdentifiers, replaceStateIdentifier } from '../../helpers/replace-identifiers';
-import { checkHasState } from '../../helpers/state';
-import { collectCss } from '../../helpers/styles/collect-css';
 import {
-  Plugin,
+  MitosisPlugin,
   runPostCodePlugins,
   runPostJsonPlugins,
   runPreCodePlugins,
   runPreJsonPlugins,
 } from '../../modules/plugins';
-import { MitosisComponent } from '../../types/mitosis-component';
-import { BaseTranspilerOptions, TranspilerGenerator } from '../../types/transpiler';
 import { addPreventDefault } from './helpers/add-prevent-default';
 import { stableInject } from './helpers/stable-inject';
-import { emitStateMethodsAndRewriteBindings, emitUseStore, StateInit } from './helpers/state';
+import { StateInit, emitStateMethodsAndRewriteBindings, emitUseStore } from './helpers/state';
 import { renderJSXNodes } from './jsx';
-import { arrowFnBlock, File, invoke, SrcBuilder } from './src-generator';
+import { File, SrcBuilder, arrowFnBlock, invoke } from './src-generator';
 
 Error.stackTraceLimit = 9999;
 
 const DEBUG = false;
 
-export interface ToQwikOptions extends BaseTranspilerOptions {}
-
-const PLUGINS: Plugin[] = [
+const PLUGINS: MitosisPlugin[] = [
   () => ({
     json: {
       post: (json) => {
@@ -38,6 +38,7 @@ const PLUGINS: Plugin[] = [
       },
     },
   }),
+  processOnEventHooksPlugin({ setBindings: false, includeRootEvents: false }),
   CODE_PROCESSOR_PLUGIN((codeType, json) => {
     switch (codeType) {
       case 'types':
@@ -143,6 +144,7 @@ export const componentToQwik: TranspilerGenerator<ToQwikOptions> =
             emitUseContext(file, component);
             emitUseRef(file, component);
             if (!metadata?.qwik?.setUseStoreFirst) emitStore();
+            emitUseOn(file, component);
             emitUseContextProvider(file, component);
             emitUseClientEffect(file, component);
             emitUseMount(file, component);
@@ -178,7 +180,7 @@ export const componentToQwik: TranspilerGenerator<ToQwikOptions> =
       return sourceFile;
     } catch (e) {
       console.error(e);
-      return (e as Error).stack || String(e);
+      throw e;
     }
   };
 
@@ -191,12 +193,11 @@ function emitExports(file: File, component: MitosisComponent) {
 }
 
 function emitUseClientEffect(file: File, component: MitosisComponent) {
-  if (component.hooks.onMount) {
-    // This is called useMount, but in practice it is used as
-    // useClientEffect. Not sure if this is correct, but for now.
-    const code = component.hooks.onMount.code;
-    file.src.emit(file.import(file.qwikModule, 'useVisibleTask$').localName, '(()=>{', code, '});');
-  }
+  component.hooks.onMount.forEach((onMount) => {
+    const code = onMount.code;
+    const hookToUse = onMount.onSSR ? 'useTask$' : 'useVisibleTask$';
+    file.src.emit(file.import(file.qwikModule, hookToUse).localName, '(()=>{', code, '});');
+  });
 }
 
 function emitUseMount(file: File, component: MitosisComponent) {
@@ -300,6 +301,35 @@ function emitUseContext(file: File, component: MitosisComponent) {
   });
 }
 
+function emitUseOn(file: File, component: MitosisComponent) {
+  component.hooks.onEvent.forEach((hook) => {
+    const eventName = `"${hook.eventName}"`;
+
+    if (hook.isRoot) {
+      const wrappedHandlerFn = `${file.import(file.qwikModule, '$').localName}((${
+        hook.eventArgName
+      }, ${hook.elementArgName}) => {
+        ${hook.code}
+      }) as Parameters<typeof useOn>[1]`; // this type hack is needed until https://github.com/BuilderIO/qwik/issues/5398 is fixed
+      file.src.emit(
+        file.import(file.qwikModule, 'useOn').localName,
+        `(${eventName}, ${wrappedHandlerFn});`,
+      );
+    } else {
+      file.src.emit(
+        file.import(file.qwikModule, 'useVisibleTask$').localName,
+        `(() => {
+          ${hook.refName}.value?.addEventListener(${eventName}, ${getOnEventHandlerName(hook)});
+          return () => ${
+            hook.refName
+          }.value?.removeEventListener(${eventName}, ${getOnEventHandlerName(hook)});
+        })  
+        `,
+      );
+    }
+  });
+}
+
 function emitUseRef(file: File, component: MitosisComponent) {
   Object.keys(component.refs).forEach((refKey) => {
     file.src.emit(
@@ -365,6 +395,7 @@ function emitImports(file: File, component: MitosisComponent) {
       target: 'qwik',
       theImport: i,
       preserveFileExtensions: false,
+      explicitImportFileExtension: false,
     });
     Object.keys(i.imports).forEach((key) => {
       const keyValue = i.imports[key]!;

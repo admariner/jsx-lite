@@ -23,8 +23,12 @@ const { types } = babel;
 export const componentFunctionToJson = (
   node: babel.types.FunctionDeclaration,
   context: Context,
+  stateToScope: string[],
 ): JSONOrNode => {
-  const hooks: MitosisComponent['hooks'] = {};
+  const hooks: MitosisComponent['hooks'] = {
+    onMount: [],
+    onEvent: [],
+  };
   const state: MitosisComponent['state'] = {};
   const accessedContext: MitosisComponent['context']['get'] = {};
   const setContext: MitosisComponent['context']['set'] = {};
@@ -67,10 +71,81 @@ export const componentFunctionToJson = (
           }
           case HOOKS.MOUNT: {
             const firstArg = expression.arguments[0];
+            const hookOptions = expression.arguments[1];
             if (types.isFunctionExpression(firstArg) || types.isArrowFunctionExpression(firstArg)) {
               const code = processHookCode(firstArg);
-              hooks.onMount = { code };
+              let onSSR = false;
+
+              if (types.isObjectExpression(hookOptions)) {
+                const onSSRProp = hookOptions.properties.find(
+                  (property) =>
+                    types.isProperty(property) &&
+                    types.isIdentifier(property.key) &&
+                    property.key.name === 'onSSR',
+                );
+
+                if (types.isObjectProperty(onSSRProp) && types.isBooleanLiteral(onSSRProp.value)) {
+                  onSSR = onSSRProp.value.value;
+                }
+              }
+
+              hooks.onMount.push({
+                code,
+                onSSR,
+              });
             }
+            break;
+          }
+          case HOOKS.EVENT: {
+            const firstArg = expression.arguments[0];
+            const secondArg = expression.arguments[1];
+            const thirdArg = expression.arguments[2];
+            const fourthArg = expression.arguments[3];
+
+            if (!types.isStringLiteral(firstArg)) {
+              console.warn(
+                '`onEvent` hook skipped. Event name must be a string literal: ',
+                generate(expression).code,
+              );
+              break;
+            }
+            if (
+              !types.isFunctionExpression(secondArg) &&
+              !types.isArrowFunctionExpression(secondArg)
+            ) {
+              console.warn(
+                '`onEvent` hook skipped. Event handler must be a function: ',
+                generate(expression).code,
+              );
+              break;
+            }
+
+            if (!types.isIdentifier(thirdArg)) {
+              console.warn(
+                '`onEvent` hook skipped. Element ref must be a value: ',
+                generate(expression).code,
+              );
+              break;
+            }
+
+            const isRoot = types.isBooleanLiteral(fourthArg) ? fourthArg.value : false;
+
+            const eventArgName = types.isIdentifier(secondArg.params[0])
+              ? secondArg.params[0].name
+              : 'event';
+
+            const elementArgName = types.isIdentifier(secondArg.params[1])
+              ? secondArg.params[1].name
+              : 'element';
+
+            hooks.onEvent.push({
+              eventName: firstArg.value,
+              code: processHookCode(secondArg),
+              refName: thirdArg.name,
+              isRoot,
+              eventArgName,
+              elementArgName,
+            });
             break;
           }
           case HOOKS.UPDATE: {
@@ -124,6 +199,7 @@ export const componentFunctionToJson = (
               ...context.builder.component.meta[HOOKS.METADATA],
               ...parseCodeJson(expression.arguments[0]),
             };
+            break;
           }
         }
       }
@@ -135,6 +211,7 @@ export const componentFunctionToJson = (
           code: generate(item).code,
           type: 'function',
         };
+        stateToScope.push(item.id.name);
       }
     }
 
@@ -181,6 +258,8 @@ export const componentFunctionToJson = (
               };
             }
 
+            stateToScope.push(varName);
+
             // Typescript Parameter
             if (types.isTSTypeParameterInstantiation(init.typeParameters)) {
               state[varName]!.typeParameter = generate(init.typeParameters.params[0]).code;
@@ -191,6 +270,14 @@ export const componentFunctionToJson = (
           if (types.isObjectExpression(firstArg)) {
             const useStoreState = parseStateObjectToMitosisState(firstArg);
             Object.assign(state, useStoreState);
+            const stateKeys = Object.keys(useStoreState);
+            if (types.isTSTypeParameterInstantiation(init.typeParameters)) {
+              const type = generate(init.typeParameters.params[0]);
+              // Type for store has to be an object so we can use it like this
+              for (const key of stateKeys) {
+                state[key]!.typeParameter = `${type.code}["${key}"]`;
+              }
+            }
           }
         } else if (init.callee.name === HOOKS.CONTEXT) {
           const firstArg = init.arguments[0];
@@ -233,7 +320,10 @@ export const componentFunctionToJson = (
   if (theReturn) {
     const value = (theReturn as babel.types.ReturnStatement).argument;
     if (types.isJSXElement(value) || types.isJSXFragment(value)) {
-      children.push(jsxElementToJson(value) as MitosisNode);
+      const jsxElement = jsxElementToJson(value);
+      if (jsxElement) {
+        children.push(jsxElement);
+      }
     }
   }
 

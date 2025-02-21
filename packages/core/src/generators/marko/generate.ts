@@ -1,33 +1,34 @@
-import hash from 'hash-sum';
-import { camelCase } from 'lodash';
-import { format } from 'prettier/standalone';
-import { SELF_CLOSING_HTML_TAGS } from '../../constants/html_tags';
-import { dashCase } from '../../helpers/dash-case';
-import { dedent } from '../../helpers/dedent';
-import { fastClone } from '../../helpers/fast-clone';
-import { filterEmptyTextNodes } from '../../helpers/filter-empty-text-nodes';
-import { getRefs } from '../../helpers/get-refs';
-import { getStateObjectStringFromComponent } from '../../helpers/get-state-object-string';
-import { hasProps } from '../../helpers/has-props';
-import { indent } from '../../helpers/indent';
-import { mapRefs } from '../../helpers/map-refs';
-import { initializeOptions } from '../../helpers/merge-options';
-import { getForArguments } from '../../helpers/nodes/for';
-import { renderPreComponent } from '../../helpers/render-imports';
-import { stripMetaProperties } from '../../helpers/strip-meta-properties';
-import { stripStateAndPropsRefs } from '../../helpers/strip-state-and-props-refs';
-import { collectCss } from '../../helpers/styles/collect-css';
+import { SELF_CLOSING_HTML_TAGS } from '@/constants/html_tags';
+import { ToMarkoOptions } from '@/generators/marko/types';
+import { dashCase } from '@/helpers/dash-case';
+import { dedent } from '@/helpers/dedent';
+import { checkIsEvent } from '@/helpers/event-handlers';
+import { fastClone } from '@/helpers/fast-clone';
+import { filterEmptyTextNodes } from '@/helpers/filter-empty-text-nodes';
+import { getRefs } from '@/helpers/get-refs';
+import { getStateObjectStringFromComponent } from '@/helpers/get-state-object-string';
+import { hasProps } from '@/helpers/has-props';
+import { indent } from '@/helpers/indent';
+import { mapRefs } from '@/helpers/map-refs';
+import { initializeOptions } from '@/helpers/merge-options';
+import { getForArguments } from '@/helpers/nodes/for';
+import { renderPreComponent } from '@/helpers/render-imports';
+import { stripMetaProperties } from '@/helpers/strip-meta-properties';
+import { stripStateAndPropsRefs } from '@/helpers/strip-state-and-props-refs';
+import { collectCss } from '@/helpers/styles/collect-css';
 import {
   runPostCodePlugins,
   runPostJsonPlugins,
   runPreCodePlugins,
   runPreJsonPlugins,
-} from '../../modules/plugins';
-import { MitosisComponent } from '../../types/mitosis-component';
-import { checkIsForNode, MitosisNode } from '../../types/mitosis-node';
-import { BaseTranspilerOptions, TranspilerGenerator } from '../../types/transpiler';
-
-export interface ToMarkoOptions extends BaseTranspilerOptions {}
+} from '@/modules/plugins';
+import { MitosisComponent } from '@/types/mitosis-component';
+import { MitosisNode, checkIsForNode } from '@/types/mitosis-node';
+import { TranspilerGenerator } from '@/types/transpiler';
+import hash from 'hash-sum';
+import { camelCase } from 'lodash';
+import { format } from 'prettier/standalone';
+import { stringifySingleScopeOnMount } from '../helpers/on-mount';
 
 interface InternalToMarkoOptions extends ToMarkoOptions {
   component: MitosisComponent;
@@ -84,15 +85,16 @@ const blockToMarko = (json: MitosisNode, options: InternalToMarkoOptions): strin
     str += ` ${key}="${value}" `;
   }
   for (const key in json.bindings) {
-    const { code, arguments: cusArgs = ['event'], type } = json.bindings[key]!;
+    const { code, arguments: cusArgs = ['event'], type, async } = json.bindings[key]!;
 
     if (type === 'spread') {
       str += ` ...(${code}) `;
     } else if (key === 'ref') {
       str += ` key="${camelCase(code)}" `;
-    } else if (key.startsWith('on')) {
+    } else if (checkIsEvent(key)) {
+      const asyncKeyword = async ? 'async ' : '';
       const useKey = key === 'onChange' && json.name === 'input' ? 'onInput' : key;
-      str += ` ${dashCase(useKey)}=(${cusArgs.join(',')} => ${processBinding(
+      str += ` ${dashCase(useKey)}=(${asyncKeyword}(${cusArgs.join(',')}) => ${processBinding(
         options.component,
         code as string,
       )}) `;
@@ -208,7 +210,11 @@ export const componentToMarko: TranspilerGenerator<ToMarkoOptions> =
     }
 
     let jsString = dedent`
-    ${renderPreComponent({ component: json, target: 'marko' })}
+    ${renderPreComponent({
+      explicitImportFileExtension: options.explicitImportFileExtension,
+      component: json,
+      target: 'marko',
+    })}
 
     class {
         ${methodsString}
@@ -223,16 +229,16 @@ export const componentToMarko: TranspilerGenerator<ToMarkoOptions> =
 
         ${Array.from(domRefs)
           .map(
-            (refName) => `get ${camelCase(refName)}() { 
+            (refName) => `get ${camelCase(refName)}() {
             return this.getEl('${camelCase(refName)}')
           }`,
           )
           .join('\n')}
-      
+
         ${
-          !json.hooks.onMount?.code
+          !json.hooks.onMount.length
             ? ''
-            : `onMount() { ${processBinding(json, json.hooks.onMount.code, 'class')} }`
+            : `onMount() { ${processBinding(json, stringifySingleScopeOnMount(json), 'class')} }`
         }
         ${
           !json.hooks.onUnMount?.code
@@ -251,7 +257,7 @@ export const componentToMarko: TranspilerGenerator<ToMarkoOptions> =
 
     let htmlString = json.children.map((item) => blockToMarko(item, options)).join('\n');
     const cssString = css.length
-      ? `style { 
+      ? `style {
   ${indent(css, 2).trim()}
 }`
       : '';

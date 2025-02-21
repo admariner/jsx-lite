@@ -1,6 +1,6 @@
 import { camelCase } from 'lodash';
+import traverse from 'neotraverse/legacy';
 import hash from 'object-hash';
-import traverse from 'traverse';
 import { MitosisComponent } from '../../types/mitosis-component';
 import { capitalize } from '../capitalize';
 import { isMitosisNode } from '../is-mitosis-node';
@@ -65,7 +65,7 @@ export const collectStyledComponents = (json: MitosisComponent): string => {
         item.name = className;
 
         styledComponentsCode += `
-          const ${className} = ${prefix}${str}\`
+          const ${className} = ${prefix}${str}\`;
         `;
       }
       delete item.bindings.css;

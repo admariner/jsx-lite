@@ -25,7 +25,10 @@ function mapAstToMitosisJson(
     state: {},
     props: {},
     refs: {},
-    hooks: {},
+    hooks: {
+      onMount: [],
+      onEvent: [],
+    },
     imports: [],
     children: [],
     context: { get: {}, set: {} },

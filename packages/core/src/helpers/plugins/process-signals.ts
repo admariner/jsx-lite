@@ -1,7 +1,7 @@
 import { Node, types } from '@babel/core';
 import generate from '@babel/generator';
 import { Target } from '../../types/config';
-import { Plugin } from '../../types/plugins';
+import { MitosisPlugin } from '../../types/plugins';
 import { babelTransformExpression } from '../babel-transform';
 import { capitalize } from '../capitalize';
 import { checkIsDefined } from '../nullable';
@@ -71,7 +71,7 @@ type SignalMapper = {
  * Processes `Signal` type imports, transforming them to the target's equivalent and adding the import to the component.
  */
 export const getSignalTypePlugin =
-  ({ target }: { target: Target }): Plugin =>
+  ({ target }: { target: Target }): MitosisPlugin =>
   () => ({
     json: {
       pre: (json) => {
@@ -113,6 +113,8 @@ const getSignalMapperForTarget = (target: Target): SignalMapper => {
       return {
         getter: (name) => types.identifier('$' + name),
       };
+    case 'preact':
+    case 'reactNative':
     case 'react':
     case 'solid':
       return {
@@ -131,7 +133,7 @@ const getSignalMapperForTarget = (target: Target): SignalMapper => {
  * Processes `mySignal.value` accessors for props, context, and state.
  */
 export const getSignalAccessPlugin =
-  ({ target }: { target: Target }): Plugin =>
+  ({ target }: { target: Target }): MitosisPlugin =>
   () => ({
     json: {
       pre: (x) => {

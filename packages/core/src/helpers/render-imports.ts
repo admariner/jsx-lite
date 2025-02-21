@@ -2,8 +2,8 @@ import { Target } from '../types/config';
 import { MitosisComponent, MitosisImport } from '../types/mitosis-component';
 import {
   COMPONENT_IMPORT_EXTENSIONS,
-  getComponentFileExtensionForTarget,
   INPUT_EXTENSION_REGEX,
+  getComponentFileExtensionForTarget,
 } from './component-file-extensions';
 
 const DEFAULT_IMPORT = 'default';
@@ -40,10 +40,12 @@ export const transformImportPath = ({
   theImport,
   target,
   preserveFileExtensions,
+  explicitImportFileExtension,
 }: {
   theImport: MitosisImport;
   target: Target;
   preserveFileExtensions: boolean;
+  explicitImportFileExtension: boolean;
 }) => {
   // We need to drop the `.lite` from context files, because the context generator does so as well.
   if (checkIsContextImport(theImport)) {
@@ -61,7 +63,7 @@ export const transformImportPath = ({
   if (checkIsComponentImport(theImport)) {
     return theImport.path.replace(
       INPUT_EXTENSION_REGEX,
-      getComponentFileExtensionForTarget({ target, type: 'import' }),
+      getComponentFileExtensionForTarget({ target, type: 'import', explicitImportFileExtension }),
     );
   }
 
@@ -104,6 +106,26 @@ const getImportValue = ({ defaultImport, namedImports, starImport }: ImportValue
   }
 };
 
+type ImportArgs = {
+  target: Target;
+  asyncComponentImports: boolean;
+  preserveFileExtensions?: boolean;
+  component?: MitosisComponent | null | undefined;
+
+  /**
+   * This is only used by Angular generator, and will be deprecated in the future.
+   */
+  importMapper?: Function | null | undefined;
+  /**
+   * This is only used by Angular generator, and will be deprecated in the future.
+   */
+  explicitImportFileExtension?: boolean;
+  /**
+   * This is only used by Angular generator, and will be deprecated in the future.
+   */
+  componentsUsed?: string[];
+};
+
 export const renderImport = ({
   theImport,
   target,
@@ -112,18 +134,16 @@ export const renderImport = ({
   component = undefined,
   componentsUsed = [],
   importMapper,
-}: {
-  theImport: MitosisImport;
-  target: Target;
-  asyncComponentImports: boolean;
-  preserveFileExtensions?: boolean;
-  component?: MitosisComponent | null | undefined;
-  componentsUsed?: string[];
-  importMapper?: Function | null | undefined;
-}): string => {
+  explicitImportFileExtension = false,
+}: ImportArgs & { theImport: MitosisImport }): string => {
   const importedValues = getImportedValues({ theImport });
 
-  const path = transformImportPath({ theImport, target, preserveFileExtensions });
+  const path = transformImportPath({
+    theImport,
+    target,
+    preserveFileExtensions,
+    explicitImportFileExtension,
+  });
   const importValue = getImportValue(importedValues);
 
   const isComponentImport = checkIsComponentImport(theImport);
@@ -153,7 +173,11 @@ export const renderImport = ({
   }
 
   if (importMapper) {
-    return importMapper(component, theImport, importedValues, componentsUsed);
+    const importMapperResult = importMapper(component, theImport, importedValues, componentsUsed);
+    // If import mapper has no result we skip this
+    if (importMapperResult) {
+      return importMapperResult;
+    }
   }
 
   return importValue
@@ -161,7 +185,7 @@ export const renderImport = ({
     : `import '${path}';`;
 };
 
-export const renderImports = ({
+const renderImports = ({
   imports,
   target,
   asyncComponentImports,
@@ -170,15 +194,10 @@ export const renderImports = ({
   component,
   componentsUsed,
   importMapper,
-}: {
+  explicitImportFileExtension,
+}: ImportArgs & {
   imports: MitosisImport[];
-  target: Target;
-  asyncComponentImports: boolean;
   excludeMitosisComponents?: boolean;
-  preserveFileExtensions?: boolean;
-  component: MitosisComponent;
-  componentsUsed?: string[];
-  importMapper?: Function | null | undefined;
 }): string =>
   imports
     .filter((theImport) => {
@@ -204,6 +223,7 @@ export const renderImports = ({
         component,
         componentsUsed,
         importMapper,
+        explicitImportFileExtension,
       }),
     )
     .join('\n');
@@ -216,15 +236,13 @@ export const renderPreComponent = ({
   preserveFileExtensions = false,
   componentsUsed = [],
   importMapper,
-}: {
-  component: MitosisComponent;
-  target: Target;
-  asyncComponentImports?: boolean;
-  excludeMitosisComponents?: boolean;
-  preserveFileExtensions?: boolean;
-  componentsUsed?: string[];
-  importMapper?: Function | null | undefined;
-}): string => `
+  explicitImportFileExtension = false,
+}: Omit<ImportArgs, 'explicitImportFileExtension' | 'asyncComponentImports'> &
+  Partial<Pick<ImportArgs, 'explicitImportFileExtension' | 'asyncComponentImports'>> & {
+    component: MitosisComponent;
+    target: Target;
+    excludeMitosisComponents?: boolean;
+  }): string => `
     ${renderImports({
       imports: component.imports,
       target,
@@ -234,12 +252,13 @@ export const renderPreComponent = ({
       component,
       componentsUsed,
       importMapper,
+      explicitImportFileExtension,
     })}
     ${renderExportAndLocal(component)}
     ${component.hooks.preComponent?.code || ''}
   `;
 
-export const renderExportAndLocal = (component: MitosisComponent): string => {
+const renderExportAndLocal = (component: MitosisComponent): string => {
   return Object.keys(component.exports || {})
     .map((key) => component.exports![key].code)
     .join('\n');

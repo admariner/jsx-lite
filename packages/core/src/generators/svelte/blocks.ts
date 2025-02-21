@@ -1,14 +1,13 @@
-import { SELF_CLOSING_HTML_TAGS } from '../../constants/html_tags';
-import { MitosisComponent } from '../../types/mitosis-component';
-import { BaseNode, Binding, ForNode, MitosisNode } from '../../types/mitosis-node';
-
-import { VALID_HTML_TAGS } from '../../constants/html_tags';
-import { createSingleBinding } from '../../helpers/bindings';
-import isChildren from '../../helpers/is-children';
-import { isUpperCase } from '../../helpers/is-upper-case';
-import { getForArguments } from '../../helpers/nodes/for';
-import { removeSurroundingBlock } from '../../helpers/remove-surrounding-block';
-import { isSlotProperty, stripSlotPrefix } from '../../helpers/slots';
+import { createSingleBinding } from '@/helpers/bindings';
+import { checkIsEvent } from '@/helpers/event-handlers';
+import isChildren from '@/helpers/is-children';
+import { isUpperCase } from '@/helpers/is-upper-case';
+import { getForArguments } from '@/helpers/nodes/for';
+import { removeSurroundingBlock } from '@/helpers/remove-surrounding-block';
+import { isSlotProperty, stripSlotPrefix, toKebabSlot } from '@/helpers/slots';
+import { MitosisComponent } from '@/types/mitosis-component';
+import { BaseNode, Binding, ForNode, MitosisNode } from '@/types/mitosis-node';
+import { SELF_CLOSING_HTML_TAGS, VALID_HTML_TAGS } from '../../constants/html_tags';
 import { stripStateAndProps } from './helpers';
 import { ToSvelteOptions } from './types';
 
@@ -24,7 +23,51 @@ const mappers: {
   Fragment: BlockToSvelte;
   Show: BlockToSvelte;
   Slot: BlockToSvelte;
+  style: BlockToSvelte;
+  script: BlockToSvelte;
 } = {
+  style: ({ json, options, parentComponent }) => {
+    let props = '';
+    for (const key in json.properties) {
+      const value = json.properties[key];
+      props += ` ${key}="${value}" `;
+    }
+
+    let bindings = '';
+
+    for (const key in json.bindings) {
+      const value = json.bindings[key];
+      if (value && key !== 'innerHTML') {
+        bindings += ` ${key}=\${${value.code}} `;
+      }
+    }
+
+    const innerText = json.bindings.innerHTML?.code || '';
+
+    // We have to obfuscate `"style"` due to a limitation in the svelte-preprocessor plugin.
+    // https://github.com/sveltejs/vite-plugin-svelte/issues/315#issuecomment-1109000027
+    return `{@html \`<\${'style'} ${bindings} ${props}>\${${innerText}}<\${'/style'}>\`}`;
+  },
+  script: ({ json, options, parentComponent }) => {
+    let props = '';
+    for (const key in json.properties) {
+      const value = json.properties[key];
+      props += ` ${key}="${value}" `;
+    }
+
+    let bindings = '';
+
+    for (const key in json.bindings) {
+      const value = json.bindings[key];
+      if (value && key !== 'innerHTML') {
+        bindings += ` ${key}=\${${value.code}} `;
+      }
+    }
+
+    const innerText = json.bindings.innerHTML?.code || '';
+
+    return `{@html \`<script ${bindings} ${props}>\${${innerText}}</script>\`}`;
+  },
   Fragment: ({ json, options, parentComponent }) => {
     if (json.bindings.innerHTML?.code) {
       return BINDINGS_MAPPER.innerHTML(json, options);
@@ -97,10 +140,7 @@ ${json.children.map((item) => blockToSvelte({ json: item, options, parentCompone
       `;
     }
 
-    return `<slot name="${stripSlotPrefix(
-      slotName,
-      SLOT_PREFIX,
-    ).toLowerCase()}">${renderChildren()}</slot>`;
+    return `<slot name="${toKebabSlot(slotName, SLOT_PREFIX)}">${renderChildren()}</slot>`;
   },
 };
 
@@ -131,16 +171,11 @@ const getTagName = ({
   /**
    * These are special HTML tags that svelte requires `<svelte:element this={TAG}>`
    */
-  const SPECIAL_HTML_TAGS = ['style', 'script', 'template'];
+  const SPECIAL_HTML_TAGS = ['script', 'template'];
 
   if (SPECIAL_HTML_TAGS.includes(json.name)) {
     json.bindings.this = createSingleBinding({
-      code:
-        json.name === 'style'
-          ? // We have to obfuscate `"style"` due to a limitation in the svelte-preprocessor plugin.
-            // https://github.com/sveltejs/vite-plugin-svelte/issues/315#issuecomment-1109000027
-            `"sty" + "le"`
-          : `"${json.name}"`,
+      code: `"${json.name}"`,
     });
 
     return SVELTE_SPECIAL_TAGS.ELEMENT;
@@ -183,24 +218,26 @@ const stringifyBinding =
     }
 
     const { code, arguments: cusArgs = ['event'], type } = binding;
-    const isValidHtmlTag = VALID_HTML_TAGS.includes(node.name);
+    const isValidHtmlTag = VALID_HTML_TAGS.includes(node.name) || node.name === 'svelte:element';
 
     if (type === 'spread') {
       const spreadValue = key === 'props' ? '$$props' : code;
       return ` {...${spreadValue}} `;
-    } else if (key.startsWith('on') && isValidHtmlTag) {
+    } else if (checkIsEvent(key) && isValidHtmlTag) {
+      const { async } = binding;
       // handle html native on[event] props
       const event = key.replace('on', '').toLowerCase();
       // TODO: handle quotes in event handler values
 
       const valueWithoutBlock = removeSurroundingBlock(code);
 
-      if (valueWithoutBlock === key) {
+      if (valueWithoutBlock === key && !async) {
         return ` on:${event}={${valueWithoutBlock}} `;
       } else {
-        return ` on:${event}="{${cusArgs.join(',')} => {${valueWithoutBlock}}}" `;
+        const asyncKeyword = async ? 'async ' : '';
+        return ` on:${event}="{${asyncKeyword}(${cusArgs.join(',')}) => {${valueWithoutBlock}}}" `;
       }
-    } else if (key.startsWith('on')) {
+    } else if (checkIsEvent(key)) {
       // handle on[custom event] props
       const valueWithoutBlock = removeSurroundingBlock(code);
 
@@ -252,7 +289,7 @@ export const blockToSvelte: BlockToSvelte = ({ json, options, parentComponent })
   if ((json.bindings.style?.code || json.properties.style) && !isComponent) {
     const useValue = json.bindings.style?.code || json.properties.style;
 
-    str += `use:mitosis_styling={${useValue}}`;
+    str += `style={stringifyStyles(${useValue})}`;
     delete json.bindings.style;
     delete json.properties.style;
   }

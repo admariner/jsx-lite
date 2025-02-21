@@ -1,11 +1,19 @@
-import { BaseTranspilerOptions } from '../../types/transpiler';
+import { BaseTranspilerOptions } from '@/types/transpiler';
 
 export interface ToReactOptions extends BaseTranspilerOptions {
-  stylesType: 'emotion' | 'styled-components' | 'styled-jsx' | 'react-native' | 'style-tag';
+  stylesType:
+    | 'emotion'
+    | 'styled-components'
+    | 'styled-jsx'
+    | 'react-native'
+    | 'style-tag'
+    | 'twrnc'
+    | 'native-wind';
   stateType: 'useState' | 'mobx' | 'valtio' | 'solid' | 'builder' | 'variables';
   format?: 'lite' | 'safe';
   type: 'dom' | 'native' | 'taro';
   preact?: boolean;
+  sanitizeReactNative?: boolean;
   rsc?: boolean;
   forwardRef?: string;
   experimental?: any;
@@ -16,3 +24,7 @@ export interface ToReactOptions extends BaseTranspilerOptions {
   contextType?: 'context' | 'prop-drill';
   addUseClientDirectiveIfNeeded?: boolean;
 }
+
+export type ReactMetadata = {
+  forwardRef?: string;
+};

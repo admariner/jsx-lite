@@ -1,85 +1,67 @@
 import generate from '@babel/generator';
 import * as parser from '@babel/parser';
 import * as types from '@babel/types';
-
-import type { extendedHook, StateValue } from '../../../types/mitosis-component';
+import { replaceIdentifiers, replaceNodes } from '../../../helpers/replace-identifiers';
+import type { BaseHook, StateValue } from '../../../types/mitosis-component';
 import type { MitosisNode } from '../../../types/mitosis-node';
 import type { SveltosisComponent } from '../types';
 import { processBindings } from './bindings';
 
 type SveltosisStateValue = StateValue & { arguments?: string[]; type: string };
 
-export function preventNameCollissions(
-  json: SveltosisComponent,
-  item: SveltosisStateValue,
-  prepend = '',
-  append = '_',
-) {
-  let output = item.code;
-  let argumentsOutput: string[] = [];
-
+const getArgs = (code: string) => {
   try {
-    let parsed = parser.parse(item.code);
+    let parsed = parser.parse(code);
     let body = parsed.program.body[0];
     if (types.isFunctionDeclaration(body)) {
-      argumentsOutput = body.params.map((p) => generate(p).code);
+      return body.params.map((p) => generate(p).code);
     }
   } catch (e) {}
 
-  const keys = [...Object.keys(json.props), ...Object.keys(json.state), ...Object.keys(json.refs)];
+  return [];
+};
 
-  for (const key of keys) {
-    const regex = () => new RegExp(`(?<!=(?:\\s))${key}\\b`, 'g');
-    let isInArguments = false;
+export function preventNameCollissions(json: SveltosisComponent, item: SveltosisStateValue) {
+  let output = item.code;
+  const argumentsOutput = getArgs(output);
 
-    argumentsOutput.forEach((argument: string, index: number) => {
-      if (regex().test(argument)) {
-        isInArguments = true;
-        argumentsOutput.splice(index, 1, argument.replace(regex(), `${prepend}${key}${append}`));
-      }
-    });
-
-    const outputRegex = () => new RegExp(`\\b${key}\\b`, 'g');
-
-    const isInOutput = outputRegex().test(output);
-
-    if (isInArguments && isInOutput) {
-      output = output.replace(outputRegex(), `${prepend}${key}${append}`);
-    }
-  }
+  output = replaceNodes({
+    code: output,
+    nodeMaps: argumentsOutput.map((arg) => ({
+      from: types.identifier(arg),
+      to: types.identifier(`${arg}_`),
+    })),
+  });
 
   return argumentsOutput?.length
     ? {
         ...item,
         code: output,
-        arguments: argumentsOutput,
+        arguments: getArgs(output),
       }
     : { ...item, code: output };
 }
 
-function prependProperties(json: SveltosisComponent, input: string) {
-  let output = input;
-
-  const propertyKeys = Object.keys(json.props);
-
-  for (const property of propertyKeys) {
-    const regex = new RegExp(`(?<!(\\.|'|"|\`))\\b(props\\.)?${property}\\b`, 'g');
-    if (regex.test(output)) {
-      output = output.replace(regex, `props.${property}`);
-    }
-  }
-  return output;
+function prependProperties(json: SveltosisComponent, code: string) {
+  return replaceNodes({
+    code,
+    nodeMaps: Object.keys(json.props).map((property) => ({
+      from: types.identifier(property),
+      to: types.memberExpression(types.identifier('props'), types.identifier(property)),
+    })),
+  });
 }
 
 function prependState(json: SveltosisComponent, input: string) {
   let output = input;
-  const stateKeys = Object.keys(json.state);
-  for (const state of stateKeys) {
-    const regex = new RegExp(`(?<!(\\.|'|"|\`|function |get ))\\b(state\\.)?${state}\\b`, 'g');
-    if (regex.test(output)) {
-      output = output.replace(regex, `state.${state}`);
-    }
+  for (const stateKey of Object.keys(json.state)) {
+    output = replaceIdentifiers({
+      code: output,
+      from: stateKey,
+      to: `state.${stateKey}`,
+    });
   }
+
   return output;
 }
 
@@ -141,7 +123,7 @@ function postProcessChildren(json: SveltosisComponent, children: MitosisNode[]) 
   }
 }
 
-function addPropertiesAndStateToHook(json: SveltosisComponent, hook: extendedHook): extendedHook {
+function addPropertiesAndStateToHook(json: SveltosisComponent, hook: BaseHook): BaseHook {
   return {
     code: addPropertiesAndState(json, hook.code),
     deps: addPropertiesAndState(json, hook.deps || ''),
@@ -151,19 +133,18 @@ function addPropertiesAndStateToHook(json: SveltosisComponent, hook: extendedHoo
 function postProcessHooks(json: SveltosisComponent) {
   const hookKeys = Object.keys(json.hooks) as Array<keyof typeof json.hooks>;
   for (const key of hookKeys) {
-    const hook = json.hooks[key];
+    let hook = json.hooks[key];
     if (!hook) {
       continue;
     }
 
-    if (key === 'onUpdate' && Array.isArray(hook)) {
+    if (Array.isArray(hook)) {
       hook.forEach((item, index) => {
-        json.hooks[key]?.splice(index, 1, addPropertiesAndStateToHook(json, item));
+        (hook as Array<any>)!.splice(index, 1, addPropertiesAndStateToHook(json, item));
       });
-      continue;
+    } else {
+      hook = addPropertiesAndStateToHook(json, hook as BaseHook);
     }
-
-    (json.hooks[key] as extendedHook) = addPropertiesAndStateToHook(json, hook as extendedHook);
   }
 }
 

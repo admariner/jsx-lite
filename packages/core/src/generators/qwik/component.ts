@@ -1,22 +1,23 @@
+import { MitosisComponent } from '@/types/mitosis-component';
+import { MitosisNode } from '@/types/mitosis-node';
 import {
   compileAwayBuilderComponentsFromTree,
   components as compileAwayComponents,
 } from '../../plugins/compile-away-builder-components';
-import { MitosisComponent } from '../../types/mitosis-component';
-import { MitosisNode } from '../../types/mitosis-node';
+import { stringifySingleScopeOnMount } from '../helpers/on-mount';
 import { DIRECTIVES } from './directives';
 import { renderHandlers } from './helpers/handlers';
 import { stableJSONserialize } from './helpers/stable-serialize';
-import { collectStyles, CssStyles, renderStyles } from './helpers/styles';
+import { CssStyles, collectStyles, renderStyles } from './helpers/styles';
 import { renderJSXNodes } from './jsx';
 import {
-  arrowFnValue,
   EmitFn,
   File,
-  invoke,
-  quote,
   SrcBuilder,
   SrcBuilderOptions,
+  arrowFnValue,
+  invoke,
+  quote,
 } from './src-generator';
 
 export type QwikOptions = {
@@ -235,7 +236,7 @@ function addComponentOnMount(
           '(()=>{',
           'const state=Object.assign({},structuredClone(typeof __STATE__==="object"&&__STATE__[p.serverStateId]),p);',
           ...inputInitializer,
-          inlineCode(component.hooks.onMount?.code),
+          inlineCode(stringifySingleScopeOnMount(component)),
           'return state;',
           '},{deep:true});',
           'const l={};',

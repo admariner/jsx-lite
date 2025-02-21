@@ -1,9 +1,9 @@
+import { dedent } from '@/helpers/dedent';
+import { getStateObjectStringFromComponent } from '@/helpers/get-state-object-string';
+import { getTypedFunction } from '@/helpers/get-typed-function';
+import { BaseHook, MitosisComponent } from '@/types/mitosis-component';
 import json5 from 'json5';
 import { pickBy } from 'lodash';
-import { dedent } from '../../helpers/dedent';
-import { getStateObjectStringFromComponent } from '../../helpers/get-state-object-string';
-import { stripStateAndPropsRefs } from '../../helpers/strip-state-and-props-refs';
-import { extendedHook, MitosisComponent } from '../../types/mitosis-component';
 import { getContextKey, getContextValue, processBinding } from './helpers';
 import { ToVueOptions } from './types';
 
@@ -43,8 +43,8 @@ export function generateCompositionApiScript(
   options: ToVueOptions,
   template: string,
   props: Array<string>,
-  onUpdateWithDeps: extendedHook[],
-  onUpdateWithoutDeps: extendedHook[],
+  onUpdateWithDeps: BaseHook[],
+  onUpdateWithoutDeps: BaseHook[],
 ) {
   const isTs = options.typescript;
   let refs = getStateObjectStringFromComponent(component, {
@@ -52,8 +52,9 @@ export function generateCompositionApiScript(
     functions: false,
     getters: false,
     format: 'variables',
-    valueMapper: (code, _, typeParameter) =>
-      isTs && typeParameter ? `ref<${typeParameter}>(${code})` : `ref(${code})`,
+    valueMapper: (code, _, typeParameter) => {
+      return isTs && typeParameter ? `ref<${typeParameter}>(${code})` : `ref(${code})`;
+    },
     keyPrefix: 'const',
   });
 
@@ -62,6 +63,17 @@ export function generateCompositionApiScript(
     getters: false,
     functions: true,
     format: 'variables',
+    valueMapper: (
+      code: string,
+      type: 'data' | 'function' | 'getter',
+      typeParameter: string | undefined,
+    ) => {
+      if (type != 'data') {
+        return getTypedFunction(code, isTs, typeParameter);
+      }
+
+      return code;
+    },
   });
 
   if (template.includes('_classStringToObject')) {
@@ -100,14 +112,15 @@ export function generateCompositionApiScript(
     ${Object.keys(component.refs)
       ?.map((key) => {
         if (isTs) {
-          return `const ${key} = ref<${component.refs[key].typeParameter}>()`;
+          const type = component.refs[key].typeParameter ?? 'any';
+          return `const ${key} = ref<${type}>(null)`;
         } else {
           return `const ${key} = ref(null)`;
         }
       })
       .join('\n')}
     ${component.hooks.onInit?.code ?? ''}
-    ${!component.hooks.onMount?.code ? '' : `onMounted(() => { ${component.hooks.onMount.code}})`}
+    ${component.hooks.onMount.map((hook) => `onMounted(() => { ${hook.code} })`).join('\n')}
     ${
       !component.hooks.onUnMount?.code
         ? ''
@@ -141,7 +154,7 @@ export function generateCompositionApiScript(
             code: hook.deps || '',
             options,
             json: component,
-          })}, (${stripStateAndPropsRefs(hook.deps)}) => { ${hook.code} }, {immediate: true})`;
+          })}, () => { ${hook.code} }, {immediate: true})`;
         })
         .join('\n') || ''
     }

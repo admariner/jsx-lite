@@ -1,16 +1,13 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Liquid > jsx > Javascript Test > AdvancedRef 1`] = `
 "<div>
   {% if showInput %}
   <div>
     <input class=\\"input\\" value=\\"{{name}}\\" />
-
     <label for=\\"cars\\">Choose a car:</label>
-
     <select name=\\"cars\\" id=\\"cars\\">
       <option value=\\"supra\\">GR Supra</option>
-
       <option value=\\"86\\">GR 86</option>
     </select>
   </div>
@@ -28,7 +25,7 @@ exports[`Liquid > jsx > Javascript Test > Basic 1`] = `
 "<div class=\\"test div\\">
   <input />
 
-  Hello! I can run in React, Vue, Solid, or Liquid!
+  Hello! I can run in React, Vue, Solid, or Liquid! &gt;
 </div>
 <style>
   .div {
@@ -58,7 +55,10 @@ exports[`Liquid > jsx > Javascript Test > Basic Outputs 1`] = `
 `;
 
 exports[`Liquid > jsx > Javascript Test > Basic Outputs Meta 1`] = `
-"<div></div>
+"/** useMetadata: {\\"outputs\\":[\\"onMessage\\",\\"onEvent\\"],\\"baz\\":\\"metadata inside
+component\\"} */
+
+<div></div>
 "
 `;
 
@@ -69,12 +69,9 @@ exports[`Liquid > jsx > Javascript Test > BasicAttribute 1`] = `
 
 exports[`Liquid > jsx > Javascript Test > BasicBooleanAttribute 1`] = `
 "<div>
-  {% if children %} {{children}} {{type}} {% endif %}
-
+  {% if children %}{{children}} {{type}}{% endif %}
   <MyBooleanAttributeComponent toggle=\\"{{true}}\\"></MyBooleanAttributeComponent>
-
   <MyBooleanAttributeComponent toggle=\\"{{true}}\\"></MyBooleanAttributeComponent>
-
   <MyBooleanAttributeComponent list=\\"{{null}}\\"></MyBooleanAttributeComponent>
 </div>
 "
@@ -83,7 +80,6 @@ exports[`Liquid > jsx > Javascript Test > BasicBooleanAttribute 1`] = `
 exports[`Liquid > jsx > Javascript Test > BasicChildComponent 1`] = `
 "<div>
   <MyBasicComponent id=\\"{{dev}}\\"></MyBasicComponent>
-
   <div>
     <MyBasicOnMountUpdateComponent
       hi=\\"{{name}}\\"
@@ -113,12 +109,9 @@ exports[`Liquid > jsx > Javascript Test > BasicRef 1`] = `
   {% if showInput %}
   <div>
     <input class=\\"input\\" value=\\"{{name}}\\" />
-
     <label for=\\"cars\\">Choose a car:</label>
-
     <select name=\\"cars\\" id=\\"cars\\">
       <option value=\\"supra\\">GR Supra</option>
-
       <option value=\\"86\\">GR 86</option>
     </select>
   </div>
@@ -133,16 +126,13 @@ exports[`Liquid > jsx > Javascript Test > BasicRef 1`] = `
 `;
 
 exports[`Liquid > jsx > Javascript Test > BasicRefAssignment 1`] = `
-"<div>
-  <button>Click</button>
-</div>
+"<div><button>Click</button></div>
 "
 `;
 
 exports[`Liquid > jsx > Javascript Test > BasicRefPrevious 1`] = `
 "<div>
   <h1>Now: {{count}} , before: {{prevCount}}</h1>
-
   <button>Increment</button>
 </div>
 "
@@ -151,9 +141,7 @@ exports[`Liquid > jsx > Javascript Test > BasicRefPrevious 1`] = `
 exports[`Liquid > jsx > Javascript Test > Button 1`] = `
 "<div>
   {% if link %}
-
   <a props.attributes=\\"{{attributes}}\\" href=\\"{{link}}\\">{{text}}</a>
-
   {% endif %}
 </div>
 "
@@ -192,29 +180,18 @@ exports[`Liquid > jsx > Javascript Test > Columns 1`] = `
 exports[`Liquid > jsx > Javascript Test > ContentSlotHtml 1`] = `
 "<div>
   <slot name=\\"{{slotTesting}}\\"></slot>
-
-  <div>
-    <hr />
-  </div>
-
-  <div>
-    <slot></slot>
-  </div>
+  <div><hr /></div>
+  <div><slot></slot></div>
 </div>
 "
 `;
 
 exports[`Liquid > jsx > Javascript Test > ContentSlotJSX 1`] = `
 "{% if slotReference %}
-
 <div props.attributes=\\"{{attributes}}\\" class=\\"{{cls}}\\">
-  <div>
-    <hr />
-  </div>
-
+  <div><hr /></div>
   <div>{{children}}</div>
 </div>
-
 {% endif %}
 "
 `;
@@ -251,7 +228,6 @@ exports[`Liquid > jsx > Javascript Test > Image 1`] = `
   <picture>
     <source srcset=\\"{{srcset}}\\" />
   </picture>
-
   {{children}}
 </div>
 <style>
@@ -268,9 +244,7 @@ exports[`Liquid > jsx > Javascript Test > Image 1`] = `
 exports[`Liquid > jsx > Javascript Test > Image State 1`] = `
 "<div>
   {% for item in images %}
-  <div>
-    <img class=\\"custom-class\\" src=\\"{{item}}\\" key=\\"{{itemIndex}}\\" />
-  </div>
+  <div><img class=\\"custom-class\\" src=\\"{{item}}\\" key=\\"{{itemIndex}}\\" /></div>
   {% endfor %}
 </div>
 "
@@ -296,6 +270,15 @@ exports[`Liquid > jsx > Javascript Test > Input 1`] = `
 
 exports[`Liquid > jsx > Javascript Test > InputParent 1`] = `
 "<FormInputComponent name=\\"kingzez\\" type=\\"text\\"></FormInputComponent>
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > NestedStore 1`] = `
+"<div id=\\"{{_id}}\\">
+  Test
+
+  <p id=\\"{{_messageId}}\\">Message</p>
+</div>
 "
 `;
 
@@ -325,35 +308,28 @@ exports[`Liquid > jsx > Javascript Test > Select 1`] = `
 
 exports[`Liquid > jsx > Javascript Test > SlotDefault 1`] = `
 "<div>
-  <slot>
-    <div class=\\"default-slot\\">Default content</div>
-  </slot>
+  <slot><div class=\\"default-slot\\">Default content</div></slot>
 </div>
 "
 `;
 
 exports[`Liquid > jsx > Javascript Test > SlotHtml 1`] = `
 "<div>
-  <ContentSlotCode>
-    <slot></slot>
-  </ContentSlotCode>
+  <ContentSlotCode><slot></slot></ContentSlotCode>
 </div>
 "
 `;
 
 exports[`Liquid > jsx > Javascript Test > SlotJsx 1`] = `
-"<div>
-  <ContentSlotCode></ContentSlotCode>
-</div>
+"<div><ContentSlotCode></ContentSlotCode></div>
 "
 `;
 
 exports[`Liquid > jsx > Javascript Test > SlotNamed 1`] = `
 "<div>
+  <slot name=\\"myAwesomeSlot\\"></slot>
   <slot name=\\"top\\"></slot>
-
   <slot name=\\"left\\">Default left</slot>
-
   <slot>Default Child</slot>
 </div>
 "
@@ -366,12 +342,9 @@ exports[`Liquid > jsx > Javascript Test > Stamped.io 1`] = `
   {% for review in reviews %}
   <div class=\\"review\\" key=\\"{{review.id}}\\">
     <img class=\\"img\\" src=\\"{{review.avatar}}\\" />
-
     <div>
       <div>N: {{index}}</div>
-
       <div>{{review.author}}</div>
-
       <div>{{review.reviewMessage}}</div>
     </div>
   </div>
@@ -394,6 +367,7 @@ exports[`Liquid > jsx > Javascript Test > Stamped.io 1`] = `
     display: flex;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    -webkit-font-smoothing: antialiased;
   }
   .img {
     height: 30px;
@@ -401,6 +375,21 @@ exports[`Liquid > jsx > Javascript Test > Stamped.io 1`] = `
     margin-right: 10px;
   }
 </style>
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > StoreComment 1`] = `
+"<div>{{foo}}</div>
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > StoreShadowVars 1`] = `
+"<div></div>
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > StoreWithState 1`] = `
+"<div></div>
 "
 `;
 
@@ -425,6 +414,11 @@ exports[`Liquid > jsx > Javascript Test > Textarea 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Javascript Test > UseValueAndFnFromStore 1`] = `
+"<div>Test</div>
+"
+`;
+
 exports[`Liquid > jsx > Javascript Test > Video 1`] = `
 "<video
   preload=\\"none\\"
@@ -443,15 +437,20 @@ exports[`Liquid > jsx > Javascript Test > arrowFunctionInUseStore 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Javascript Test > basicForFragment 1`] = `
+"<div>
+  <select></select>
+</div>
+"
+`;
+
 exports[`Liquid > jsx > Javascript Test > basicForNoTagReference 1`] = `
 "<state.TagNameGetter>
   Hello
   <state.tag>{{name}}</state.tag>
-
   {% for action in actions %}
   <state.TagName>
     <action.icon></action.icon>
-
     <span>{{action.text}}</span>
   </state.TagName>
   {% endfor %}
@@ -460,9 +459,7 @@ exports[`Liquid > jsx > Javascript Test > basicForNoTagReference 1`] = `
 `;
 
 exports[`Liquid > jsx > Javascript Test > basicForwardRef 1`] = `
-"<div>
-  <input class=\\"input\\" value=\\"{{name}}\\" />
-</div>
+"<div><input class=\\"input\\" value=\\"{{name}}\\" /></div>
 <style>
   .input {
     color: red;
@@ -472,9 +469,9 @@ exports[`Liquid > jsx > Javascript Test > basicForwardRef 1`] = `
 `;
 
 exports[`Liquid > jsx > Javascript Test > basicForwardRefMetadata 1`] = `
-"<div>
-  <input class=\\"input\\" value=\\"{{name}}\\" />
-</div>
+"/** useMetadata: {\\"forwardRef\\":\\"inputRef\\"} */
+
+<div><input class=\\"input\\" value=\\"{{name}}\\" /></div>
 <style>
   .input {
     color: red;
@@ -488,9 +485,29 @@ exports[`Liquid > jsx > Javascript Test > basicOnUpdateReturn 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Javascript Test > basicRefAttributePassing 1`] = `
+"/** useMetadata: {\\"attributePassing\\":{\\"enabled\\":true}} */
+
+<button>Attribute Passing</button>
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > basicRefAttributePassingCustomRef 1`] = `
+"/** useMetadata: {\\"attributePassing\\":{\\"enabled\\":true,\\"customRef\\":\\"buttonRef\\"}}
+*/
+
+<div><button>Attribute Passing</button></div>
+"
+`;
+
 exports[`Liquid > jsx > Javascript Test > class + ClassName + css 1`] = `
-"<div class=\\"test2 test div\\">
-  Hello! I can run in React, Vue, Solid, or Liquid!
+"<div>
+  <MyComp class=\\"test\\" className=\\"test2\\">
+    Hello! I can run in React, Vue, Solid, or Liquid!
+  </MyComp>
+  <div class=\\"test2 test div\\">
+    Hello! I can run in React, Vue, Solid, or Liquid!
+  </div>
 </div>
 <style>
   .div {
@@ -523,7 +540,6 @@ exports[`Liquid > jsx > Javascript Test > className + css 1`] = `
 exports[`Liquid > jsx > Javascript Test > className 1`] = `
 "<div>
   <div class=\\"no binding\\">Without Binding</div>
-
   <div class=\\"{{bindings}}\\">With binding</div>
 </div>
 "
@@ -541,17 +557,23 @@ exports[`Liquid > jsx > Javascript Test > classState 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Javascript Test > complexMeta 1`] = `
+"/** useMetadata:
+{\\"x\\":\\"y\\",\\"asdf\\":{\\"stringValue\\":\\"d\\",\\"booleanValue\\":true,\\"numberValue\\":1,\\"innerObject\\":{\\"stringValue\\":\\"inner\\",\\"numberValue\\":2,\\"booleanValue\\":false},\\"spreadStringValue\\":\\"f\\"}}
+*/
+
+<div></div>
+"
+`;
+
 exports[`Liquid > jsx > Javascript Test > componentWithContext 1`] = `
-"<div>
-  <div>{{foo.value}}</div>
-</div>
+"<div><div>{{foo.value}}</div></div>
 "
 `;
 
 exports[`Liquid > jsx > Javascript Test > componentWithContextMultiRoot 1`] = `
 "<div>
   <div>{{foo.value}}</div>
-
   <div>other</div>
 </div>
 "
@@ -565,9 +587,7 @@ exports[`Liquid > jsx > Javascript Test > contentState 1`] = `
 exports[`Liquid > jsx > Javascript Test > defaultProps 1`] = `
 "<div>
   {% if link %}
-
   <a props.attributes=\\"{{attributes}}\\" href=\\"{{link}}\\">{{text}}</a>
-
   {% endif %}
 </div>
 "
@@ -576,9 +596,7 @@ exports[`Liquid > jsx > Javascript Test > defaultProps 1`] = `
 exports[`Liquid > jsx > Javascript Test > defaultPropsOutsideComponent 1`] = `
 "<div>
   {% if link %}
-
   <a props.attributes=\\"{{attributes}}\\" href=\\"{{link}}\\">{{text}}</a>
-
   {% endif %}
 </div>
 "
@@ -589,13 +607,78 @@ exports[`Liquid > jsx > Javascript Test > defaultValsWithTypes 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Javascript Test > eventInputAndChange 1`] = `
+"<div>
+  <input class=\\"input\\" value=\\"{{name}}\\" />
+
+  Hello! I can run in React, Vue, Solid, or Liquid!
+</div>
+<style>
+  .input {
+    color: red;
+  }
+</style>
+"
+`;
+
 exports[`Liquid > jsx > Javascript Test > expressionState 1`] = `
 "<div>{{refToUse}}</div>
 "
 `;
 
+exports[`Liquid > jsx > Javascript Test > figmaMeta 1`] = `
+"/** useMetadata:
+{\\"figma\\":{\\"name\\":\\"def-button-beta-outlined\\",\\"url\\":\\"https://www.figma.com/xxx\\",\\"props\\":{\\"iconSmall\\":{\\"type\\":\\"instance\\",\\"key\\":\\"📍
+Icon Small\\"},\\"iconMedium\\":{\\"type\\":\\"instance\\",\\"key\\":\\"📍 Icon
+Medium\\"},\\"label\\":{\\"type\\":\\"string\\",\\"key\\":\\"✏️
+Label\\"},\\"icon\\":{\\"type\\":\\"boolean\\",\\"key\\":\\"👁️
+Icon\\",\\"value\\":{\\"false\\":false,\\"true\\":\\"placeholder\\"}},\\"interactiveState\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Interactive
+State\\",\\"value\\":{\\"(Def)
+Enabled\\":false,\\"Hovered\\":false,\\"Pressed\\":false,\\"Focused\\":false,\\"Disabled\\":\\"true\\"}},\\"size\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Size\\",\\"value\\":{\\"(Def)
+Medium\\":false,\\"Small\\":\\"small\\"}},\\"width\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Width\\",\\"value\\":{\\"(Def)
+Auto Width\\":false,\\"Full Width\\":\\"full\\"}}}}} */
+
+<button
+  data-icon=\\"{{icon}}\\"
+  data-disabled=\\"{{interactiveState}}\\"
+  data-width=\\"{{width}}\\"
+  data-size=\\"{{size}}\\"
+>
+  {{label}}
+</button>
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > functionProps 1`] = `
+"<p></p>
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > getterState 1`] = `
+"<div>
+  <p>{{foo2}}</p>
+  <p>{{bar}}</p>
+  <p></p>
+</div>
+"
+`;
+
 exports[`Liquid > jsx > Javascript Test > import types 1`] = `
 "<RenderBlock></RenderBlock>
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > layerName 1`] = `
+"<section>
+  <div class=\\"layer-name\\">
+    Hello! I can run in React, Vue, Solid, or Liquid!
+  </div>
+</section>
+<style>
+  .layer-name {
+    padding: 10px;
+  }
+</style>
 "
 `;
 
@@ -615,7 +698,7 @@ exports[`Liquid > jsx > Javascript Test > multipleSpreads 1`] = `
 `;
 
 exports[`Liquid > jsx > Javascript Test > nestedShow 1`] = `
-"{% if conditionA %} {% endif %}
+"{% if conditionA %}{% endif %}
 "
 `;
 
@@ -651,6 +734,11 @@ exports[`Liquid > jsx > Javascript Test > nestedStyles 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Javascript Test > onEvent 1`] = `
+"<div class=\\"builder-embed\\"><div>Test</div></div>
+"
+`;
+
 exports[`Liquid > jsx > Javascript Test > onInit & onMount 1`] = `
 "<div></div>
 "
@@ -661,7 +749,17 @@ exports[`Liquid > jsx > Javascript Test > onInit 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Javascript Test > onInitPlain 1`] = `
+"<div></div>
+"
+`;
+
 exports[`Liquid > jsx > Javascript Test > onMount 1`] = `
+"<div></div>
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > onMountMultiple 1`] = `
 "<div></div>
 "
 `;
@@ -714,9 +812,7 @@ exports[`Liquid > jsx > Javascript Test > renderBlock 1`] = `
 `;
 
 exports[`Liquid > jsx > Javascript Test > renderContentExample 1`] = `
-"<div class=\\"div\\">
-  <RenderBlocks blocks=\\"{{content.blocks}}\\"></RenderBlocks>
-</div>
+"<div class=\\"div\\"><RenderBlocks blocks=\\"{{content.blocks}}\\"></RenderBlocks></div>
 <style>
   .div {
     display: flex;
@@ -729,9 +825,7 @@ exports[`Liquid > jsx > Javascript Test > renderContentExample 1`] = `
 exports[`Liquid > jsx > Javascript Test > rootFragmentMultiNode 1`] = `
 "<div>
   {% if link %}
-
   <a props.attributes=\\"{{attributes}}\\" href=\\"{{link}}\\">{{text}}</a>
-
   {% endif %}
 </div>
 "
@@ -749,15 +843,53 @@ exports[`Liquid > jsx > Javascript Test > self-referencing component with childr
 "
 `;
 
+exports[`Liquid > jsx > Javascript Test > setState 1`] = `
+"<div><button>Click me</button></div>
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > showExpressions 1`] = `
+"<div>
+  {% if conditionA %}Content0{% endif %} {% if conditionA %}ContentA{% endif %}
+  {% if conditionA %}{% endif %} {% if conditionA %}ContentB{% endif %} {% if
+  conditionA %}{{undefined}}{% endif %} {% if conditionA %}ContentC{% endif %}
+  {% if conditionA %}{% endif %} {% if conditionA %}ContentD{% endif %} {% if
+  conditionA %}{% endif %} {% if conditionA %}ContentE{% endif %} {% if
+  conditionA %}hello{% endif %} {% if conditionA %}ContentF{% endif %} {% if
+  conditionA %}123{% endif %}
+</div>
+"
+`;
+
 exports[`Liquid > jsx > Javascript Test > showWithFor 1`] = `
-"{% if conditionA %} {% for item in items %}
+"{% if conditionA %}{% for item in items %}
 <div key=\\"{{idx}}\\">{{item}}</div>
-{% endfor %} {% endif %}
+{% endfor %}{% endif %}
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > showWithOtherValues 1`] = `
+"<div>
+  {% if conditionA %} ContentA {% endif %} {% if conditionA %} ContentB {% endif
+  %} {% if conditionA %} ContentC {% endif %} {% if conditionA %} ContentD {%
+  endif %} {% if conditionA %} ContentE {% endif %} {% if conditionA %} ContentF
+  {% endif %}
+</div>
 "
 `;
 
 exports[`Liquid > jsx > Javascript Test > showWithRootText 1`] = `
 "{% if conditionA %} ContentA {% endif %}
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > signalsOnUpdate 1`] = `
+"<div class=\\"test div\\">{{id}} {{foo.value.bar.baz}}</div>
+<style>
+  .div {
+    padding: 10px;
+  }
+</style>
 "
 `;
 
@@ -773,6 +905,21 @@ exports[`Liquid > jsx > Javascript Test > spreadNestedProps 1`] = `
 
 exports[`Liquid > jsx > Javascript Test > spreadProps 1`] = `
 "<input props=\\"{{props}}\\" />
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > store-async-function 1`] = `
+"<div></div>
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > string-literal-store 1`] = `
+"<div>{{foo}}</div>
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > string-literal-store-kebab 1`] = `
+"<div></div>
 "
 `;
 
@@ -810,13 +957,11 @@ exports[`Liquid > jsx > Javascript Test > svgComponent 1`] = `
   <defs>
     <filter id=\\"prefix__filter0_f\\" filterUnits=\\"userSpaceOnUse\\">
       <feFlood result=\\"BackgroundImageFix\\"></feFlood>
-
       <feBlend
         in=\\"SourceGraphic\\"
         in2=\\"BackgroundImageFix\\"
         result=\\"shape\\"
       ></feBlend>
-
       <feGaussianBlur
         result=\\"effect1_foregroundBlur\\"
         stdDeviation=\\"{{7}}\\"
@@ -829,6 +974,16 @@ exports[`Liquid > jsx > Javascript Test > svgComponent 1`] = `
 
 exports[`Liquid > jsx > Javascript Test > typeDependency 1`] = `
 "<div>{{foo}}</div>
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > typeExternalStore 1`] = `
+"<div>Hello {{_name}} !</div>
+"
+`;
+
+exports[`Liquid > jsx > Javascript Test > typeGetterStore 1`] = `
+"<div>Hello {{name}} !</div>
 "
 `;
 
@@ -879,6 +1034,15 @@ exports[`Liquid > jsx > Javascript Test > useTarget 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Javascript Test > webComponent 1`] = `
+"<swiper-container slides-per-view=\\"3\\" navigation=\\"true\\" pagination=\\"true\\">
+  <swiper-slide>Slide 1</swiper-slide>
+  <swiper-slide>Slide 2</swiper-slide>
+  <swiper-slide>Slide 3</swiper-slide>
+</swiper-container>
+"
+`;
+
 exports[`Liquid > jsx > Remove Internal mitosis package 1`] = `
 "<div>Hello {{name}} ! I can run in React, Qwik, Vue, Solid, or Liquid!</div>
 "
@@ -889,12 +1053,9 @@ exports[`Liquid > jsx > Typescript Test > AdvancedRef 1`] = `
   {% if showInput %}
   <div>
     <input class=\\"input\\" value=\\"{{name}}\\" />
-
     <label for=\\"cars\\">Choose a car:</label>
-
     <select name=\\"cars\\" id=\\"cars\\">
       <option value=\\"supra\\">GR Supra</option>
-
       <option value=\\"86\\">GR 86</option>
     </select>
   </div>
@@ -912,7 +1073,7 @@ exports[`Liquid > jsx > Typescript Test > Basic 1`] = `
 "<div class=\\"test div\\">
   <input />
 
-  Hello! I can run in React, Vue, Solid, or Liquid!
+  Hello! I can run in React, Vue, Solid, or Liquid! &gt;
 </div>
 <style>
   .div {
@@ -942,7 +1103,10 @@ exports[`Liquid > jsx > Typescript Test > Basic Outputs 1`] = `
 `;
 
 exports[`Liquid > jsx > Typescript Test > Basic Outputs Meta 1`] = `
-"<div></div>
+"/** useMetadata: {\\"outputs\\":[\\"onMessage\\",\\"onEvent\\"],\\"baz\\":\\"metadata inside
+component\\"} */
+
+<div></div>
 "
 `;
 
@@ -953,12 +1117,9 @@ exports[`Liquid > jsx > Typescript Test > BasicAttribute 1`] = `
 
 exports[`Liquid > jsx > Typescript Test > BasicBooleanAttribute 1`] = `
 "<div>
-  {% if children %} {{children}} {{type}} {% endif %}
-
+  {% if children %}{{children}} {{type}}{% endif %}
   <MyBooleanAttributeComponent toggle=\\"{{true}}\\"></MyBooleanAttributeComponent>
-
   <MyBooleanAttributeComponent toggle=\\"{{true}}\\"></MyBooleanAttributeComponent>
-
   <MyBooleanAttributeComponent list=\\"{{null}}\\"></MyBooleanAttributeComponent>
 </div>
 "
@@ -967,7 +1128,6 @@ exports[`Liquid > jsx > Typescript Test > BasicBooleanAttribute 1`] = `
 exports[`Liquid > jsx > Typescript Test > BasicChildComponent 1`] = `
 "<div>
   <MyBasicComponent id=\\"{{dev}}\\"></MyBasicComponent>
-
   <div>
     <MyBasicOnMountUpdateComponent
       hi=\\"{{name}}\\"
@@ -997,12 +1157,9 @@ exports[`Liquid > jsx > Typescript Test > BasicRef 1`] = `
   {% if showInput %}
   <div>
     <input class=\\"input\\" value=\\"{{name}}\\" />
-
     <label for=\\"cars\\">Choose a car:</label>
-
     <select name=\\"cars\\" id=\\"cars\\">
       <option value=\\"supra\\">GR Supra</option>
-
       <option value=\\"86\\">GR 86</option>
     </select>
   </div>
@@ -1017,16 +1174,13 @@ exports[`Liquid > jsx > Typescript Test > BasicRef 1`] = `
 `;
 
 exports[`Liquid > jsx > Typescript Test > BasicRefAssignment 1`] = `
-"<div>
-  <button>Click</button>
-</div>
+"<div><button>Click</button></div>
 "
 `;
 
 exports[`Liquid > jsx > Typescript Test > BasicRefPrevious 1`] = `
 "<div>
   <h1>Now: {{count}} , before: {{prevCount}}</h1>
-
   <button>Increment</button>
 </div>
 "
@@ -1035,9 +1189,7 @@ exports[`Liquid > jsx > Typescript Test > BasicRefPrevious 1`] = `
 exports[`Liquid > jsx > Typescript Test > Button 1`] = `
 "<div>
   {% if link %}
-
   <a props.attributes=\\"{{attributes}}\\" href=\\"{{link}}\\">{{text}}</a>
-
   {% endif %}
 </div>
 "
@@ -1076,29 +1228,18 @@ exports[`Liquid > jsx > Typescript Test > Columns 1`] = `
 exports[`Liquid > jsx > Typescript Test > ContentSlotHtml 1`] = `
 "<div>
   <slot name=\\"{{slotTesting}}\\"></slot>
-
-  <div>
-    <hr />
-  </div>
-
-  <div>
-    <slot></slot>
-  </div>
+  <div><hr /></div>
+  <div><slot></slot></div>
 </div>
 "
 `;
 
 exports[`Liquid > jsx > Typescript Test > ContentSlotJSX 1`] = `
 "{% if slotReference %}
-
 <div props.attributes=\\"{{attributes}}\\" class=\\"{{cls}}\\">
-  <div>
-    <hr />
-  </div>
-
+  <div><hr /></div>
   <div>{{children}}</div>
 </div>
-
 {% endif %}
 "
 `;
@@ -1135,7 +1276,6 @@ exports[`Liquid > jsx > Typescript Test > Image 1`] = `
   <picture>
     <source srcset=\\"{{srcset}}\\" />
   </picture>
-
   {{children}}
 </div>
 <style>
@@ -1152,9 +1292,7 @@ exports[`Liquid > jsx > Typescript Test > Image 1`] = `
 exports[`Liquid > jsx > Typescript Test > Image State 1`] = `
 "<div>
   {% for item in images %}
-  <div>
-    <img class=\\"custom-class\\" src=\\"{{item}}\\" key=\\"{{itemIndex}}\\" />
-  </div>
+  <div><img class=\\"custom-class\\" src=\\"{{item}}\\" key=\\"{{itemIndex}}\\" /></div>
   {% endfor %}
 </div>
 "
@@ -1180,6 +1318,15 @@ exports[`Liquid > jsx > Typescript Test > Input 1`] = `
 
 exports[`Liquid > jsx > Typescript Test > InputParent 1`] = `
 "<FormInputComponent name=\\"kingzez\\" type=\\"text\\"></FormInputComponent>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > NestedStore 1`] = `
+"<div id=\\"{{_id}}\\">
+  Test
+
+  <p id=\\"{{_messageId}}\\">Message</p>
+</div>
 "
 `;
 
@@ -1209,35 +1356,28 @@ exports[`Liquid > jsx > Typescript Test > Select 1`] = `
 
 exports[`Liquid > jsx > Typescript Test > SlotDefault 1`] = `
 "<div>
-  <slot>
-    <div class=\\"default-slot\\">Default content</div>
-  </slot>
+  <slot><div class=\\"default-slot\\">Default content</div></slot>
 </div>
 "
 `;
 
 exports[`Liquid > jsx > Typescript Test > SlotHtml 1`] = `
 "<div>
-  <ContentSlotCode>
-    <slot></slot>
-  </ContentSlotCode>
+  <ContentSlotCode><slot></slot></ContentSlotCode>
 </div>
 "
 `;
 
 exports[`Liquid > jsx > Typescript Test > SlotJsx 1`] = `
-"<div>
-  <ContentSlotCode></ContentSlotCode>
-</div>
+"<div><ContentSlotCode></ContentSlotCode></div>
 "
 `;
 
 exports[`Liquid > jsx > Typescript Test > SlotNamed 1`] = `
 "<div>
+  <slot name=\\"myAwesomeSlot\\"></slot>
   <slot name=\\"top\\"></slot>
-
   <slot name=\\"left\\">Default left</slot>
-
   <slot>Default Child</slot>
 </div>
 "
@@ -1250,12 +1390,9 @@ exports[`Liquid > jsx > Typescript Test > Stamped.io 1`] = `
   {% for review in reviews %}
   <div class=\\"review\\" key=\\"{{review.id}}\\">
     <img class=\\"img\\" src=\\"{{review.avatar}}\\" />
-
     <div>
       <div>N: {{index}}</div>
-
       <div>{{review.author}}</div>
-
       <div>{{review.reviewMessage}}</div>
     </div>
   </div>
@@ -1278,6 +1415,7 @@ exports[`Liquid > jsx > Typescript Test > Stamped.io 1`] = `
     display: flex;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    -webkit-font-smoothing: antialiased;
   }
   .img {
     height: 30px;
@@ -1285,6 +1423,21 @@ exports[`Liquid > jsx > Typescript Test > Stamped.io 1`] = `
     margin-right: 10px;
   }
 </style>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > StoreComment 1`] = `
+"<div>{{foo}}</div>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > StoreShadowVars 1`] = `
+"<div></div>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > StoreWithState 1`] = `
+"<div></div>
 "
 `;
 
@@ -1309,6 +1462,11 @@ exports[`Liquid > jsx > Typescript Test > Textarea 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Typescript Test > UseValueAndFnFromStore 1`] = `
+"<div>Test</div>
+"
+`;
+
 exports[`Liquid > jsx > Typescript Test > Video 1`] = `
 "<video
   preload=\\"none\\"
@@ -1327,15 +1485,20 @@ exports[`Liquid > jsx > Typescript Test > arrowFunctionInUseStore 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Typescript Test > basicForFragment 1`] = `
+"<div>
+  <select></select>
+</div>
+"
+`;
+
 exports[`Liquid > jsx > Typescript Test > basicForNoTagReference 1`] = `
 "<state.TagNameGetter>
   Hello
   <state.tag>{{name}}</state.tag>
-
   {% for action in actions %}
   <state.TagName>
     <action.icon></action.icon>
-
     <span>{{action.text}}</span>
   </state.TagName>
   {% endfor %}
@@ -1344,9 +1507,7 @@ exports[`Liquid > jsx > Typescript Test > basicForNoTagReference 1`] = `
 `;
 
 exports[`Liquid > jsx > Typescript Test > basicForwardRef 1`] = `
-"<div>
-  <input class=\\"input\\" value=\\"{{name}}\\" />
-</div>
+"<div><input class=\\"input\\" value=\\"{{name}}\\" /></div>
 <style>
   .input {
     color: red;
@@ -1356,9 +1517,9 @@ exports[`Liquid > jsx > Typescript Test > basicForwardRef 1`] = `
 `;
 
 exports[`Liquid > jsx > Typescript Test > basicForwardRefMetadata 1`] = `
-"<div>
-  <input class=\\"input\\" value=\\"{{name}}\\" />
-</div>
+"/** useMetadata: {\\"forwardRef\\":\\"inputRef\\"} */
+
+<div><input class=\\"input\\" value=\\"{{name}}\\" /></div>
 <style>
   .input {
     color: red;
@@ -1372,9 +1533,29 @@ exports[`Liquid > jsx > Typescript Test > basicOnUpdateReturn 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Typescript Test > basicRefAttributePassing 1`] = `
+"/** useMetadata: {\\"attributePassing\\":{\\"enabled\\":true}} */
+
+<button>Attribute Passing</button>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > basicRefAttributePassingCustomRef 1`] = `
+"/** useMetadata: {\\"attributePassing\\":{\\"enabled\\":true,\\"customRef\\":\\"buttonRef\\"}}
+*/
+
+<div><button>Attribute Passing</button></div>
+"
+`;
+
 exports[`Liquid > jsx > Typescript Test > class + ClassName + css 1`] = `
-"<div class=\\"test2 test div\\">
-  Hello! I can run in React, Vue, Solid, or Liquid!
+"<div>
+  <MyComp class=\\"test\\" className=\\"test2\\">
+    Hello! I can run in React, Vue, Solid, or Liquid!
+  </MyComp>
+  <div class=\\"test2 test div\\">
+    Hello! I can run in React, Vue, Solid, or Liquid!
+  </div>
 </div>
 <style>
   .div {
@@ -1407,7 +1588,6 @@ exports[`Liquid > jsx > Typescript Test > className + css 1`] = `
 exports[`Liquid > jsx > Typescript Test > className 1`] = `
 "<div>
   <div class=\\"no binding\\">Without Binding</div>
-
   <div class=\\"{{bindings}}\\">With binding</div>
 </div>
 "
@@ -1425,17 +1605,23 @@ exports[`Liquid > jsx > Typescript Test > classState 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Typescript Test > complexMeta 1`] = `
+"/** useMetadata:
+{\\"x\\":\\"y\\",\\"asdf\\":{\\"stringValue\\":\\"d\\",\\"booleanValue\\":true,\\"numberValue\\":1,\\"innerObject\\":{\\"stringValue\\":\\"inner\\",\\"numberValue\\":2,\\"booleanValue\\":false},\\"spreadStringValue\\":\\"f\\"}}
+*/
+
+<div></div>
+"
+`;
+
 exports[`Liquid > jsx > Typescript Test > componentWithContext 1`] = `
-"<div>
-  <div>{{foo.value}}</div>
-</div>
+"<div><div>{{foo.value}}</div></div>
 "
 `;
 
 exports[`Liquid > jsx > Typescript Test > componentWithContextMultiRoot 1`] = `
 "<div>
   <div>{{foo.value}}</div>
-
   <div>other</div>
 </div>
 "
@@ -1449,9 +1635,7 @@ exports[`Liquid > jsx > Typescript Test > contentState 1`] = `
 exports[`Liquid > jsx > Typescript Test > defaultProps 1`] = `
 "<div>
   {% if link %}
-
   <a props.attributes=\\"{{attributes}}\\" href=\\"{{link}}\\">{{text}}</a>
-
   {% endif %}
 </div>
 "
@@ -1460,9 +1644,7 @@ exports[`Liquid > jsx > Typescript Test > defaultProps 1`] = `
 exports[`Liquid > jsx > Typescript Test > defaultPropsOutsideComponent 1`] = `
 "<div>
   {% if link %}
-
   <a props.attributes=\\"{{attributes}}\\" href=\\"{{link}}\\">{{text}}</a>
-
   {% endif %}
 </div>
 "
@@ -1473,13 +1655,78 @@ exports[`Liquid > jsx > Typescript Test > defaultValsWithTypes 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Typescript Test > eventInputAndChange 1`] = `
+"<div>
+  <input class=\\"input\\" value=\\"{{name}}\\" />
+
+  Hello! I can run in React, Vue, Solid, or Liquid!
+</div>
+<style>
+  .input {
+    color: red;
+  }
+</style>
+"
+`;
+
 exports[`Liquid > jsx > Typescript Test > expressionState 1`] = `
 "<div>{{refToUse}}</div>
 "
 `;
 
+exports[`Liquid > jsx > Typescript Test > figmaMeta 1`] = `
+"/** useMetadata:
+{\\"figma\\":{\\"name\\":\\"def-button-beta-outlined\\",\\"url\\":\\"https://www.figma.com/xxx\\",\\"props\\":{\\"iconSmall\\":{\\"type\\":\\"instance\\",\\"key\\":\\"📍
+Icon Small\\"},\\"iconMedium\\":{\\"type\\":\\"instance\\",\\"key\\":\\"📍 Icon
+Medium\\"},\\"label\\":{\\"type\\":\\"string\\",\\"key\\":\\"✏️
+Label\\"},\\"icon\\":{\\"type\\":\\"boolean\\",\\"key\\":\\"👁️
+Icon\\",\\"value\\":{\\"false\\":false,\\"true\\":\\"placeholder\\"}},\\"interactiveState\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Interactive
+State\\",\\"value\\":{\\"(Def)
+Enabled\\":false,\\"Hovered\\":false,\\"Pressed\\":false,\\"Focused\\":false,\\"Disabled\\":\\"true\\"}},\\"size\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Size\\",\\"value\\":{\\"(Def)
+Medium\\":false,\\"Small\\":\\"small\\"}},\\"width\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Width\\",\\"value\\":{\\"(Def)
+Auto Width\\":false,\\"Full Width\\":\\"full\\"}}}}} */
+
+<button
+  data-icon=\\"{{icon}}\\"
+  data-disabled=\\"{{interactiveState}}\\"
+  data-width=\\"{{width}}\\"
+  data-size=\\"{{size}}\\"
+>
+  {{label}}
+</button>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > functionProps 1`] = `
+"<p></p>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > getterState 1`] = `
+"<div>
+  <p>{{foo2}}</p>
+  <p>{{bar}}</p>
+  <p></p>
+</div>
+"
+`;
+
 exports[`Liquid > jsx > Typescript Test > import types 1`] = `
 "<RenderBlock></RenderBlock>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > layerName 1`] = `
+"<section>
+  <div class=\\"layer-name\\">
+    Hello! I can run in React, Vue, Solid, or Liquid!
+  </div>
+</section>
+<style>
+  .layer-name {
+    padding: 10px;
+  }
+</style>
 "
 `;
 
@@ -1499,7 +1746,7 @@ exports[`Liquid > jsx > Typescript Test > multipleSpreads 1`] = `
 `;
 
 exports[`Liquid > jsx > Typescript Test > nestedShow 1`] = `
-"{% if conditionA %} {% endif %}
+"{% if conditionA %}{% endif %}
 "
 `;
 
@@ -1535,6 +1782,11 @@ exports[`Liquid > jsx > Typescript Test > nestedStyles 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Typescript Test > onEvent 1`] = `
+"<div class=\\"builder-embed\\"><div>Test</div></div>
+"
+`;
+
 exports[`Liquid > jsx > Typescript Test > onInit & onMount 1`] = `
 "<div></div>
 "
@@ -1545,7 +1797,17 @@ exports[`Liquid > jsx > Typescript Test > onInit 1`] = `
 "
 `;
 
+exports[`Liquid > jsx > Typescript Test > onInitPlain 1`] = `
+"<div></div>
+"
+`;
+
 exports[`Liquid > jsx > Typescript Test > onMount 1`] = `
+"<div></div>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > onMountMultiple 1`] = `
 "<div></div>
 "
 `;
@@ -1598,9 +1860,7 @@ exports[`Liquid > jsx > Typescript Test > renderBlock 1`] = `
 `;
 
 exports[`Liquid > jsx > Typescript Test > renderContentExample 1`] = `
-"<div class=\\"div\\">
-  <RenderBlocks blocks=\\"{{content.blocks}}\\"></RenderBlocks>
-</div>
+"<div class=\\"div\\"><RenderBlocks blocks=\\"{{content.blocks}}\\"></RenderBlocks></div>
 <style>
   .div {
     display: flex;
@@ -1613,9 +1873,7 @@ exports[`Liquid > jsx > Typescript Test > renderContentExample 1`] = `
 exports[`Liquid > jsx > Typescript Test > rootFragmentMultiNode 1`] = `
 "<div>
   {% if link %}
-
   <a props.attributes=\\"{{attributes}}\\" href=\\"{{link}}\\">{{text}}</a>
-
   {% endif %}
 </div>
 "
@@ -1633,15 +1891,53 @@ exports[`Liquid > jsx > Typescript Test > self-referencing component with childr
 "
 `;
 
+exports[`Liquid > jsx > Typescript Test > setState 1`] = `
+"<div><button>Click me</button></div>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > showExpressions 1`] = `
+"<div>
+  {% if conditionA %}Content0{% endif %} {% if conditionA %}ContentA{% endif %}
+  {% if conditionA %}{% endif %} {% if conditionA %}ContentB{% endif %} {% if
+  conditionA %}{{undefined}}{% endif %} {% if conditionA %}ContentC{% endif %}
+  {% if conditionA %}{% endif %} {% if conditionA %}ContentD{% endif %} {% if
+  conditionA %}{% endif %} {% if conditionA %}ContentE{% endif %} {% if
+  conditionA %}hello{% endif %} {% if conditionA %}ContentF{% endif %} {% if
+  conditionA %}123{% endif %}
+</div>
+"
+`;
+
 exports[`Liquid > jsx > Typescript Test > showWithFor 1`] = `
-"{% if conditionA %} {% for item in items %}
+"{% if conditionA %}{% for item in items %}
 <div key=\\"{{idx}}\\">{{item}}</div>
-{% endfor %} {% endif %}
+{% endfor %}{% endif %}
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > showWithOtherValues 1`] = `
+"<div>
+  {% if conditionA %} ContentA {% endif %} {% if conditionA %} ContentB {% endif
+  %} {% if conditionA %} ContentC {% endif %} {% if conditionA %} ContentD {%
+  endif %} {% if conditionA %} ContentE {% endif %} {% if conditionA %} ContentF
+  {% endif %}
+</div>
 "
 `;
 
 exports[`Liquid > jsx > Typescript Test > showWithRootText 1`] = `
 "{% if conditionA %} ContentA {% endif %}
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > signalsOnUpdate 1`] = `
+"<div class=\\"test div\\">{{id}} {{foo.value.bar.baz}}</div>
+<style>
+  .div {
+    padding: 10px;
+  }
+</style>
 "
 `;
 
@@ -1657,6 +1953,21 @@ exports[`Liquid > jsx > Typescript Test > spreadNestedProps 1`] = `
 
 exports[`Liquid > jsx > Typescript Test > spreadProps 1`] = `
 "<input props=\\"{{props}}\\" />
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > store-async-function 1`] = `
+"<div></div>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > string-literal-store 1`] = `
+"<div>{{foo}}</div>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > string-literal-store-kebab 1`] = `
+"<div></div>
 "
 `;
 
@@ -1694,13 +2005,11 @@ exports[`Liquid > jsx > Typescript Test > svgComponent 1`] = `
   <defs>
     <filter id=\\"prefix__filter0_f\\" filterUnits=\\"userSpaceOnUse\\">
       <feFlood result=\\"BackgroundImageFix\\"></feFlood>
-
       <feBlend
         in=\\"SourceGraphic\\"
         in2=\\"BackgroundImageFix\\"
         result=\\"shape\\"
       ></feBlend>
-
       <feGaussianBlur
         result=\\"effect1_foregroundBlur\\"
         stdDeviation=\\"{{7}}\\"
@@ -1713,6 +2022,16 @@ exports[`Liquid > jsx > Typescript Test > svgComponent 1`] = `
 
 exports[`Liquid > jsx > Typescript Test > typeDependency 1`] = `
 "<div>{{foo}}</div>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > typeExternalStore 1`] = `
+"<div>Hello {{_name}} !</div>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > typeGetterStore 1`] = `
+"<div>Hello {{name}} !</div>
 "
 `;
 
@@ -1760,6 +2079,15 @@ exports[`Liquid > jsx > Typescript Test > use-style-outside-component 1`] = `
 
 exports[`Liquid > jsx > Typescript Test > useTarget 1`] = `
 "<div>{{name}}</div>
+"
+`;
+
+exports[`Liquid > jsx > Typescript Test > webComponent 1`] = `
+"<swiper-container slides-per-view=\\"3\\" navigation=\\"true\\" pagination=\\"true\\">
+  <swiper-slide>Slide 1</swiper-slide>
+  <swiper-slide>Slide 2</swiper-slide>
+  <swiper-slide>Slide 3</swiper-slide>
+</swiper-container>
 "
 `;
 

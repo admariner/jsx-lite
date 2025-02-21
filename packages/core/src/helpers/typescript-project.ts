@@ -49,40 +49,19 @@ export const getContextSymbols = (ast: SourceFile) => {
   return contextSymbols;
 };
 
-const getSignalSymbol = (project: Project) => {
-  const symbolExport = project.createSourceFile(
-    'homepage3.lite.tsx',
-    `import { Signal } from '@builder.io/mitosis';`,
-  );
-
-  // Find the original Signal symbol
-  let signalSymbol: Symbol | undefined = undefined;
-  symbolExport.forEachDescendant((node) => {
-    if (Node.isImportSpecifier(node)) {
-      signalSymbol = node.getSymbol()?.getAliasedSymbol();
-    }
-  });
-
-  if (signalSymbol === undefined) {
-    throw new Error(
-      'Could not find the Mitosis Signal symbol in your TS project. Is `@builder.io/mitosis` installed correctly?',
-    );
-  }
-  return signalSymbol as Symbol;
-};
-
 const getProject = (tsConfigFilePath: string) => {
   try {
     return new Project({ tsConfigFilePath });
   } catch (err) {
     throw new Error(
-      'Error creating Typescript Project. Make sure `tsConfigFilePath` points to a valid tsconfig.json file',
+      `Error creating Typescript Project. Make sure \`tsConfigFilePath\` points to a valid tsconfig.json file.
+      Path received: "${tsConfigFilePath}"
+      `,
     );
   }
 };
 
 export const createTypescriptProject = (tsConfigFilePath: string) => {
   const project = getProject(tsConfigFilePath);
-  const signalSymbol = getSignalSymbol(project);
-  return { project, signalSymbol };
+  return { project };
 };

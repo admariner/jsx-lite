@@ -1,22 +1,41 @@
-import type { ParseMitosisOptions } from '../parsers/jsx/types';
+import type { ParseMitosisOptions } from '@/parsers/jsx';
+import { targets } from '@/targets';
 import type { MitosisComponent } from './mitosis-component';
-
+import { BaseTranspilerOptions, TranspilerGenerator } from './transpiler';
 export type Format = 'esm' | 'cjs';
 export type Language = 'js' | 'ts';
 interface TranspilerOptions {
   format?: Format;
 }
 
-type Targets = typeof import('../targets').targets;
+type Targets = typeof targets;
 export type Target = keyof Targets;
 export type GeneratorOptions = {
   [K in Target]: NonNullable<Parameters<Targets[K]>[0]> & {
     transpiler?: TranspilerOptions;
   };
 };
+export type generatorsOption = {
+  [K in Target]: NonNullable<Targets[K]>;
+};
+
+export interface TargetContext {
+  target: Target;
+  generator: TranspilerGenerator<NonNullable<MitosisConfig['options'][Target]>>;
+  outputPath: string;
+}
+
+export interface OutputFiles {
+  outputDir: string;
+  outputFilePath: string;
+}
 
 export type MitosisConfig = {
-  commonOptions?: { typescript?: boolean };
+  generators?: generatorsOption;
+  /**
+   * Apply common options to all targets
+   */
+  commonOptions?: Omit<BaseTranspilerOptions, 'experimental'>;
   /**
    * List of targets to compile to.
    */
@@ -42,7 +61,7 @@ export type MitosisConfig = {
   overridesDir?: string;
   /**
    * Dictionary of per-target configuration. For each target, the available options can be inspected by going to
-   * `packages/core/src/targets.ts` and looking at the first argument of the desired generator.
+   * `packages/core/src/generators/xxx/types.ts`.
    *
    * Example:
    *
@@ -55,6 +74,7 @@ export type MitosisConfig = {
    *   react: {
    *     stateType: 'builder';
    *     stylesType: 'styled-jsx'
+   *     plugins: [myPlugin]
    *   }
    * }
    * ```

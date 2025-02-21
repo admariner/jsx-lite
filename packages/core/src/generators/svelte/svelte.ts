@@ -1,33 +1,39 @@
-import { flow, pipe } from 'fp-ts/lib/function';
-import { format } from 'prettier/standalone';
-import traverse from 'traverse';
-import { babelTransformCode, convertTypeScriptToJS } from '../../helpers/babel-transform';
-import { dedent } from '../../helpers/dedent';
-import { fastClone } from '../../helpers/fast-clone';
-import { getProps } from '../../helpers/get-props';
-import { getRefs } from '../../helpers/get-refs';
+import { babelTransformCode, convertTypeScriptToJS } from '@/helpers/babel-transform';
+import { dedent } from '@/helpers/dedent';
+import { fastClone } from '@/helpers/fast-clone';
+import { getProps } from '@/helpers/get-props';
+import { getRefs } from '@/helpers/get-refs';
 import {
   getStateObjectStringFromComponent,
   stringifyContextValue,
-} from '../../helpers/get-state-object-string';
-import { gettersToFunctions } from '../../helpers/getters-to-functions';
-import { isMitosisNode } from '../../helpers/is-mitosis-node';
-import { initializeOptions } from '../../helpers/merge-options';
-import { stripGetter } from '../../helpers/patterns';
-import { CODE_PROCESSOR_PLUGIN } from '../../helpers/plugins/process-code';
-import { renderPreComponent } from '../../helpers/render-imports';
-import { isSlotProperty } from '../../helpers/slots';
-import { stripMetaProperties } from '../../helpers/strip-meta-properties';
-import { collectCss } from '../../helpers/styles/collect-css';
-import { hasStyle } from '../../helpers/styles/helpers';
+} from '@/helpers/get-state-object-string';
+import { gettersToFunctions } from '@/helpers/getters-to-functions';
+import { isMitosisNode } from '@/helpers/is-mitosis-node';
+import { initializeOptions } from '@/helpers/merge-options';
+import { processOnEventHooksPlugin } from '@/helpers/on-event';
+import { stripGetter } from '@/helpers/patterns';
+import { CODE_PROCESSOR_PLUGIN } from '@/helpers/plugins/process-code';
+import { renderPreComponent } from '@/helpers/render-imports';
+import { isSlotProperty } from '@/helpers/slots';
+import { stripMetaProperties } from '@/helpers/strip-meta-properties';
+import { collectCss } from '@/helpers/styles/collect-css';
+import { hasStyle } from '@/helpers/styles/helpers';
+import { MitosisComponent } from '@/types/mitosis-component';
+import { TranspilerGenerator } from '@/types/transpiler';
+import { flow, pipe } from 'fp-ts/lib/function';
+import traverse from 'neotraverse/legacy';
+import * as prettierPluginSvelte from 'prettier-plugin-svelte';
+import prettierParserBabel from 'prettier/parser-babel';
+import prettierParserHtml from 'prettier/parser-html';
+import prettierParserPostcss from 'prettier/parser-postcss';
+import prettierParserTypescript from 'prettier/parser-typescript';
+import { format } from 'prettier/standalone';
 import {
   runPostCodePlugins,
   runPostJsonPlugins,
   runPreCodePlugins,
   runPreJsonPlugins,
 } from '../../modules/plugins';
-import { MitosisComponent } from '../../types/mitosis-component';
-import { TranspilerGenerator } from '../../types/transpiler';
 import { getContextType, hasGetContext, hasSetContext } from '../helpers/context';
 import { FUNCTION_HACK_PLUGIN } from '../helpers/functions';
 import { blockToSvelte } from './blocks';
@@ -129,7 +135,6 @@ const useBindValue = (json: MitosisComponent, options: ToSvelteOptions) => {
 const DEFAULT_OPTIONS: ToSvelteOptions = {
   stateType: 'variables',
   prettier: true,
-  plugins: [FUNCTION_HACK_PLUGIN],
 };
 
 export const componentToSvelte: TranspilerGenerator<ToSvelteOptions> =
@@ -144,6 +149,8 @@ export const componentToSvelte: TranspilerGenerator<ToSvelteOptions> =
 
     options.plugins = [
       ...(options.plugins || []),
+      processOnEventHooksPlugin(),
+      FUNCTION_HACK_PLUGIN,
       // Strip types from any JS code that ends up in the template, because Svelte does not support TS code in templates.
       CODE_PROCESSOR_PLUGIN((codeType) => {
         switch (codeType) {
@@ -269,7 +276,7 @@ export const componentToSvelte: TranspilerGenerator<ToSvelteOptions> =
     let svelteImports: string[] = [];
     let svelteStoreImports: string[] = [];
 
-    if (json.hooks.onMount?.code?.length) {
+    if (json.hooks.onMount.length) {
       svelteImports.push('onMount');
     }
     if (json.hooks.onUpdate?.filter((x) => !x.deps)?.length) {
@@ -298,7 +305,11 @@ export const componentToSvelte: TranspilerGenerator<ToSvelteOptions> =
           : `import { ${svelteStoreImports.sort().join(', ')} } from 'svelte/store'`
       }
 
-      ${renderPreComponent({ component: json, target: 'svelte' })}
+      ${renderPreComponent({
+        explicitImportFileExtension: options.explicitImportFileExtension,
+        component: json,
+        target: 'svelte',
+      })}
 
       ${!hasData || options.stateType === 'variables' ? '' : `import onChange from 'on-change'`}
       ${props
@@ -327,18 +338,19 @@ export const componentToSvelte: TranspilerGenerator<ToSvelteOptions> =
         })
         .join('\n')}
       ${
-        // https://svelte.dev/repl/bd9b56891f04414982517bbd10c52c82?version=3.31.0
+        // https://github.com/sveltejs/svelte/issues/7311
         hasStyle(json)
-          ? `
-        function mitosis_styling (node, vars) {
-          Object.entries(vars || {}).forEach(([ p, v ]) => {
-            if (p.startsWith('--')) {
-              node.style.setProperty(p, v);
-            } else {
-              node.style[p] = v;
+          ? dedent`
+        	function stringifyStyles(stylesObj) {
+            let styles = '';
+            for (let key in stylesObj) {
+              const dashedKey = key.replace(/[A-Z]/g, function(match) {
+                return '-' + match.toLowerCase();
+              });
+              styles += dashedKey + ":" + stylesObj[key] + ";";
             }
-          })
-        }
+            return styles;
+          }
       `
           : ''
       }
@@ -358,7 +370,7 @@ export const componentToSvelte: TranspilerGenerator<ToSvelteOptions> =
       }
       ${json.hooks.onInit?.code ?? ''}
 
-      ${!json.hooks.onMount?.code ? '' : `onMount(() => { ${json.hooks.onMount.code} });`}
+      ${json.hooks.onMount.map((hook) => `onMount(() => { ${hook.code} });`).join('\n')}
 
       ${
         json.hooks.onUpdate
@@ -368,14 +380,40 @@ export const componentToSvelte: TranspilerGenerator<ToSvelteOptions> =
             }
 
             const fnName = `onUpdateFn_${index}`;
+            const depsArray = deps
+              .slice(1, deps.length - 1)
+              .split(',')
+              .map((x) => x.trim());
+            const getReactiveDepName = (dep: string) =>
+              `${fnName}_${dep.slice(1).replace(/(\.|\?)/g, '_')}`;
+
+            const isStoreAccessDep = (dep: string) => dep.startsWith('$');
+
+            const reactiveDepsWorkaround = depsArray
+              .filter(isStoreAccessDep)
+              .map((dep) => `$: ${getReactiveDepName(dep)} = ${dep};`)
+              .join('\n');
+
+            const depsArrayStr = depsArray
+              .map((x) => (isStoreAccessDep(x) ? getReactiveDepName(x) : x))
+              .join(', ');
+
+            /**
+             * We create a reactive value for each `onUpdate`'s dependency that
+             * accesses a store so that Svelte has accurate dependency tracking.
+             *
+             * Otherwise, if the dependency is a value within a store, Svelte will
+             * rerun the effect every time the parent store is changed in any way.
+             */
             return `
               function ${fnName}(..._args${options.typescript ? ': any[]' : ''}) {
                 ${code}
               }
-              $: ${fnName}(...${deps})
+              ${reactiveDepsWorkaround}
+              $: ${fnName}(...[${depsArrayStr}]);
             `;
           })
-          .join(';') || ''
+          .join('\n') || ''
       }
 
       ${
@@ -413,11 +451,11 @@ export const componentToSvelte: TranspilerGenerator<ToSvelteOptions> =
           parser: 'svelte',
           plugins: [
             // To support running in browsers
-            require('prettier/parser-html'),
-            require('prettier/parser-postcss'),
-            require('prettier/parser-babel'),
-            require('prettier/parser-typescript'),
-            require('prettier-plugin-svelte'),
+            prettierParserHtml,
+            prettierParserPostcss,
+            prettierParserBabel,
+            prettierParserTypescript,
+            prettierPluginSvelte,
           ],
         });
       } catch (err) {

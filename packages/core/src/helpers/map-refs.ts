@@ -1,6 +1,6 @@
 import type { NodePath } from '@babel/core';
 import { types } from '@babel/core';
-import traverse from 'traverse';
+import traverse from 'neotraverse/legacy';
 
 import { MitosisComponent } from '../types/mitosis-component';
 import { babelTransformExpression } from './babel-transform';
@@ -40,16 +40,17 @@ export const mapRefs = (component: MitosisComponent, mapper: RefMapper): void =>
           const isGet = stateVal.type === 'getter';
           const isSet = Boolean(value.match(SETTER));
           component.state[key] = {
+            ...stateVal,
             code: replaceRefsInString(
               value.replace(/^(get |set )?/, 'function '),
               refs,
               mapper,
             ).replace(/^function /, isGet ? 'get ' : isSet ? 'set ' : ''),
-            type: stateVal.type,
           };
           break;
         case 'function':
           component.state[key] = {
+            ...stateVal,
             code: replaceRefsInString(value, refs, mapper),
             type: 'function',
           };

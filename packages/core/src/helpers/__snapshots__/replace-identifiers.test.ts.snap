@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`newReplacer > Check #1 1`] = `
 "const [childrenContext] = useState(useTarget({
@@ -64,7 +64,7 @@ exports[`replaceIdentifiers > Check #6 1`] = `
 const foo.value = x.foo;
 const y = {
   l: x.foo,
-  m: foo.value
+  m: foo
 };
 const bar = foo.value"
 `;

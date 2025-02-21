@@ -1,16 +1,48 @@
-import * as babel from '@babel/core';
-import generate from '@babel/generator';
+import { babelTransformExpression } from '@/helpers/babel-transform';
+import { capitalize } from '@/helpers/capitalize';
+import { isMitosisNode } from '@/helpers/is-mitosis-node';
+import { createCodeProcessorPlugin } from '@/helpers/plugins/process-code';
+import { replaceNodes } from '@/helpers/replace-identifiers';
+import {
+  MitosisComponent,
+  MitosisState,
+  StateValue,
+  TargetBlockDefinition,
+} from '@/types/mitosis-component';
+import { NodePath, types } from '@babel/core';
+import {
+  BlockStatement,
+  Expression,
+  Identifier,
+  Node,
+  ObjectExpression,
+  ObjectMethod,
+  ObjectProperty,
+  assignmentExpression,
+  functionExpression,
+  identifier,
+  isArrowFunctionExpression,
+  isDeclaration,
+  isFunctionDeclaration,
+  isFunctionExpression,
+  isIdentifier,
+  isMemberExpression,
+  isObjectMethod,
+  isObjectProperty,
+  isOptionalMemberExpression,
+  isPrivateName,
+  isSpreadElement,
+  isStringLiteral,
+  isTSAsExpression,
+  isTSInterfaceBody,
+  isTSType,
+  memberExpression,
+  objectMethod,
+} from '@babel/types';
 import { MitosisNode } from '@builder.io/mitosis';
 import { pipe } from 'fp-ts/lib/function';
-import traverse from 'traverse';
-import { babelTransformExpression } from '../../helpers/babel-transform';
-import { capitalize } from '../../helpers/capitalize';
-import { isMitosisNode } from '../../helpers/is-mitosis-node';
-import { createCodeProcessorPlugin } from '../../helpers/plugins/process-code';
-import { MitosisComponent, MitosisState, StateValue } from '../../types/mitosis-component';
+import traverse from 'neotraverse/legacy';
 import { parseCode, uncapitalize } from './helpers';
-
-const { types } = babel;
 
 function mapStateIdentifiersInExpression(expression: string, stateProperties: string[]) {
   const setExpressions = stateProperties.map((propertyName) => `set${capitalize(propertyName)}`);
@@ -21,20 +53,18 @@ function mapStateIdentifiersInExpression(expression: string, stateProperties: st
         if (stateProperties.includes(path.node.name)) {
           if (
             // ignore member expressions, as the `stateProperty` is going to be at the module scope.
-            !(types.isMemberExpression(path.parent) && path.parent.property === path.node) &&
-            !(
-              types.isOptionalMemberExpression(path.parent) && path.parent.property === path.node
-            ) &&
+            !(isMemberExpression(path.parent) && path.parent.property === path.node) &&
+            !(isOptionalMemberExpression(path.parent) && path.parent.property === path.node) &&
             // ignore declarations of that state property, e.g. `function foo() {}`
-            !types.isDeclaration(path.parent) &&
-            !types.isFunctionDeclaration(path.parent) &&
-            !(types.isFunctionExpression(path.parent) && path.parent.id === path.node) &&
+            !isDeclaration(path.parent) &&
+            !isFunctionDeclaration(path.parent) &&
+            !(isFunctionExpression(path.parent) && path.parent.id === path.node) &&
             // ignore object keys
-            !(types.isObjectProperty(path.parent) && path.parent.key === path.node)
+            !(isObjectProperty(path.parent) && path.parent.key === path.node)
           ) {
             let hasTypeParent = false;
-            path.findParent((parent) => {
-              if (types.isTSType(parent) || types.isTSInterfaceBody(parent)) {
+            path.findParent((parent: NodePath) => {
+              if (isTSType(parent as Node) || isTSInterfaceBody(parent as Node)) {
                 hasTypeParent = true;
                 return true;
               }
@@ -45,34 +75,33 @@ function mapStateIdentifiersInExpression(expression: string, stateProperties: st
               return;
             }
 
-            const newExpression = types.memberExpression(
-              types.identifier('state'),
-              types.identifier(path.node.name),
-            );
+            const newExpression = memberExpression(identifier('state'), identifier(path.node.name));
             try {
               path.replaceWith(newExpression);
             } catch (err) {
-              console.log('err: ', {
-                from: generate(path.parent).code,
-                fromChild: generate(path.node).code,
-                to: newExpression,
-                // err,
-              });
+              console.error(err);
+
+              // console.log('err: ', {
+              //   from: generate(path.parent).code,
+              //   fromChild: generate(path.node).code,
+              //   to: newExpression,
+              //   // err,
+              // });
             }
           }
         }
       },
       CallExpression(path) {
-        if (types.isIdentifier(path.node.callee)) {
+        if (isIdentifier(path.node.callee)) {
           if (setExpressions.includes(path.node.callee.name)) {
             // setFoo -> foo
             const statePropertyName = uncapitalize(path.node.callee.name.slice(3));
 
             // setFoo(...) -> state.foo = ...
             path.replaceWith(
-              types.assignmentExpression(
+              assignmentExpression(
                 '=',
-                types.identifier(`state.${statePropertyName}`),
+                identifier(`state.${statePropertyName}`),
                 path.node.arguments[0] as any,
               ),
             );
@@ -114,40 +143,99 @@ const consolidateClassBindings = (item: MitosisNode) => {
  * e.g.
  *   text -> state.text
  *   setText(...) -> state.text = ...
+ *
+ * This also applies to components that use both useState and useStore.
+ * e.g.
+ * const [foo, setFoo] = useState(1)
+ * const store = useStore({
+ *   bar() { return foo } // becomes bar() { return state.foo }
+ * })`
  */
-export function mapStateIdentifiers(json: MitosisComponent) {
-  const stateProperties = Object.keys(json.state);
-
+export function mapStateIdentifiers(json: MitosisComponent, stateProperties: string[]) {
   const plugin = createCodeProcessorPlugin(
     () => (code) => mapStateIdentifiersInExpression(code, stateProperties),
   );
 
   plugin(json);
 
+  for (const key in json.targetBlocks) {
+    const targetBlock = json.targetBlocks[key];
+    for (const targetBlockKey of Object.keys(targetBlock)) {
+      const block = targetBlock[targetBlockKey as keyof TargetBlockDefinition];
+      if (block && 'code' in block) {
+        block.code = mapStateIdentifiersInExpression(block.code, stateProperties);
+      }
+    }
+  }
+
   traverse(json).forEach(function (item) {
-    if (isMitosisNode(item)) {
+    // only consolidate bindings for HTML tags, not custom components
+    // custom components are always PascalCase, e.g. MyComponent
+    // but HTML tags are lowercase, e.g. div
+    if (isMitosisNode(item) && item.name.toLowerCase() === item.name) {
       consolidateClassBindings(item);
     }
   });
 }
 
-const processStateObjectSlice = (
-  item: babel.types.ObjectMethod | babel.types.ObjectProperty,
-): StateValue => {
-  if (types.isObjectProperty(item)) {
-    if (types.isFunctionExpression(item.value)) {
+/**
+ * Replaces `this.` with `state.` and trims code
+ * @param code origin code
+ */
+const getCleanedStateCode = (code: string): string => {
+  return replaceNodes({
+    code,
+    nodeMaps: [
+      {
+        from: types.thisExpression(),
+        to: types.identifier('state'),
+      },
+    ],
+  }).trim();
+};
+
+const processStateObjectSlice = (item: ObjectMethod | ObjectProperty): StateValue => {
+  if (isObjectProperty(item)) {
+    if (isFunctionExpression(item.value)) {
       return {
-        code: parseCode(item.value).trim(),
+        code: getCleanedStateCode(parseCode(item.value)),
         type: 'function',
       };
-    } else if (types.isArrowFunctionExpression(item.value)) {
-      const n = babel.types.objectMethod(
+    } else if (isArrowFunctionExpression(item.value)) {
+      /**
+       * Arrow functions are normally converted to object methods to work around
+       * limitations with arrow functions in state in frameworks such as Svelte.
+       * However, this conversion does not work for async arrow functions due to
+       * how we handle parsing in `handleErrorOrExpression` for parsing
+       * expressions. That code does not detect async functions in order to apply
+       * its parsing workarounds. Even if it did, it does not consider async code
+       * when prefixing with "function". This would result in "function async foo()"
+       * which is not a valid function expression definition.
+       */
+      // TODO ENG-7256 Find a way to do this without diverging code path
+      if (item.value.async) {
+        const func = functionExpression(
+          item.key as Identifier,
+          item.value.params,
+          item.value.body as BlockStatement,
+          false,
+          true,
+        );
+
+        return {
+          code: parseCode(func).trim(),
+          type: 'function',
+        };
+      }
+      const n = objectMethod(
         'method',
-        item.key as babel.types.Expression,
+        item.key as Expression,
         item.value.params,
-        item.value.body as babel.types.BlockStatement,
+        item.value.body as BlockStatement,
       );
-      const code = parseCode(n).trim();
+      // Replace this. with state. to handle following
+      // const state = useStore({ _do: () => {this._active = !!id;}})
+      const code = getCleanedStateCode(parseCode(n));
       return {
         code: code,
         type: 'method',
@@ -155,21 +243,47 @@ const processStateObjectSlice = (
     } else {
       // Remove typescript types, e.g. from
       // { foo: ('string' as SomeType) }
-      if (types.isTSAsExpression(item.value)) {
+      if (isTSAsExpression(item.value)) {
         return {
-          code: parseCode(item.value.expression).trim(),
+          code: getCleanedStateCode(parseCode(item.value.expression)),
           type: 'property',
           propertyType: 'normal',
         };
       }
       return {
-        code: parseCode(item.value).trim(),
+        code: getCleanedStateCode(parseCode(item.value)),
         type: 'property',
         propertyType: 'normal',
       };
     }
-  } else if (types.isObjectMethod(item)) {
-    const n = parseCode({ ...item, returnType: null }).trim();
+  } else if (isObjectMethod(item)) {
+    // TODO ENG-7256 Find a way to do this without diverging code path
+    if (item.async) {
+      const func = functionExpression(
+        item.key as Identifier,
+        item.params,
+        item.body as BlockStatement,
+        false,
+        true,
+      );
+
+      return {
+        code: parseCode(func).trim(),
+        type: 'function',
+      };
+    }
+
+    const method = objectMethod(
+      item.kind,
+      item.key,
+      item.params,
+      item.body,
+      false,
+      false,
+      item.async,
+    );
+
+    const n = getCleanedStateCode(parseCode({ ...method, returnType: null }));
 
     const isGetter = item.kind === 'get';
 
@@ -182,11 +296,9 @@ const processStateObjectSlice = (
   }
 };
 
-const processDefaultPropsSlice = (
-  item: babel.types.ObjectMethod | babel.types.ObjectProperty,
-): StateValue => {
-  if (types.isObjectProperty(item)) {
-    if (types.isFunctionExpression(item.value) || types.isArrowFunctionExpression(item.value)) {
+const processDefaultPropsSlice = (item: ObjectMethod | ObjectProperty): StateValue => {
+  if (isObjectProperty(item)) {
+    if (isFunctionExpression(item.value) || isArrowFunctionExpression(item.value)) {
       return {
         code: parseCode(item.value),
         type: 'method',
@@ -194,7 +306,7 @@ const processDefaultPropsSlice = (
     } else {
       // Remove typescript types, e.g. from
       // { foo: ('string' as SomeType) }
-      if (types.isTSAsExpression(item.value)) {
+      if (isTSAsExpression(item.value)) {
         return {
           code: parseCode(item.value.expression),
           type: 'property',
@@ -207,7 +319,7 @@ const processDefaultPropsSlice = (
         propertyType: 'normal',
       };
     }
-  } else if (types.isObjectMethod(item)) {
+  } else if (isObjectMethod(item)) {
     const n = parseCode({ ...item, returnType: null });
 
     const isGetter = item.kind === 'get';
@@ -222,26 +334,28 @@ const processDefaultPropsSlice = (
 };
 
 export const parseStateObjectToMitosisState = (
-  object: babel.types.ObjectExpression,
+  object: ObjectExpression,
   isState: boolean = true, // parse state or defaultProps
 ): MitosisState => {
   const state: MitosisState = {};
   object.properties.forEach((x) => {
-    if (types.isSpreadElement(x)) {
+    if (isSpreadElement(x)) {
       throw new Error('Parse Error: Mitosis cannot consume spread element in state object: ' + x);
     }
 
-    if (types.isPrivateName(x.key)) {
+    if (isPrivateName(x.key)) {
       throw new Error('Parse Error: Mitosis cannot consume private name in state object: ' + x.key);
     }
 
-    if (!types.isIdentifier(x.key)) {
+    if (!isIdentifier(x.key) && !isStringLiteral(x.key)) {
       throw new Error(
-        'Parse Error: Mitosis cannot consume non-identifier key in state object: ' + x.key,
+        'Parse Error: Mitosis cannot consume non-identifier and non-string key in state object: ' +
+          x.key,
       );
     }
 
-    state[x.key.name] = isState ? processStateObjectSlice(x) : processDefaultPropsSlice(x);
+    const keyName = isStringLiteral(x.key) ? x.key.value : x.key.name;
+    state[keyName] = isState ? processStateObjectSlice(x) : processDefaultPropsSlice(x);
   });
 
   return state;

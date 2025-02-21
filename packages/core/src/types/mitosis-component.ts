@@ -48,7 +48,7 @@ export interface ContextSetInfo extends ContextOptions {
   ref?: string;
 }
 
-export type extendedHook = { code: string; deps?: string };
+export type BaseHook = { code: string; deps?: string };
 
 export type MitosisComponentInput = {
   name: string;
@@ -90,6 +90,19 @@ export type TargetBlockDefinition = TargetBlockCode & {
   };
 };
 
+export type OnEventHook = BaseHook & {
+  refName: string;
+  eventName: string;
+  isRoot: boolean;
+  deps?: never;
+  eventArgName: string;
+  elementArgName?: string;
+};
+
+export type OnMountHook = BaseHook & {
+  onSSR?: boolean;
+};
+
 export type MitosisComponent = {
   '@type': '@builder.io/mitosis/component';
   name: string;
@@ -120,13 +133,14 @@ export type MitosisComponent = {
     };
   };
   hooks: {
-    init?: extendedHook;
-    onInit?: extendedHook;
-    onMount?: extendedHook;
-    onUnMount?: extendedHook;
-    preComponent?: extendedHook;
-    postComponent?: extendedHook;
-    onUpdate?: extendedHook[];
+    init?: BaseHook;
+    onInit?: BaseHook;
+    onMount: OnMountHook[];
+    onUnMount?: BaseHook;
+    preComponent?: BaseHook;
+    postComponent?: BaseHook;
+    onUpdate?: BaseHook[];
+    onEvent: OnEventHook[];
   };
   targetBlocks?: Dictionary<TargetBlockDefinition>;
   children: MitosisNode[];
@@ -135,4 +149,27 @@ export type MitosisComponent = {
   propsTypeRef?: string;
   defaultProps?: MitosisState;
   style?: string;
+
+  /**
+   * This data is filled inside cli to provide more data for plugins
+   */
+  pluginData?: {
+    target?: Target;
+    path?: string;
+    outputDir?: string;
+    outputFilePath?: string;
+  };
+
+  /**
+   * Used to store context of a component for a specific framework
+   * that we need access only during compilation (for internal use only) and gets removed after compilation.
+   */
+  compileContext?: {
+    [K in Target]?: {
+      state?: MitosisState;
+      hooks?: {
+        [hookName: string]: BaseHook;
+      };
+    };
+  };
 };
