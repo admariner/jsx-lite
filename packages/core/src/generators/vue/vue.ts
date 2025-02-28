@@ -1,37 +1,38 @@
-import { flow, pipe } from 'fp-ts/lib/function';
+import { convertTypeScriptToJS } from '@/helpers/babel-transform';
+import { createSingleBinding } from '@/helpers/bindings';
+import { dedent } from '@/helpers/dedent';
+import { fastClone } from '@/helpers/fast-clone';
+import { getProps } from '@/helpers/get-props';
+import { isMitosisNode } from '@/helpers/is-mitosis-node';
+import { mapRefs } from '@/helpers/map-refs';
+import { initializeOptions } from '@/helpers/merge-options';
+import { processOnEventHooksPlugin } from '@/helpers/on-event';
+import { CODE_PROCESSOR_PLUGIN } from '@/helpers/plugins/process-code';
+import { processHttpRequests } from '@/helpers/process-http-requests';
+import { renderPreComponent } from '@/helpers/render-imports';
+import { replaceStateIdentifier } from '@/helpers/replace-identifiers';
+import { isSlotProperty } from '@/helpers/slots';
+import { stripMetaProperties } from '@/helpers/strip-meta-properties';
+import { collectCss } from '@/helpers/styles/collect-css';
+import { MitosisComponent } from '@/types/mitosis-component';
+import { TranspilerGenerator } from '@/types/transpiler';
+import { flow } from 'fp-ts/lib/function';
 import { pickBy, size, uniq } from 'lodash';
+import traverse from 'neotraverse/legacy';
 import { format } from 'prettier/standalone';
-import traverse from 'traverse';
-import { convertTypeScriptToJS } from '../../helpers/babel-transform';
-import { createSingleBinding } from '../../helpers/bindings';
-import { dedent } from '../../helpers/dedent';
-import { fastClone } from '../../helpers/fast-clone';
-import { getProps } from '../../helpers/get-props';
-import { isMitosisNode } from '../../helpers/is-mitosis-node';
-import { mapRefs } from '../../helpers/map-refs';
-import { initializeOptions } from '../../helpers/merge-options';
-import { CODE_PROCESSOR_PLUGIN } from '../../helpers/plugins/process-code';
-import { processHttpRequests } from '../../helpers/process-http-requests';
-import { renderPreComponent } from '../../helpers/render-imports';
-import { replaceStateIdentifier } from '../../helpers/replace-identifiers';
-import { isSlotProperty } from '../../helpers/slots';
-import { stripMetaProperties } from '../../helpers/strip-meta-properties';
-import { collectCss } from '../../helpers/styles/collect-css';
 import {
-  Plugin,
+  MitosisPlugin,
   runPostCodePlugins,
   runPostJsonPlugins,
   runPreCodePlugins,
   runPreJsonPlugins,
 } from '../../modules/plugins';
-import { MitosisComponent } from '../../types/mitosis-component';
-import { TranspilerGenerator } from '../../types/transpiler';
 import { FUNCTION_HACK_PLUGIN } from '../helpers/functions';
 import { blockToVue } from './blocks';
 import { generateCompositionApiScript } from './compositionApi';
 import { getOnUpdateHookName, processBinding, renameMitosisComponentsToKebabCase } from './helpers';
 import { generateOptionsApiScript } from './optionsApi';
-import { ToVueOptions, VueOptsWithoutVersion } from './types';
+import { ToVueOptions } from './types';
 
 // Transform <foo.bar key="value" /> to <component :is="foo.bar" key="value" />
 function processDynamicComponents(json: MitosisComponent, _options: ToVueOptions) {
@@ -65,7 +66,7 @@ function processForKeys(json: MitosisComponent, _options: ToVueOptions) {
  *
  * We add a `computed` property for the dependencies, and a matching `watch` function for the `onUpdate` code
  */
-const onUpdatePlugin: Plugin = (options) => ({
+const onUpdatePlugin: MitosisPlugin = (options) => ({
   json: {
     post: (component) => {
       if (component.hooks.onUpdate) {
@@ -96,26 +97,32 @@ const onUpdatePlugin: Plugin = (options) => ({
 });
 
 const BASE_OPTIONS: ToVueOptions = {
-  plugins: [],
-  vueVersion: 2,
   api: 'options',
   defineComponent: true,
+  casing: 'pascal',
 };
 
-const componentToVue: TranspilerGenerator<Partial<ToVueOptions>> =
+export const componentToVue: TranspilerGenerator<Partial<ToVueOptions>> =
   (userOptions) =>
   ({ component: _component, path }) => {
     // Make a copy we can safely mutate, similar to babel's toolchain can be used
     let component = fastClone(_component);
 
     const options = initializeOptions({
-      target: userOptions?.vueVersion === 2 ? 'vue2' : 'vue3',
+      target: 'vue',
       component,
       defaults: BASE_OPTIONS,
       userOptions: userOptions,
     });
 
+    if (options.api === 'composition') {
+      options.asyncComponentImports = false;
+    }
+
     options.plugins.unshift(
+      processOnEventHooksPlugin(),
+      ...(options.api === 'options' ? [onUpdatePlugin] : []),
+      ...(options.api === 'composition' ? [FUNCTION_HACK_PLUGIN] : []),
       CODE_PROCESSOR_PLUGIN((codeType) => {
         if (options.api === 'composition') {
           switch (codeType) {
@@ -170,12 +177,6 @@ const componentToVue: TranspilerGenerator<Partial<ToVueOptions>> =
       }),
     );
 
-    if (options.api === 'options') {
-      options.plugins.unshift(onUpdatePlugin);
-    } else if (options.api === 'composition') {
-      options.plugins.unshift(FUNCTION_HACK_PLUGIN);
-      options.asyncComponentImports = false;
-    }
     processHttpRequests(component);
     processDynamicComponents(component, options);
     processForKeys(component, options);
@@ -199,10 +200,14 @@ const componentToVue: TranspilerGenerator<Partial<ToVueOptions>> =
 
     stripMetaProperties(component);
 
-    const template = pipe(
-      component.children.map((item) => blockToVue(item, options, { isRootNode: true })).join('\n'),
-      renameMitosisComponentsToKebabCase,
-    );
+    const templateStrBody = component.children
+      .map((item) => blockToVue(item, options, { isRootNode: true }))
+      .join('\n');
+
+    const template =
+      options.casing === 'kebab'
+        ? renameMitosisComponentsToKebabCase(templateStrBody)
+        : templateStrBody;
 
     const onUpdateWithDeps = component.hooks.onUpdate?.filter((hook) => hook.deps?.length) || [];
     const onUpdateWithoutDeps =
@@ -212,7 +217,7 @@ const componentToVue: TranspilerGenerator<Partial<ToVueOptions>> =
 
     // import from vue
     let vueImports: string[] = [];
-    if (options.vueVersion >= 3 && options.asyncComponentImports) {
+    if (options.asyncComponentImports) {
       vueImports.push('defineAsyncComponent');
     }
     if (options.api === 'options' && options.defineComponent) {
@@ -220,7 +225,7 @@ const componentToVue: TranspilerGenerator<Partial<ToVueOptions>> =
     }
     if (options.api === 'composition') {
       onUpdateWithDeps.length && vueImports.push('watch');
-      component.hooks.onMount?.code && vueImports.push('onMounted');
+      component.hooks.onMount.length && vueImports.push('onMounted');
       component.hooks.onUnMount?.code && vueImports.push('onUnmounted');
       onUpdateWithoutDeps.length && vueImports.push('onUpdated');
       size(getterKeys) && vueImports.push('computed');
@@ -228,7 +233,7 @@ const componentToVue: TranspilerGenerator<Partial<ToVueOptions>> =
       size(component.context.get) && vueImports.push('inject');
       size(
         Object.keys(component.state).filter((key) => component.state[key]?.type === 'property'),
-      ) && vueImports.push('ref');
+      ) + size(component.refs) && vueImports.push('ref');
       size(slotsProps) && vueImports.push('useSlots');
     }
 
@@ -248,6 +253,7 @@ const componentToVue: TranspilerGenerator<Partial<ToVueOptions>> =
       ${vueImports.length ? `import { ${uniq(vueImports).sort().join(', ')} } from "vue"` : ''}
 
       ${renderPreComponent({
+        explicitImportFileExtension: options.explicitImportFileExtension,
         component,
         target: 'vue',
         asyncComponentImports: options.asyncComponentImports,
@@ -316,12 +322,6 @@ const componentToVue: TranspilerGenerator<Partial<ToVueOptions>> =
     str = str.replace(/<script(.*)>\n?<\/script>/g, '').trim();
     return str;
   };
-
-export const componentToVue2 = (vueOptions?: VueOptsWithoutVersion) =>
-  componentToVue({ ...vueOptions, vueVersion: 2 });
-
-export const componentToVue3 = (vueOptions?: VueOptsWithoutVersion) =>
-  componentToVue({ ...vueOptions, vueVersion: 3 });
 
 // Remove unused artifacts like empty script or style tags
 const removePatterns = [

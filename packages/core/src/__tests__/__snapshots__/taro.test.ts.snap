@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Taro > jsx > Javascript Test > AdvancedRef 1`] = `
 "\\"use client\\";
@@ -36,14 +36,11 @@ function MyBasicRefComponent(props) {
               onBlur={(event) => onBlur()}
               onChange={(event) => setName(event.target.value)}
             />
-
             <View htmlFor=\\"cars\\" ref={inputNoArgRef}>
               Choose a car:
             </View>
-
             <View name=\\"cars\\" id=\\"cars\\">
               <View value=\\"supra\\">GR Supra</View>
-
               <View value=\\"86\\">GR 86</View>
             </View>
           </>
@@ -92,7 +89,7 @@ function MyBasicComponent(props) {
           value={DEFAULT_VALUES.name || name}
           onChange={(myEvent) => setName(myEvent.target.value)}
         />
-        Hello! I can run in React, Vue, Solid, or Liquid!
+        Hello! I can run in React, Vue, Solid, or Liquid! &gt;
       </View>
       <style jsx>{\`
         .view {
@@ -110,8 +107,8 @@ export default MyBasicComponent;
 exports[`Taro > jsx > Javascript Test > Basic Context 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
-import { useState, useContext, useEffect } from \\"react\\";
-import { createInjector, Injector, MyService } from \\"@dummy/injection-js\\";
+import { useState, useContext, useRef, useEffect } from \\"react\\";
+import { Injector, MyService, createInjector } from \\"@dummy/injection-js\\";
 import { View, Text, Input } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props) {
@@ -124,10 +121,12 @@ function MyBasicComponent(props) {
 
   const myService = useContext(MyService);
 
-  useEffect(() => {
+  const hasInitialized = useRef(false);
+  if (!hasInitialized.current) {
     const hi = myService.method(\\"hi\\");
     console.log(hi);
-  }, []);
+    hasInitialized.current = true;
+  }
 
   useEffect(() => {
     const bye = myService.method(\\"hi\\");
@@ -152,7 +151,7 @@ export default MyBasicComponent;
 exports[`Taro > jsx > Javascript Test > Basic OnMount Update 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
-import { useState, useEffect } from \\"react\\";
+import { useState, useRef, useEffect } from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyBasicOnMountUpdateComponent(props) {
@@ -160,20 +159,17 @@ function MyBasicOnMountUpdateComponent(props) {
 
   const [names, setNames] = useState(() => [\\"Steve\\", \\"PatrickJS\\"]);
 
-  useEffect(() => {
+  const hasInitialized = useRef(false);
+  if (!hasInitialized.current) {
     setName(\\"PatrickJS onInit\\" + props.hi);
-  }, []);
+    hasInitialized.current = true;
+  }
 
   useEffect(() => {
     setName(\\"PatrickJS onMount\\" + props.bye);
   }, []);
 
-  return (
-    <View>
-      Hello
-      {name}
-    </View>
-  );
+  return <View>Hello {name}</View>;
 }
 
 export default MyBasicOnMountUpdateComponent;
@@ -202,7 +198,12 @@ export default MyBasicOutputsComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > Basic Outputs Meta 1`] = `
-"\\"use client\\";
+"/**
+          useMetadata:
+          {\\"outputs\\":[\\"onMessage\\",\\"onEvent\\"],\\"baz\\":\\"metadata inside component\\"}
+          */
+
+\\"use client\\";
 import * as React from \\"react\\";
 import { useState, useEffect } from \\"react\\";
 import { View } from \\"@tarojs/components\\";
@@ -223,12 +224,11 @@ export default MyBasicOutputsComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > BasicAttribute 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Input } from \\"@tarojs/components\\";
 
 function MyComponent(props) {
-  return <Input autoCapitalize=\\"on\\" autoComplete=\\"on\\" spellCheck={true} />;
+  return <Input autoCapitalize=\\"on\\" autoComplete=\\"on\\" spellCheck />;
 }
 
 export default MyComponent;
@@ -236,8 +236,7 @@ export default MyComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > BasicBooleanAttribute 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import MyBooleanAttributeComponent from \\"./basic-boolean-attribute-component.raw\\";
 import { View, Text } from \\"@tarojs/components\\";
 
@@ -250,11 +249,8 @@ function MyBooleanAttribute(props) {
           {props.type}
         </>
       ) : null}
-
-      <MyBooleanAttributeComponent toggle={true} />
-
-      <MyBooleanAttributeComponent toggle={true} />
-
+      <MyBooleanAttributeComponent toggle />
+      <MyBooleanAttributeComponent toggle />
       <MyBooleanAttributeComponent list={null} />
     </View>
   );
@@ -280,7 +276,6 @@ function MyBasicChildComponent(props) {
   return (
     <View>
       <MyBasicComponent id={dev} />
-
       <View>
         <MyBasicOnMountUpdateComponent hi={name} bye={dev} />
       </View>
@@ -343,7 +338,7 @@ function MyBasicRefComponent(props) {
 
   function onBlur() {
     // Maintain focus
-    inputRef.current.focus();
+    inputRef.current?.focus();
   }
 
   function lowerCaseName() {
@@ -362,14 +357,11 @@ function MyBasicRefComponent(props) {
               onBlur={(event) => onBlur()}
               onChange={(event) => setName(event.target.value)}
             />
-
             <View htmlFor=\\"cars\\" ref={inputNoArgRef}>
               Choose a car:
             </View>
-
             <View name=\\"cars\\" id=\\"cars\\">
               <View value=\\"supra\\">GR Supra</View>
-
               <View value=\\"86\\">GR 86</View>
             </View>
           </>
@@ -407,7 +399,7 @@ function MyBasicRefAssignmentComponent(props) {
 
   return (
     <View>
-      <Button onClick={(evt) => handlerClick(evt)}>Click</Button>
+      <Button onClick={async (evt) => await handlerClick(evt)}>Click</Button>
     </View>
   );
 }
@@ -446,11 +438,8 @@ function MyPreviousComponent(props) {
   return (
     <View>
       <View>
-        Now:
-        {count}, before:
-        {prevCount.current}
+        Now: {count}, before: {prevCount.current}
       </View>
-
       <Button onClick={(event) => setCount(1)}>Increment</Button>
     </View>
   );
@@ -461,31 +450,25 @@ export default MyPreviousComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > Button 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text, Button } from \\"@tarojs/components\\";
 
 function Button(props) {
   return (
     <View>
       {props.link ? (
-        <>
-          <View
-            {...props.attributes}
-            href={props.link}
-            target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
-          >
-            {props.text}
-          </View>
-        </>
+        <View
+          {...props.attributes}
+          href={props.link}
+          target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
+        >
+          {props.text}
+        </View>
       ) : null}
-
       {!props.link ? (
-        <>
-          <Button type=\\"button\\" {...props.attributes}>
-            {props.text}
-          </Button>
-        </>
+        <Button type=\\"button\\" {...props.attributes}>
+          {props.text}
+        </Button>
       ) : null}
     </View>
   );
@@ -496,8 +479,7 @@ export default Button;
 `;
 
 exports[`Taro > jsx > Javascript Test > Columns 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function Column(props) {
@@ -527,7 +509,6 @@ function Column(props) {
         {props.columns?.map((column, index) => (
           <View className=\\"view-2\\">
             {column.content}
-
             {index}
           </View>
         ))}
@@ -562,20 +543,19 @@ export default Column;
 `;
 
 exports[`Taro > jsx > Javascript Test > ContentSlotHtml 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View } from \\"@tarojs/components\\";
 
 function ContentSlotCode(props) {
   return (
     <View>
-      {props.slotTesting}
-
+      <>{props.slotTesting}</>
       <View>
         <View />
       </View>
-
-      <View>{props.children}</View>
+      <View>
+        <>{props.children}</>
+      </View>
     </View>
   );
 }
@@ -591,6 +571,12 @@ import { useState } from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function ContentSlotJsxCode(props) {
+  props = {
+    content: \\"\\",
+    slotReference: undefined,
+    slotContent: undefined,
+    ...props,
+  };
   const [name, setName] = useState(() => \\"king\\");
 
   const [showContent, setShowContent] = useState(() => false);
@@ -614,13 +600,11 @@ function ContentSlotJsxCode(props) {
             onClick={(event) => show()}
           >
             {showContent && props.slotContent ? (
-              <>{props.slotContent || \\"{props.content}\\"}</>
+              <>{props.content || \\"{props.content}\\"}</>
             ) : null}
-
             <View>
               <View />
             </View>
-
             <View>{props.children}</View>
           </View>
         </>
@@ -628,12 +612,6 @@ function ContentSlotJsxCode(props) {
     </>
   );
 }
-
-ContentSlotJsxCode.defaultProps = {
-  content: \\"\\",
-  slotReference: undefined,
-  slotContent: undefined,
-};
 
 export default ContentSlotJsxCode;
 "
@@ -989,7 +967,6 @@ function FormComponent(props) {
         onSubmit={(event) => onSubmit(event)}
         {...props.attributes}
       >
-        {\\" \\"}
         {props.builderBlock && props.builderBlock.children ? (
           <>
             {props.builderBlock?.children?.map((block, index) => (
@@ -1000,39 +977,25 @@ function FormComponent(props) {
               />
             ))}
           </>
-        ) : null}{\\" \\"}
+        ) : null}
         {submissionState() === \\"error\\" ? (
-          <>
-            <BuilderBlocks
-              dataPath=\\"errorMessage\\"
-              blocks={props.errorMessage}
-            />
-          </>
-        ) : null}{\\" \\"}
+          <BuilderBlocks dataPath=\\"errorMessage\\" blocks={props.errorMessage} />
+        ) : null}
         {submissionState() === \\"sending\\" ? (
-          <>
-            <BuilderBlocks
-              dataPath=\\"sendingMessage\\"
-              blocks={props.sendingMessage}
-            />
-          </>
-        ) : null}{\\" \\"}
+          <BuilderBlocks
+            dataPath=\\"sendingMessage\\"
+            blocks={props.sendingMessage}
+          />
+        ) : null}
         {submissionState() === \\"error\\" && responseData ? (
-          <>
-            <View className=\\"view\\">
-              {\\" \\"}
-              {JSON.stringify(responseData, null, 2)}{\\" \\"}
-            </View>
-          </>
-        ) : null}{\\" \\"}
+          <View className=\\"view\\">{JSON.stringify(responseData, null, 2)}</View>
+        ) : null}
         {submissionState() === \\"success\\" ? (
-          <>
-            <BuilderBlocks
-              dataPath=\\"successMessage\\"
-              blocks={props.successMessage}
-            />
-          </>
-        ) : null}{\\" \\"}
+          <BuilderBlocks
+            dataPath=\\"successMessage\\"
+            blocks={props.successMessage}
+          />
+        ) : null}
       </Form>{\\" \\"}
       <style jsx>{\`
         .view {
@@ -1115,22 +1078,18 @@ function Image(props) {
       <View>
         <View ref={pictureRef}>
           {!useLazyLoading() || load ? (
-            <>
-              <Image
-                className=\\"image\\"
-                alt={props.altText}
-                aria-role={props.altText ? \\"presentation\\" : undefined}
-                src={props.image}
-                onLoad={(event) => setLoaded()}
-                srcset={props.srcset}
-                sizes={props.sizes}
-              />
-            </>
+            <Image
+              className=\\"image\\"
+              alt={props.altText}
+              aria-role={props.altText ? \\"presentation\\" : undefined}
+              source={{ uri: props.image }}
+              onLoad={(event) => setLoaded()}
+              srcset={props.srcset}
+              sizes={props.sizes}
+            />
           ) : null}
-
           <View srcset={props.srcset} />
         </View>
-
         {props.children}
       </View>
       <style jsx>{\`
@@ -1163,9 +1122,7 @@ function ImgStateComponent(props) {
   return (
     <View>
       {images?.map((item, itemIndex) => (
-        <>
-          <Image src={item} key={itemIndex} />
-        </>
+        <Image source={{ uri: item }} key={itemIndex} />
       ))}
     </View>
   );
@@ -1176,8 +1133,7 @@ export default ImgStateComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > Img 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Builder } from \\"@builder.io/sdk\\";
 import { Image } from \\"@tarojs/components\\";
 
@@ -1191,7 +1147,7 @@ function ImgComponent(props) {
       {...props.attributes}
       key={(Builder.isEditing && props.imgSrc) || \\"default-key\\"}
       alt={props.altText}
-      src={props.imgSrc}
+      source={{ uri: props.imgSrc }}
     />
   );
 }
@@ -1201,8 +1157,7 @@ export default ImgComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > Input 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Builder } from \\"@builder.io/sdk\\";
 import { Input } from \\"@tarojs/components\\";
 
@@ -1231,8 +1186,7 @@ export default FormInputComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > InputParent 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import FormInputComponent from \\"./input.raw\\";
 import \\"@tarojs/components\\";
 
@@ -1254,9 +1208,31 @@ export default Stepper;
 "
 `;
 
-exports[`Taro > jsx > Javascript Test > RawText 1`] = `
+exports[`Taro > jsx > Javascript Test > NestedStore 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function NestedStore(props) {
+  const [_id, set_id] = useState(() => \\"abc\\");
+
+  const [_messageId, set_messageId] = useState(() => _id + \\"-message\\");
+
+  return (
+    <View id={_id}>
+      Test
+      <View id={_messageId}>Message</View>
+    </View>
+  );
+}
+
+export default NestedStore;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > RawText 1`] = `
+"import * as React from \\"react\\";
 import { Text } from \\"@tarojs/components\\";
 
 function RawText(props) {
@@ -1268,8 +1244,7 @@ export default RawText;
 `;
 
 exports[`Taro > jsx > Javascript Test > Section 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function SectionComponent(props) {
@@ -1294,8 +1269,7 @@ export default SectionComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > Select 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Builder } from \\"@builder.io/sdk\\";
 import { View, Text } from \\"@tarojs/components\\";
 
@@ -1326,12 +1300,15 @@ export default SelectComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > SlotDefault 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function SlotCode(props) {
-  return <View>{props.children || <View>Default content</View>}</View>;
+  return (
+    <View>
+      <>{props.children || <View>Default content</View>}</>
+    </View>
+  );
 }
 
 export default SlotCode;
@@ -1339,15 +1316,14 @@ export default SlotCode;
 `;
 
 exports[`Taro > jsx > Javascript Test > SlotHtml 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import ContentSlotCode from \\"./content-slot-jsx.raw\\";
-import { View } from \\"@tarojs/components\\";
+import { View, Text } from \\"@tarojs/components\\";
 
 function SlotCode(props) {
   return (
     <View>
-      <ContentSlotCode slotTesting={<div>Hello</div>}></ContentSlotCode>
+      <ContentSlotCode testing={<div>Hello</div>}></ContentSlotCode>
     </View>
   );
 }
@@ -1357,15 +1333,14 @@ export default SlotCode;
 `;
 
 exports[`Taro > jsx > Javascript Test > SlotJsx 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import ContentSlotCode from \\"./content-slot-jsx.raw\\";
-import { View } from \\"@tarojs/components\\";
+import { View, Text } from \\"@tarojs/components\\";
 
 function SlotCode(props) {
   return (
     <View>
-      <ContentSlotCode slotTesting={<div>Hello</div>} />
+      <ContentSlotCode slotTesting={<View>Hello</View>} />
     </View>
   );
 }
@@ -1375,18 +1350,16 @@ export default SlotCode;
 `;
 
 exports[`Taro > jsx > Javascript Test > SlotNamed 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function SlotCode(props) {
   return (
     <View>
-      {props.slotTop}
-
-      {props.slotLeft || \\"Default left\\"}
-
-      {props.children || \\"Default Child\\"}
+      <>{props.myAwesomeSlot}</>
+      <>{props.top}</>
+      <>{props.left || \\"Default left\\"}</>
+      <>{props.children || \\"Default Child\\"}</>
     </View>
   );
 }
@@ -1435,7 +1408,6 @@ function SmileReviews(props) {
         <Button onClick={(event) => setShowReviewPrompt(true)}>
           Write a review
         </Button>
-
         {showReviewPrompt || \\"asdf\\" ? (
           <>
             <Input placeholder=\\"Email\\" />
@@ -1446,8 +1418,8 @@ function SmileReviews(props) {
             />
             <Button
               className=\\"button\\"
-              onClick={(event) => {
-                event.preventDefault();
+              onClick={(ev) => {
+                ev.preventDefault();
                 setShowReviewPrompt(false);
               }}
             >
@@ -1455,19 +1427,12 @@ function SmileReviews(props) {
             </Button>
           </>
         ) : null}
-
         {reviews?.map((review, index) => (
           <View className=\\"review\\" key={review.id}>
-            <Image className=\\"image\\" src={review.avatar} />
-
+            <Image className=\\"image\\" source={{ uri: review.avatar }} />
             <View>
-              <View>
-                N:
-                {index}
-              </View>
-
+              <View>N: {index}</View>
               <View>{review.author}</View>
-
               <View>{review.reviewMessage}</View>
             </View>
           </View>
@@ -1490,6 +1455,7 @@ function SmileReviews(props) {
           display: flex;
           border-radius: 5px;
           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          -webkit-font-smoothing: antialiased;
         }
         .image {
           height: 30px;
@@ -1505,9 +1471,66 @@ export default SmileReviews;
 "
 `;
 
-exports[`Taro > jsx > Javascript Test > Submit 1`] = `
+exports[`Taro > jsx > Javascript Test > StoreComment 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function StringLiteralStore(props) {
+  const [foo, setFoo] = useState(() => true);
+
+  function bar() {}
+
+  return <>{foo}</>;
+}
+
+export default StringLiteralStore;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > StoreShadowVars 1`] = `
+"\\"use client\\";
+import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function MyComponent(props) {
+  const [errors, setErrors] = useState(() => ({}));
+
+  function foo(errors) {
+    return errors;
+  }
+
+  return <>{foo(errors)}</>;
+}
+
+export default MyComponent;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > StoreWithState 1`] = `
+"\\"use client\\";
+import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function MyComponent(props) {
+  const [foo, setFoo] = useState(() => false);
+
+  function bar() {
+    return foo;
+  }
+
+  return <>{bar()}</>;
+}
+
+export default MyComponent;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > Submit 1`] = `
+"import * as React from \\"react\\";
 import { Button, View, Text } from \\"@tarojs/components\\";
 
 function SubmitButton(props) {
@@ -1554,8 +1577,7 @@ export default Text;
 `;
 
 exports[`Taro > jsx > Javascript Test > Textarea 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Textarea } from \\"@tarojs/components\\";
 
 function Textarea(props) {
@@ -1574,9 +1596,40 @@ export default Textarea;
 "
 `;
 
-exports[`Taro > jsx > Javascript Test > Video 1`] = `
+exports[`Taro > jsx > Javascript Test > UseValueAndFnFromStore 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
+import { useState, useEffect } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function UseValueAndFnFromStore(props) {
+  const [_id, set_id] = useState(() => \\"abc\\");
+
+  const [_active, set_active] = useState(() => false);
+
+  function _do(id) {
+    set_active(!!id);
+
+    if (props.onChange) {
+      props.onChange(_active);
+    }
+  }
+
+  useEffect(() => {
+    if (_do) {
+      _do(_id);
+    }
+  });
+
+  return <View>Test</View>;
+}
+
+export default UseValueAndFnFromStore;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > Video 1`] = `
+"import * as React from \\"react\\";
 import { View } from \\"@tarojs/components\\";
 
 function Video(props) {
@@ -1625,15 +1678,46 @@ function MyComponent(props) {
     setName(value);
   }
 
+  return <View>Hello {name}</View>;
+}
+
+export default MyComponent;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > basicForFragment 1`] = `
+"\\"use client\\";
+import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function BasicForFragment(props) {
+  const [id, setId] = useState(() => \\"xyz\\");
+
   return (
     <View>
-      Hello
-      {name}
+      {[\\"a\\", \\"b\\", \\"c\\"]?.map((option) => (
+        <React.Fragment key={\`key-\${option}\`}>
+          <View>{option}</View>
+        </React.Fragment>
+      ))}
+      {[\\"a\\", \\"b\\", \\"c\\"]?.map((option) => (
+        <React.Fragment key={\`\${id}-\${option}\`}>
+          <View>{option}</View>
+        </React.Fragment>
+      ))}
+      <View>
+        {[\\"d\\", \\"e\\", \\"f\\"]?.map((option) => (
+          <View key={\`\${id}-\${option}\`} value={option}>
+            {option}
+          </View>
+        ))}
+      </View>
     </View>
   );
 }
 
-export default MyComponent;
+export default BasicForFragment;
 "
 `;
 
@@ -1658,12 +1742,10 @@ function MyBasicForNoTagRefComponent(props) {
 
   return (
     <TagNameGetterRef>
-      Hello
-      <View>{name}</View>
+      Hello <View>{name}</View>
       {props.actions?.map((action) => (
         <TagName>
           <View />
-
           <Text>{action.text}</Text>
         </TagName>
       ))}
@@ -1710,7 +1792,12 @@ export default MyBasicForwardRefComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > basicForwardRefMetadata 1`] = `
-"\\"use client\\";
+"/**
+          useMetadata:
+          {\\"forwardRef\\":\\"inputRef\\"}
+          */
+
+\\"use client\\";
 import * as React from \\"react\\";
 import { useState, forwardRef } from \\"react\\";
 import { View, Input } from \\"@tarojs/components\\";
@@ -1769,28 +1856,72 @@ function MyBasicOnUpdateReturnComponent(props) {
     };
   }, [name]);
 
-  return (
-    <View>
-      Hello!
-      {name}
-    </View>
-  );
+  return <View>Hello! {name}</View>;
 }
 
 export default MyBasicOnUpdateReturnComponent;
 "
 `;
 
-exports[`Taro > jsx > Javascript Test > class + ClassName + css 1`] = `
-"\\"use client\\";
+exports[`Taro > jsx > Javascript Test > basicRefAttributePassing 1`] = `
+"/**
+          useMetadata:
+          {\\"attributePassing\\":{\\"enabled\\":true}}
+          */
+
+\\"use client\\";
 import * as React from \\"react\\";
+import { useRef } from \\"react\\";
+import { Button, View, Text } from \\"@tarojs/components\\";
+
+function BasicRefAttributePassingComponent(props) {
+  const buttonRef = useRef(null);
+
+  return <Button ref={buttonRef}>Attribute Passing</Button>;
+}
+
+export default BasicRefAttributePassingComponent;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > basicRefAttributePassingCustomRef 1`] = `
+"/**
+          useMetadata:
+          {\\"attributePassing\\":{\\"enabled\\":true,\\"customRef\\":\\"buttonRef\\"}}
+          */
+
+\\"use client\\";
+import * as React from \\"react\\";
+import { useRef } from \\"react\\";
+import { View, Button, Text } from \\"@tarojs/components\\";
+
+function BasicRefAttributePassingCustomRefComponent(props) {
+  const buttonRef = useRef(null);
+
+  return (
+    <View>
+      <Button ref={buttonRef}>Attribute Passing</Button>
+    </View>
+  );
+}
+
+export default BasicRefAttributePassingCustomRefComponent;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > class + ClassName + css 1`] = `
+"import * as React from \\"react\\";
+import MyComp from \\"./my-component\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props) {
   return (
     <>
-      <View className=\\"view\\">
-        Hello! I can run in React, Vue, Solid, or Liquid!
+      <View>
+        <MyComp>Hello! I can run in React, Vue, Solid, or Liquid!</MyComp>
+        <View className=\\"view\\">
+          Hello! I can run in React, Vue, Solid, or Liquid!
+        </View>
       </View>
       <style jsx>{\`
         .view {
@@ -1806,8 +1937,7 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > class + css 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props) {
@@ -1830,8 +1960,7 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > className + css 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props) {
@@ -1865,7 +1994,6 @@ function ClassNameCode(props) {
   return (
     <View>
       <View>Without Binding</View>
-
       <View>With binding</View>
     </View>
   );
@@ -1903,6 +2031,23 @@ function MyBasicComponent(props) {
 }
 
 export default MyBasicComponent;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > complexMeta 1`] = `
+"/**
+          useMetadata:
+          {\\"x\\":\\"y\\",\\"asdf\\":{\\"stringValue\\":\\"d\\",\\"booleanValue\\":true,\\"numberValue\\":1,\\"innerObject\\":{\\"stringValue\\":\\"inner\\",\\"numberValue\\":2,\\"booleanValue\\":false},\\"spreadStringValue\\":\\"f\\"}}
+          */
+
+import * as React from \\"react\\";
+import { View } from \\"@tarojs/components\\";
+
+function ComplexMetaRaw(props) {
+  return <View />;
+}
+
+export default ComplexMetaRaw;
 "
 `;
 
@@ -1969,8 +2114,7 @@ function ComponentWithContext(props) {
         }}
       >
         <>
-          {foo.value}
-
+          <>{foo.value}</>
           <View>other</View>
         </>
       </Context1.Provider>
@@ -2007,118 +2151,132 @@ export default RenderContent;
 `;
 
 exports[`Taro > jsx > Javascript Test > defaultProps 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text, Button } from \\"@tarojs/components\\";
 
 function Button(props) {
+  props = {
+    text: \\"default text\\",
+    link: \\"https://builder.io/\\",
+    openLinkInNewTab: false,
+    onClick: () => {
+      console.log(\\"hi\\");
+    },
+    ...props,
+  };
   return (
     <View>
       {props.link ? (
-        <>
-          <View
-            {...props.attributes}
-            href={props.link}
-            target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
-          >
-            {props.text}
-          </View>
-        </>
+        <View
+          {...props.attributes}
+          href={props.link}
+          target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
+        >
+          {props.text}
+        </View>
       ) : null}
-
       {!props.link ? (
-        <>
-          <Button
-            type=\\"button\\"
-            {...props.attributes}
-            onClick={(event) => props.onClick(event)}
-          >
-            {props.buttonText}
-          </Button>
-        </>
+        <Button
+          type=\\"button\\"
+          {...props.attributes}
+          onClick={(event) => props.onClick()}
+        >
+          {props.buttonText}
+        </Button>
       ) : null}
     </View>
   );
 }
-
-Button.defaultProps = {
-  text: \\"default text\\",
-  link: \\"https://builder.io/\\",
-  openLinkInNewTab: false,
-  onClick: () => {
-    console.log(\\"hi\\");
-  },
-};
 
 export default Button;
 "
 `;
 
 exports[`Taro > jsx > Javascript Test > defaultPropsOutsideComponent 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text, Button } from \\"@tarojs/components\\";
 
 function Button(props) {
+  props = {
+    text: \\"default text\\",
+    link: \\"https://builder.io/\\",
+    openLinkInNewTab: false,
+    onClick: () => {},
+    ...props,
+  };
   return (
     <View>
       {props.link ? (
-        <>
-          <View
-            {...props.attributes}
-            href={props.link}
-            target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
-          >
-            {props.text}
-          </View>
-        </>
+        <View
+          {...props.attributes}
+          href={props.link}
+          target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
+        >
+          {props.text}
+        </View>
       ) : null}
-
       {!props.link ? (
-        <>
-          <Button
-            type=\\"button\\"
-            {...props.attributes}
-            onClick={(event) => props.onClick(event)}
-          >
-            {props.text}
-          </Button>
-        </>
+        <Button
+          type=\\"button\\"
+          {...props.attributes}
+          onClick={(event) => props.onClick(event)}
+        >
+          {props.text}
+        </Button>
       ) : null}
     </View>
   );
 }
-
-Button.defaultProps = {
-  text: \\"default text\\",
-  link: \\"https://builder.io/\\",
-  openLinkInNewTab: false,
-  onClick: () => {},
-};
 
 export default Button;
 "
 `;
 
 exports[`Taro > jsx > Javascript Test > defaultValsWithTypes 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 const DEFAULT_VALUES = {
   name: \\"Sami\\",
 };
 
 function ComponentWithTypes(props) {
-  return (
-    <View>
-      {\\" \\"}
-      Hello
-      {props.name || DEFAULT_VALUES.name}
-    </View>
-  );
+  return <View> Hello {props.name || DEFAULT_VALUES.name}</View>;
 }
 
 export default ComponentWithTypes;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > eventInputAndChange 1`] = `
+"\\"use client\\";
+import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Input, Text } from \\"@tarojs/components\\";
+
+function EventInputAndChange(props) {
+  const [name, setName] = useState(() => \\"Steve\\");
+
+  return (
+    <>
+      <View>
+        <Input
+          className=\\"input\\"
+          value={name}
+          onInput={(event) => setName(event.target.value)}
+          onChange={(event) => setName(event.target.value)}
+        />
+        Hello! I can run in React, Vue, Solid, or Liquid!
+      </View>
+      <style jsx>{\`
+        .input {
+          color: red;
+        }
+      \`}</style>
+    </>
+  );
+}
+
+export default EventInputAndChange;
 "
 `;
 
@@ -2140,9 +2298,95 @@ export default MyComponent;
 "
 `;
 
-exports[`Taro > jsx > Javascript Test > import types 1`] = `
-"\\"use client\\";
+exports[`Taro > jsx > Javascript Test > figmaMeta 1`] = `
+"/**
+          useMetadata:
+          {\\"figma\\":{\\"name\\":\\"def-button-beta-outlined\\",\\"url\\":\\"https://www.figma.com/xxx\\",\\"props\\":{\\"iconSmall\\":{\\"type\\":\\"instance\\",\\"key\\":\\"📍 Icon Small\\"},\\"iconMedium\\":{\\"type\\":\\"instance\\",\\"key\\":\\"📍 Icon Medium\\"},\\"label\\":{\\"type\\":\\"string\\",\\"key\\":\\"✏️ Label\\"},\\"icon\\":{\\"type\\":\\"boolean\\",\\"key\\":\\"👁️ Icon\\",\\"value\\":{\\"false\\":false,\\"true\\":\\"placeholder\\"}},\\"interactiveState\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Interactive State\\",\\"value\\":{\\"(Def) Enabled\\":false,\\"Hovered\\":false,\\"Pressed\\":false,\\"Focused\\":false,\\"Disabled\\":\\"true\\"}},\\"size\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Size\\",\\"value\\":{\\"(Def) Medium\\":false,\\"Small\\":\\"small\\"}},\\"width\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Width\\",\\"value\\":{\\"(Def) Auto Width\\":false,\\"Full Width\\":\\"full\\"}}}}}
+          */
+
 import * as React from \\"react\\";
+import { Button, View, Text } from \\"@tarojs/components\\";
+
+function FigmaButton(props) {
+  return (
+    <Button
+      data-icon={props.icon}
+      data-disabled={props.interactiveState}
+      data-width={props.width}
+      data-size={props.size}
+    >
+      {props.label}
+    </Button>
+  );
+}
+
+export default FigmaButton;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > functionProps 1`] = `
+"import * as React from \\"react\\";
+import { View } from \\"@tarojs/components\\";
+
+function MyBasicComponent(props) {
+  return (
+    <View
+      f={() => x}
+      f1={(x) => x}
+      f2={(x) => {}}
+      f3={function () {
+        return x;
+      }}
+      f4={function (x) {
+        return x;
+      }}
+      f5={function (x) {
+        return;
+      }}
+      f6={function () {
+        return;
+      }}
+      f7={(a, b, c) => a + b + c}
+    />
+  );
+}
+
+export default MyBasicComponent;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > getterState 1`] = `
+"import * as React from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function Button(props) {
+  function foo2() {
+    return props.foo + \\"foo\\";
+  }
+
+  function bar() {
+    return \\"bar\\";
+  }
+
+  function baz(i) {
+    return i + foo2().length;
+  }
+
+  return (
+    <View>
+      <View>{foo2()}</View>
+      <View>{bar()}</View>
+      <View>{baz(1)}</View>
+    </View>
+  );
+}
+
+export default Button;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > import types 1`] = `
+"import * as React from \\"react\\";
 import RenderBlock from \\"./builder-render-block.raw\\";
 import \\"@tarojs/components\\";
 
@@ -2162,6 +2406,31 @@ function RenderContent(props) {
 }
 
 export default RenderContent;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > layerName 1`] = `
+"import * as React from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function MyLayerNameComponent(props) {
+  return (
+    <>
+      <View>
+        <View className=\\"layer-name\\">
+          Hello! I can run in React, Vue, Solid, or Liquid!
+        </View>
+      </View>
+      <style jsx>{\`
+        .layer-name {
+          padding: 10px;
+        }
+      \`}</style>
+    </>
+  );
+}
+
+export default MyLayerNameComponent;
 "
 `;
 
@@ -2242,8 +2511,7 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > nestedShow 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function NestedShow(props) {
@@ -2252,9 +2520,7 @@ function NestedShow(props) {
       {props.conditionA ? (
         <>
           {!props.conditionB ? (
-            <>
-              <View>if condition A and condition B</View>
-            </>
+            <View>if condition A and condition B</View>
           ) : (
             <View>else-condition-B</View>
           )}
@@ -2271,8 +2537,7 @@ export default NestedShow;
 `;
 
 exports[`Taro > jsx > Javascript Test > nestedStyles 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function NestedStyles(props) {
@@ -2314,16 +2579,110 @@ export default NestedStyles;
 "
 `;
 
+exports[`Taro > jsx > Javascript Test > normalizeLayerNames 1`] = `
+"import * as React from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function MyNormalizedLayerNamesComponent(props) {
+  return (
+    <>
+      <View>
+        <View>Emoji</View>
+        <View>Dashes</View>
+        <View>CamelCase</View>
+        <View>Special chars</View>
+        <View>Special chars with dashes</View>
+        <View className=\\"css-0\\">Single Number</View>
+        <View className=\\"css-123\\">Multiple Numbers</View>
+        <View className=\\"name-123\\">Chars with numbers at end</View>
+        <View className=\\"name\\">Chars with numbers at start</View>
+        <View className=\\"name-789\\">Numnbers separated by dash</View>
+        <View>Emoji</View>
+        <View data-name=\\"1\\" className=\\"view\\">
+          Number
+        </View>
+      </View>
+      <style jsx>{\`
+        .css-0 {
+          margin: 10px;
+        }
+        .css-123 {
+          padding: 10px;
+        }
+        .name-123 {
+          border: 1px solid;
+        }
+        .name {
+          color: red;
+        }
+        .name-789 {
+          background: blue;
+        }
+        .view {
+          background: blue;
+        }
+      \`}</style>
+    </>
+  );
+}
+
+export default MyNormalizedLayerNamesComponent;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > onEvent 1`] = `
+"\\"use client\\";
+import * as React from \\"react\\";
+import { useRef, useEffect } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function Embed(props) {
+  const elem = useRef(null);
+  function foo(event) {
+    console.log(\\"test2\\");
+  }
+
+  function elem_onInitEditingBldr(event) {
+    console.log(\\"test\\");
+    foo(event);
+  }
+
+  useEffect(() => {
+    elem.current?.addEventListener(\\"initEditingBldr\\", elem_onInitEditingBldr);
+    return () =>
+      elem.current?.removeEventListener(
+        \\"initEditingBldr\\",
+        elem_onInitEditingBldr
+      );
+  }, []);
+
+  useEffect(() => {
+    elem.current.dispatchEvent(new CustomEvent(\\"initEditingBldr\\"));
+  }, []);
+
+  return (
+    <View ref={elem}>
+      <View>Test</View>
+    </View>
+  );
+}
+
+export default Embed;
+"
+`;
+
 exports[`Taro > jsx > Javascript Test > onInit & onMount 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
-import { useEffect } from \\"react\\";
+import { useRef, useEffect } from \\"react\\";
 import { View } from \\"@tarojs/components\\";
 
 function OnInit(props) {
-  useEffect(() => {
+  const hasInitialized = useRef(false);
+  if (!hasInitialized.current) {
     console.log(\\"onInit\\");
-  }, []);
+    hasInitialized.current = true;
+  }
 
   useEffect(() => {
     console.log(\\"onMount\\");
@@ -2339,7 +2698,7 @@ export default OnInit;
 exports[`Taro > jsx > Javascript Test > onInit 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
-import { useState, useEffect } from \\"react\\";
+import { useState, useRef } from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 export const defaultValues = {
   name: \\"PatrickJS\\",
@@ -2348,20 +2707,36 @@ export const defaultValues = {
 function OnInit(props) {
   const [name, setName] = useState(() => \\"\\");
 
-  useEffect(() => {
+  const hasInitialized = useRef(false);
+  if (!hasInitialized.current) {
     setName(defaultValues.name || props.name);
     console.log(\\"set defaults with props\\");
-  }, []);
+    hasInitialized.current = true;
+  }
 
-  return (
-    <View>
-      Default name defined by parent
-      {name}
-    </View>
-  );
+  return <View>Default name defined by parent {name}</View>;
 }
 
 export default OnInit;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > onInitPlain 1`] = `
+"import * as React from \\"react\\";
+import { useRef } from \\"react\\";
+import { View } from \\"@tarojs/components\\";
+
+function OnInitPlain(props) {
+  const hasInitialized = useRef(false);
+  if (!hasInitialized.current) {
+    console.log(\\"onInit\\");
+    hasInitialized.current = true;
+  }
+
+  return <View />;
+}
+
+export default OnInitPlain;
 "
 `;
 
@@ -2380,6 +2755,30 @@ function Comp(props) {
     return () => {
       console.log(\\"Runs on unMount\\");
     };
+  }, []);
+
+  return <View />;
+}
+
+export default Comp;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > onMountMultiple 1`] = `
+"\\"use client\\";
+import * as React from \\"react\\";
+import { useEffect } from \\"react\\";
+import { View } from \\"@tarojs/components\\";
+
+function Comp(props) {
+  useEffect(() => {
+    console.log(\\"Runs on mount\\");
+  }, []);
+  useEffect(() => {
+    console.log(\\"Another one runs on Mount\\");
+  }, []);
+  useEffect(() => {
+    console.log(\\"SSR runs on Mount\\");
   }, []);
 
   return <View />;
@@ -2430,8 +2829,7 @@ export default OnUpdateWithDeps;
 `;
 
 exports[`Taro > jsx > Javascript Test > preserveExportOrLocalStatement 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View } from \\"@tarojs/components\\";
 const b = 3;
 const foo = () => {};
@@ -2448,16 +2846,12 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > preserveTyping 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props) {
   return (
-    <View>
-      Hello! I can run in React, Vue, Solid, or Liquid!
-      {props.name}
-    </View>
+    <View>Hello! I can run in React, Vue, Solid, or Liquid! {props.name}</View>
   );
 }
 
@@ -2488,16 +2882,12 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > propsInterface 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props) {
   return (
-    <View>
-      Hello! I can run in React, Vue, Solid, or Liquid!
-      {props.name}
-    </View>
+    <View>Hello! I can run in React, Vue, Solid, or Liquid! {props.name}</View>
   );
 }
 
@@ -2506,16 +2896,12 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > propsType 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props) {
   return (
-    <View>
-      Hello! I can run in React, Vue, Solid, or Liquid!
-      {props.name}
-    </View>
+    <View>Hello! I can run in React, Vue, Solid, or Liquid! {props.name}</View>
   );
 }
 
@@ -2768,9 +3154,7 @@ function RenderBlock(props) {
       {shouldWrap() ? (
         <>
           {isEmptyHtmlElement(tag()) ? (
-            <>
-              <View {...attributes()} {...actions()} />
-            </>
+            <View {...attributes()} {...actions()} />
           ) : null}
           {!isEmptyHtmlElement(tag()) && repeatItemData() ? (
             <>
@@ -2784,27 +3168,23 @@ function RenderBlock(props) {
             </>
           ) : null}
           {!isEmptyHtmlElement(tag()) && !repeatItemData() ? (
-            <>
-              <View {...attributes()} {...actions()}>
-                <RenderComponentTagRef {...renderComponentProps()} />
-
-                {childrenWithoutParentComponent()?.map((child) => (
-                  <RenderBlock
-                    key={\\"render-block-\\" + child.id}
-                    block={child}
-                    context={childrenContext()}
-                  />
-                ))}
-
-                {childrenWithoutParentComponent()?.map((child) => (
-                  <BlockStyles
-                    key={\\"block-style-\\" + child.id}
-                    block={child}
-                    context={childrenContext()}
-                  />
-                ))}
-              </View>
-            </>
+            <View {...attributes()} {...actions()}>
+              <RenderComponentTagRef {...renderComponentProps()} />
+              {childrenWithoutParentComponent()?.map((child) => (
+                <RenderBlock
+                  key={\\"render-block-\\" + child.id}
+                  block={child}
+                  context={childrenContext()}
+                />
+              ))}
+              {childrenWithoutParentComponent()?.map((child) => (
+                <BlockStyles
+                  key={\\"block-style-\\" + child.id}
+                  block={child}
+                  context={childrenContext()}
+                />
+              ))}
+            </View>
           ) : null}
         </>
       ) : (
@@ -2837,7 +3217,6 @@ function RenderContent(props) {
   useEffect(() => {
     sendComponentsToVisualEditor(props.customComponents);
   }, []);
-
   useEffect(() => {
     dispatchNewContentToVisualEditor(props.content);
   }, [props.content]);
@@ -2877,31 +3256,25 @@ export default RenderContent;
 `;
 
 exports[`Taro > jsx > Javascript Test > rootFragmentMultiNode 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text, Button } from \\"@tarojs/components\\";
 
 function Button(props) {
   return (
     <>
       {props.link ? (
-        <>
-          <View
-            {...props.attributes}
-            href={props.link}
-            target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
-          >
-            {props.text}
-          </View>
-        </>
+        <View
+          {...props.attributes}
+          href={props.link}
+          target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
+        >
+          {props.text}
+        </View>
       ) : null}
-
       {!props.link ? (
-        <>
-          <Button type=\\"button\\" {...props.attributes}>
-            {props.text}
-          </Button>
-        </>
+        <Button type=\\"button\\" {...props.attributes}>
+          {props.text}
+        </Button>
       ) : null}
     </>
   );
@@ -2912,8 +3285,7 @@ export default Button;
 `;
 
 exports[`Taro > jsx > Javascript Test > rootShow 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function RenderStyles(props) {
@@ -2935,20 +3307,14 @@ export default RenderStyles;
 `;
 
 exports[`Taro > jsx > Javascript Test > self-referencing component 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyComponent(props) {
   return (
     <View>
       {props.name}
-
-      {props.name === \\"Batman\\" ? (
-        <>
-          <MyComponent name=\\"Bruce Wayne\\" />
-        </>
-      ) : null}
+      {props.name === \\"Batman\\" ? <MyComponent name=\\"Bruce Wayne\\" /> : null}
     </View>
   );
 }
@@ -2958,23 +3324,18 @@ export default MyComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > self-referencing component with children 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyComponent(props) {
   return (
     <View>
       {props.name}
-
       {props.children}
-
       {props.name === \\"Batman\\" ? (
-        <>
-          <MyComponent name=\\"Bruce\\">
-            <View>Wayne</View>
-          </MyComponent>
-        </>
+        <MyComponent name=\\"Bruce\\">
+          <View>Wayne</View>
+        </MyComponent>
       ) : null}
     </View>
   );
@@ -2984,9 +3345,81 @@ export default MyComponent;
 "
 `;
 
-exports[`Taro > jsx > Javascript Test > showWithFor 1`] = `
+exports[`Taro > jsx > Javascript Test > setState 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Button, Text } from \\"@tarojs/components\\";
+
+function SetState(props) {
+  const [n, setN] = useState(() => [\\"123\\"]);
+
+  function someFn() {
+    n[0] = \\"123\\";
+  }
+
+  return (
+    <View>
+      <Button onClick={(event) => someFn()}>Click me</Button>
+    </View>
+  );
+}
+
+export default SetState;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > showExpressions 1`] = `
+"import * as React from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function ShowWithOtherValues(props) {
+  return (
+    <View>
+      {props.conditionA ? <>Content0</> : <>ContentA</>}
+      {props.conditionA ? <>ContentA</> : null}
+      {props.conditionA ? <></> : <>ContentA</>}
+      {props.conditionA ? <>ContentB</> : <>{undefined}</>}
+      {props.conditionA ? <>{undefined}</> : <>ContentB</>}
+      {props.conditionA ? <>ContentC</> : null}
+      {props.conditionA ? <></> : <>ContentC</>}
+      {props.conditionA ? <>ContentD</> : null}
+      {props.conditionA ? <></> : <>ContentD</>}
+      {props.conditionA ? <>ContentE</> : <>hello</>}
+      {props.conditionA ? <>hello</> : <>ContentE</>}
+      {props.conditionA ? <>ContentF</> : <>123</>}
+      {props.conditionA ? <>123</> : <>ContentF</>}
+      {props.conditionA === \\"Default\\" ? (
+        <>4mb</>
+      ) : props.conditionB === \\"Complete\\" ? (
+        <>20mb</>
+      ) : (
+        <>9mb</>
+      )}
+      {props.conditionA === \\"Default\\" ? (
+        <>{props.conditionB === \\"Complete\\" ? <>20mb</> : <>9mb</>}</>
+      ) : (
+        <>4mb</>
+      )}
+      {props.conditionA === \\"Default\\" ? (
+        <>
+          {props.conditionB === \\"Complete\\" ? <View>complete</View> : <>9mb</>}
+        </>
+      ) : props.conditionC === \\"Complete\\" ? (
+        <>dff</>
+      ) : (
+        <View>complete else</View>
+      )}
+    </View>
+  );
+}
+
+export default ShowWithOtherValues;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > showWithFor 1`] = `
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function NestedShow(props) {
@@ -3009,9 +3442,29 @@ export default NestedShow;
 "
 `;
 
+exports[`Taro > jsx > Javascript Test > showWithOtherValues 1`] = `
+"import * as React from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function ShowWithOtherValues(props) {
+  return (
+    <View>
+      {props.conditionA ? <>ContentA</> : null}
+      {props.conditionA ? <>ContentB</> : <>{undefined}</>}
+      {props.conditionA ? <>ContentC</> : null}
+      {props.conditionA ? <>ContentD</> : null}
+      {props.conditionA ? <>ContentE</> : <>hello</>}
+      {props.conditionA ? <>ContentF</> : <>123</>}
+    </View>
+  );
+}
+
+export default ShowWithOtherValues;
+"
+`;
+
 exports[`Taro > jsx > Javascript Test > showWithRootText 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function ShowRootText(props) {
@@ -3024,9 +3477,39 @@ export default ShowRootText;
 "
 `;
 
-exports[`Taro > jsx > Javascript Test > spreadAttrs 1`] = `
+exports[`Taro > jsx > Javascript Test > signalsOnUpdate 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
+import { useEffect } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function MyBasicComponent(props) {
+  useEffect(() => {
+    console.log(\\"props.id changed\\", props.id);
+    console.log(\\"props.foo.value.bar.baz changed\\", props.foo.value.bar.baz);
+  }, [props.id, props.foo.value.bar.baz]);
+
+  return (
+    <>
+      <View className=\\"view\\">
+        {props.id}
+        {props.foo.value.bar.baz}
+      </View>
+      <style jsx>{\`
+        .view {
+          padding: 10px;
+        }
+      \`}</style>
+    </>
+  );
+}
+
+export default MyBasicComponent;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > spreadAttrs 1`] = `
+"import * as React from \\"react\\";
 import { Input } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props) {
@@ -3038,8 +3521,7 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > spreadNestedProps 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Input } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props) {
@@ -3051,8 +3533,7 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > spreadProps 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Input } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props) {
@@ -3063,9 +3544,48 @@ export default MyBasicComponent;
 "
 `;
 
-exports[`Taro > jsx > Javascript Test > styleClassAndCss 1`] = `
+exports[`Taro > jsx > Javascript Test > store-async-function 1`] = `
+"import * as React from \\"react\\";
+import { View } from \\"@tarojs/components\\";
+
+function StringLiteralStore(props) {
+  async function arrowFunction() {
+    return Promise.resolve();
+  }
+
+  async function namedFunction() {
+    return Promise.resolve();
+  }
+
+  async function fetchUsers() {
+    return Promise.resolve();
+  }
+
+  return <View />;
+}
+
+export default StringLiteralStore;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > string-literal-store 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function StringLiteralStore(props) {
+  const [foo, setFoo] = useState(() => 123);
+
+  return <View>{foo}</View>;
+}
+
+export default StringLiteralStore;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > styleClassAndCss 1`] = `
+"import * as React from \\"react\\";
 import { View } from \\"@tarojs/components\\";
 
 function MyComponent(props) {
@@ -3093,8 +3613,7 @@ export default MyComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > stylePropClassAndCss 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View } from \\"@tarojs/components\\";
 
 function StylePropClassAndCss(props) {
@@ -3117,8 +3636,7 @@ export default StylePropClassAndCss;
 `;
 
 exports[`Taro > jsx > Javascript Test > subComponent 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import Foo from \\"./foo-sub-component\\";
 import \\"@tarojs/components\\";
 
@@ -3131,8 +3649,7 @@ export default SubComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > svgComponent 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View } from \\"@tarojs/components\\";
 
 function SvgComponent(props) {
@@ -3147,9 +3664,7 @@ function SvgComponent(props) {
       <View>
         <View id=\\"prefix__filter0_f\\" filterUnits=\\"userSpaceOnUse\\">
           <feFlood result=\\"BackgroundImageFix\\" />
-
           <feBlend in=\\"SourceGraphic\\" in2=\\"BackgroundImageFix\\" result=\\"shape\\" />
-
           <feGaussianBlur result=\\"effect1_foregroundBlur\\" stdDeviation={7} />
         </View>
       </View>
@@ -3162,8 +3677,7 @@ export default SvgComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > typeDependency 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function TypeDependency(props) {
@@ -3174,9 +3688,64 @@ export default TypeDependency;
 "
 `;
 
-exports[`Taro > jsx > Javascript Test > use-style 1`] = `
+exports[`Taro > jsx > Javascript Test > typeExternalProps 1`] = `
+"import * as React from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function TypeExternalProps(props) {
+  return <View>Hello {props.name}! </View>;
+}
+
+export default TypeExternalProps;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > typeExternalStore 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function TypeExternalStore(props) {
+  const [_name, set_name] = useState(() => \\"test\\");
+
+  return <View>Hello {_name}! </View>;
+}
+
+export default TypeExternalStore;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > typeGetterStore 1`] = `
+"\\"use client\\";
+import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function TypeGetterStore(props) {
+  const [name, setName] = useState(() => \\"test\\");
+
+  function getName() {
+    if (name === \\"a\\") {
+      return \\"b\\";
+    }
+
+    return name;
+  }
+
+  function test() {
+    return \\"test\\";
+  }
+
+  return <View>Hello {name}! </View>;
+}
+
+export default TypeGetterStore;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > use-style 1`] = `
+"import * as React from \\"react\\";
 import { Button, View, Text } from \\"@tarojs/components\\";
 
 function MyComponent(props) {
@@ -3200,8 +3769,7 @@ export default MyComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > use-style-and-css 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Button, View, Text } from \\"@tarojs/components\\";
 
 function MyComponent(props) {
@@ -3230,8 +3798,7 @@ export default MyComponent;
 `;
 
 exports[`Taro > jsx > Javascript Test > use-style-outside-component 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Button, View, Text } from \\"@tarojs/components\\";
 
 function MyComponent(props) {
@@ -3257,7 +3824,7 @@ export default MyComponent;
 exports[`Taro > jsx > Javascript Test > useTarget 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
-import { useState } from \\"react\\";
+import { useState, useEffect } from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function UseTargetComponent(props) {
@@ -3268,10 +3835,43 @@ function UseTargetComponent(props) {
 
   const [lastName, setLastName] = useState(() => \\"bar\\");
 
+  const [foo, setFoo] = useState(() => \\"bar\\");
+
+  useEffect(() => {
+    console.log(foo);
+    setFoo(\\"bar\\");
+  }, []);
+
   return <View>{name()}</View>;
 }
 
 export default UseTargetComponent;
+"
+`;
+
+exports[`Taro > jsx > Javascript Test > webComponent 1`] = `
+"import * as React from \\"react\\";
+import { useRef } from \\"react\\";
+import { register } from \\"swiper/element/bundle\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function MyBasicWebComponent(props) {
+  const hasInitialized = useRef(false);
+  if (!hasInitialized.current) {
+    register();
+    hasInitialized.current = true;
+  }
+
+  return (
+    <View slides-per-view=\\"3\\" navigation=\\"true\\" pagination=\\"true\\">
+      <View>Slide 1</View>
+      <View>Slide 2</View>
+      <View>Slide 3</View>
+    </View>
+  );
+}
+
+export default MyBasicWebComponent;
 "
 `;
 
@@ -3285,10 +3885,7 @@ function MyBasicComponent(props) {
   const [name, setName] = useState(() => \\"PatrickJS\\");
 
   return (
-    <View>
-      Hello
-      {name}! I can run in React, Qwik, Vue, Solid, or Liquid!
-    </View>
+    <View>Hello {name}! I can run in React, Qwik, Vue, Solid, or Liquid!</View>
   );
 }
 
@@ -3337,14 +3934,11 @@ function MyBasicRefComponent(props: Props) {
               onBlur={(event) => onBlur()}
               onChange={(event) => setName(event.target.value)}
             />
-
             <View htmlFor=\\"cars\\" ref={inputNoArgRef}>
               Choose a car:
             </View>
-
             <View name=\\"cars\\" id=\\"cars\\">
               <View value=\\"supra\\">GR Supra</View>
-
               <View value=\\"86\\">GR 86</View>
             </View>
           </>
@@ -3387,9 +3981,9 @@ function MyBasicComponent(props: MyBasicComponentProps) {
     return \\"bar\\";
   }
 
-  const [age, setAge] = useState(() => 1);
+  const [age, setAge] = useState<number>(() => 1);
 
-  const [sports, setSports] = useState(() => [\\"\\"]);
+  const [sports, setSports] = useState<Array<string>>(() => [\\"\\"]);
 
   return (
     <>
@@ -3398,7 +3992,7 @@ function MyBasicComponent(props: MyBasicComponentProps) {
           value={DEFAULT_VALUES.name || name}
           onChange={(myEvent) => setName(myEvent.target.value)}
         />
-        Hello! I can run in React, Vue, Solid, or Liquid!
+        Hello! I can run in React, Vue, Solid, or Liquid! &gt;
       </View>
       <style jsx>{\`
         .view {
@@ -3416,8 +4010,8 @@ export default MyBasicComponent;
 exports[`Taro > jsx > Typescript Test > Basic Context 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
-import { useState, useContext, useEffect } from \\"react\\";
-import { createInjector, Injector, MyService } from \\"@dummy/injection-js\\";
+import { useState, useContext, useRef, useEffect } from \\"react\\";
+import { Injector, MyService, createInjector } from \\"@dummy/injection-js\\";
 import { View, Text, Input } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props: any) {
@@ -3430,10 +4024,12 @@ function MyBasicComponent(props: any) {
 
   const myService = useContext(MyService);
 
-  useEffect(() => {
+  const hasInitialized = useRef(false);
+  if (!hasInitialized.current) {
     const hi = myService.method(\\"hi\\");
     console.log(hi);
-  }, []);
+    hasInitialized.current = true;
+  }
 
   useEffect(() => {
     const bye = myService.method(\\"hi\\");
@@ -3458,7 +4054,7 @@ export default MyBasicComponent;
 exports[`Taro > jsx > Typescript Test > Basic OnMount Update 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
-import { useState, useEffect } from \\"react\\";
+import { useState, useRef, useEffect } from \\"react\\";
 
 export interface Props {
   hi: string;
@@ -3472,20 +4068,17 @@ function MyBasicOnMountUpdateComponent(props: Props) {
 
   const [names, setNames] = useState(() => [\\"Steve\\", \\"PatrickJS\\"]);
 
-  useEffect(() => {
+  const hasInitialized = useRef(false);
+  if (!hasInitialized.current) {
     setName(\\"PatrickJS onInit\\" + props.hi);
-  }, []);
+    hasInitialized.current = true;
+  }
 
   useEffect(() => {
     setName(\\"PatrickJS onMount\\" + props.bye);
   }, []);
 
-  return (
-    <View>
-      Hello
-      {name}
-    </View>
-  );
+  return <View>Hello {name}</View>;
 }
 
 export default MyBasicOnMountUpdateComponent;
@@ -3514,7 +4107,12 @@ export default MyBasicOutputsComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > Basic Outputs Meta 1`] = `
-"\\"use client\\";
+"/**
+          useMetadata:
+          {\\"outputs\\":[\\"onMessage\\",\\"onEvent\\"],\\"baz\\":\\"metadata inside component\\"}
+          */
+
+\\"use client\\";
 import * as React from \\"react\\";
 import { useState, useEffect } from \\"react\\";
 import { View } from \\"@tarojs/components\\";
@@ -3535,12 +4133,11 @@ export default MyBasicOutputsComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > BasicAttribute 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Input } from \\"@tarojs/components\\";
 
 function MyComponent(props: any) {
-  return <Input autoCapitalize=\\"on\\" autoComplete=\\"on\\" spellCheck={true} />;
+  return <Input autoCapitalize=\\"on\\" autoComplete=\\"on\\" spellCheck />;
 }
 
 export default MyComponent;
@@ -3548,8 +4145,7 @@ export default MyComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > BasicBooleanAttribute 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 type Props = {
   children: any;
@@ -3567,11 +4163,8 @@ function MyBooleanAttribute(props: Props) {
           {props.type}
         </>
       ) : null}
-
-      <MyBooleanAttributeComponent toggle={true} />
-
-      <MyBooleanAttributeComponent toggle={true} />
-
+      <MyBooleanAttributeComponent toggle />
+      <MyBooleanAttributeComponent toggle />
       <MyBooleanAttributeComponent list={null} />
     </View>
   );
@@ -3597,7 +4190,6 @@ function MyBasicChildComponent(props: any) {
   return (
     <View>
       <MyBasicComponent id={dev} />
-
       <View>
         <MyBasicOnMountUpdateComponent hi={name} bye={dev} />
       </View>
@@ -3659,13 +4251,13 @@ export interface Props {
 import { View, Input, Text } from \\"@tarojs/components\\";
 
 function MyBasicRefComponent(props: Props) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const inputNoArgRef = useRef<HTMLLabelElement>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputNoArgRef = useRef<HTMLLabelElement | null>(null);
   const [name, setName] = useState(() => \\"PatrickJS\\");
 
   function onBlur() {
     // Maintain focus
-    inputRef.current.focus();
+    inputRef.current?.focus();
   }
 
   function lowerCaseName() {
@@ -3684,14 +4276,11 @@ function MyBasicRefComponent(props: Props) {
               onBlur={(event) => onBlur()}
               onChange={(event) => setName(event.target.value)}
             />
-
             <View htmlFor=\\"cars\\" ref={inputNoArgRef}>
               Choose a car:
             </View>
-
             <View name=\\"cars\\" id=\\"cars\\">
               <View value=\\"supra\\">GR Supra</View>
-
               <View value=\\"86\\">GR 86</View>
             </View>
           </>
@@ -3734,7 +4323,7 @@ function MyBasicRefAssignmentComponent(props: Props) {
 
   return (
     <View>
-      <Button onClick={(evt) => handlerClick(evt)}>Click</Button>
+      <Button onClick={async (evt) => await handlerClick(evt)}>Click</Button>
     </View>
   );
 }
@@ -3778,11 +4367,8 @@ function MyPreviousComponent(props: Props) {
   return (
     <View>
       <View>
-        Now:
-        {count}, before:
-        {prevCount.current}
+        Now: {count}, before: {prevCount.current}
       </View>
-
       <Button onClick={(event) => setCount(1)}>Increment</Button>
     </View>
   );
@@ -3793,8 +4379,7 @@ export default MyPreviousComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > Button 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 export interface ButtonProps {
   attributes?: any;
@@ -3809,23 +4394,18 @@ function Button(props: ButtonProps) {
   return (
     <View>
       {props.link ? (
-        <>
-          <View
-            {...props.attributes}
-            href={props.link}
-            target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
-          >
-            {props.text}
-          </View>
-        </>
+        <View
+          {...props.attributes}
+          href={props.link}
+          target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
+        >
+          {props.text}
+        </View>
       ) : null}
-
       {!props.link ? (
-        <>
-          <Button type=\\"button\\" {...props.attributes}>
-            {props.text}
-          </Button>
-        </>
+        <Button type=\\"button\\" {...props.attributes}>
+          {props.text}
+        </Button>
       ) : null}
     </View>
   );
@@ -3836,8 +4416,7 @@ export default Button;
 `;
 
 exports[`Taro > jsx > Typescript Test > Columns 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 type Column = {
   content: any; // TODO: Implement this when support for dynamic CSS lands
@@ -3883,7 +4462,6 @@ function Column(props: ColumnProps) {
         {props.columns?.map((column, index) => (
           <View className=\\"view-2\\">
             {column.content}
-
             {index}
           </View>
         ))}
@@ -3918,8 +4496,7 @@ export default Column;
 `;
 
 exports[`Taro > jsx > Typescript Test > ContentSlotHtml 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 type Props = {
   [key: string]: string | JSX.Element;
@@ -3931,13 +4508,13 @@ import { View } from \\"@tarojs/components\\";
 function ContentSlotCode(props: Props) {
   return (
     <View>
-      {props.slotTesting}
-
+      <>{props.slotTesting}</>
       <View>
         <View />
       </View>
-
-      <View>{props.children}</View>
+      <View>
+        <>{props.children}</>
+      </View>
     </View>
   );
 }
@@ -3958,6 +4535,12 @@ import type { JSX } from \\"../../../../jsx-runtime\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function ContentSlotJsxCode(props: Props) {
+  props = {
+    content: \\"\\",
+    slotReference: undefined,
+    slotContent: undefined,
+    ...props,
+  };
   const [name, setName] = useState(() => \\"king\\");
 
   const [showContent, setShowContent] = useState(() => false);
@@ -3981,13 +4564,11 @@ function ContentSlotJsxCode(props: Props) {
             onClick={(event) => show()}
           >
             {showContent && props.slotContent ? (
-              <>{props.slotContent || \\"{props.content}\\"}</>
+              <>{props.content || \\"{props.content}\\"}</>
             ) : null}
-
             <View>
               <View />
             </View>
-
             <View>{props.children}</View>
           </View>
         </>
@@ -3995,12 +4576,6 @@ function ContentSlotJsxCode(props: Props) {
     </>
   );
 }
-
-ContentSlotJsxCode.defaultProps = {
-  content: \\"\\",
-  slotReference: undefined,
-  slotContent: undefined,
-};
 
 export default ContentSlotJsxCode;
 "
@@ -4176,7 +4751,7 @@ export interface FormProps {
   errorMessagePath?: string;
 }
 export type FormState = \\"unsubmitted\\" | \\"sending\\" | \\"success\\" | \\"error\\";
-import { Builder, builder, BuilderElement } from \\"@builder.io/sdk\\";
+import { Builder, BuilderElement, builder } from \\"@builder.io/sdk\\";
 import {
   BuilderBlock as BuilderBlockComponent,
   BuilderBlocks,
@@ -4399,7 +4974,6 @@ function FormComponent(props: FormProps) {
         onSubmit={(event) => onSubmit(event)}
         {...props.attributes}
       >
-        {\\" \\"}
         {props.builderBlock && props.builderBlock.children ? (
           <>
             {props.builderBlock?.children?.map((block, index) => (
@@ -4410,39 +4984,25 @@ function FormComponent(props: FormProps) {
               />
             ))}
           </>
-        ) : null}{\\" \\"}
+        ) : null}
         {submissionState() === \\"error\\" ? (
-          <>
-            <BuilderBlocks
-              dataPath=\\"errorMessage\\"
-              blocks={props.errorMessage!}
-            />
-          </>
-        ) : null}{\\" \\"}
+          <BuilderBlocks dataPath=\\"errorMessage\\" blocks={props.errorMessage!} />
+        ) : null}
         {submissionState() === \\"sending\\" ? (
-          <>
-            <BuilderBlocks
-              dataPath=\\"sendingMessage\\"
-              blocks={props.sendingMessage!}
-            />
-          </>
-        ) : null}{\\" \\"}
+          <BuilderBlocks
+            dataPath=\\"sendingMessage\\"
+            blocks={props.sendingMessage!}
+          />
+        ) : null}
         {submissionState() === \\"error\\" && responseData ? (
-          <>
-            <View className=\\"view\\">
-              {\\" \\"}
-              {JSON.stringify(responseData, null, 2)}{\\" \\"}
-            </View>
-          </>
-        ) : null}{\\" \\"}
+          <View className=\\"view\\">{JSON.stringify(responseData, null, 2)}</View>
+        ) : null}
         {submissionState() === \\"success\\" ? (
-          <>
-            <BuilderBlocks
-              dataPath=\\"successMessage\\"
-              blocks={props.successMessage!}
-            />
-          </>
-        ) : null}{\\" \\"}
+          <BuilderBlocks
+            dataPath=\\"successMessage\\"
+            blocks={props.successMessage!}
+          />
+        ) : null}
       </Form>{\\" \\"}
       <style jsx>{\`
         .view {
@@ -4545,22 +5105,18 @@ function Image(props: ImageProps) {
       <View>
         <View ref={pictureRef}>
           {!useLazyLoading() || load ? (
-            <>
-              <Image
-                className=\\"image\\"
-                alt={props.altText}
-                aria-role={props.altText ? \\"presentation\\" : undefined}
-                src={props.image}
-                onLoad={(event) => setLoaded()}
-                srcset={props.srcset}
-                sizes={props.sizes}
-              />
-            </>
+            <Image
+              className=\\"image\\"
+              alt={props.altText}
+              aria-role={props.altText ? \\"presentation\\" : undefined}
+              source={{ uri: props.image }}
+              onLoad={(event) => setLoaded()}
+              srcset={props.srcset}
+              sizes={props.sizes}
+            />
           ) : null}
-
           <View srcset={props.srcset} />
         </View>
-
         {props.children}
       </View>
       <style jsx>{\`
@@ -4593,9 +5149,7 @@ function ImgStateComponent(props: any) {
   return (
     <View>
       {images?.map((item, itemIndex) => (
-        <>
-          <Image src={item} key={itemIndex} />
-        </>
+        <Image source={{ uri: item }} key={itemIndex} />
       ))}
     </View>
   );
@@ -4606,8 +5160,7 @@ export default ImgStateComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > Img 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 export interface ImgProps {
   attributes?: any;
@@ -4639,7 +5192,7 @@ function ImgComponent(props: ImgProps) {
       {...props.attributes}
       key={(Builder.isEditing && props.imgSrc) || \\"default-key\\"}
       alt={props.altText}
-      src={props.imgSrc}
+      source={{ uri: props.imgSrc }}
     />
   );
 }
@@ -4649,8 +5202,7 @@ export default ImgComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > Input 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 export interface FormInputProps {
   type?: string;
@@ -4691,8 +5243,7 @@ export default FormInputComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > InputParent 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import FormInputComponent from \\"./input.raw\\";
 import \\"@tarojs/components\\";
 
@@ -4714,9 +5265,38 @@ export default Stepper;
 "
 `;
 
-exports[`Taro > jsx > Typescript Test > RawText 1`] = `
+exports[`Taro > jsx > Typescript Test > NestedStore 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
+import { useState } from \\"react\\";
+
+type MyStore = {
+  _id?: string;
+  _messageId?: string;
+};
+import { View, Text } from \\"@tarojs/components\\";
+
+function NestedStore(props: any) {
+  const [_id, set_id] = useState<MyStore[\\"_id\\"]>(() => \\"abc\\");
+
+  const [_messageId, set_messageId] = useState<MyStore[\\"_messageId\\"]>(
+    () => _id + \\"-message\\"
+  );
+
+  return (
+    <View id={_id}>
+      Test
+      <View id={_messageId}>Message</View>
+    </View>
+  );
+}
+
+export default NestedStore;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > RawText 1`] = `
+"import * as React from \\"react\\";
 
 export interface RawTextProps {
   attributes?: any;
@@ -4734,8 +5314,7 @@ export default RawText;
 `;
 
 exports[`Taro > jsx > Typescript Test > Section 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 export interface SectionProps {
   maxWidth?: number;
@@ -4767,8 +5346,7 @@ export default SectionComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > Select 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 export interface FormSelectProps {
   options?: {
@@ -4811,8 +5389,7 @@ export default SelectComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > SlotDefault 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 type Props = {
   [key: string]: string;
@@ -4820,7 +5397,11 @@ type Props = {
 import { View, Text } from \\"@tarojs/components\\";
 
 function SlotCode(props: Props) {
-  return <View>{props.children || <View>Default content</View>}</View>;
+  return (
+    <View>
+      <>{props.children || <View>Default content</View>}</>
+    </View>
+  );
 }
 
 export default SlotCode;
@@ -4828,19 +5409,18 @@ export default SlotCode;
 `;
 
 exports[`Taro > jsx > Typescript Test > SlotHtml 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 type Props = {
   [key: string]: string;
 };
 import ContentSlotCode from \\"./content-slot-jsx.raw\\";
-import { View } from \\"@tarojs/components\\";
+import { View, Text } from \\"@tarojs/components\\";
 
 function SlotCode(props: Props) {
   return (
     <View>
-      <ContentSlotCode slotTesting={<div>Hello</div>}></ContentSlotCode>
+      <ContentSlotCode testing={<div>Hello</div>}></ContentSlotCode>
     </View>
   );
 }
@@ -4850,19 +5430,18 @@ export default SlotCode;
 `;
 
 exports[`Taro > jsx > Typescript Test > SlotJsx 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 type Props = {
   [key: string]: string;
 };
 import ContentSlotCode from \\"./content-slot-jsx.raw\\";
-import { View } from \\"@tarojs/components\\";
+import { View, Text } from \\"@tarojs/components\\";
 
 function SlotCode(props: Props) {
   return (
     <View>
-      <ContentSlotCode slotTesting={<div>Hello</div>} />
+      <ContentSlotCode slotTesting={<View>Hello</View>} />
     </View>
   );
 }
@@ -4872,8 +5451,7 @@ export default SlotCode;
 `;
 
 exports[`Taro > jsx > Typescript Test > SlotNamed 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 type Props = {
   [key: string]: string;
@@ -4883,11 +5461,10 @@ import { View, Text } from \\"@tarojs/components\\";
 function SlotCode(props: Props) {
   return (
     <View>
-      {props.slotTop}
-
-      {props.slotLeft || \\"Default left\\"}
-
-      {props.children || \\"Default Child\\"}
+      <>{props.myAwesomeSlot}</>
+      <>{props.top}</>
+      <>{props.left || \\"Default left\\"}</>
+      <>{props.children || \\"Default Child\\"}</>
     </View>
   );
 }
@@ -4941,7 +5518,6 @@ function SmileReviews(props: SmileReviewsProps) {
         <Button onClick={(event) => setShowReviewPrompt(true)}>
           Write a review
         </Button>
-
         {showReviewPrompt || \\"asdf\\" ? (
           <>
             <Input placeholder=\\"Email\\" />
@@ -4952,8 +5528,8 @@ function SmileReviews(props: SmileReviewsProps) {
             />
             <Button
               className=\\"button\\"
-              onClick={(event) => {
-                event.preventDefault();
+              onClick={(ev) => {
+                ev.preventDefault();
                 setShowReviewPrompt(false);
               }}
             >
@@ -4961,19 +5537,12 @@ function SmileReviews(props: SmileReviewsProps) {
             </Button>
           </>
         ) : null}
-
         {reviews?.map((review, index) => (
           <View className=\\"review\\" key={review.id}>
-            <Image className=\\"image\\" src={review.avatar} />
-
+            <Image className=\\"image\\" source={{ uri: review.avatar }} />
             <View>
-              <View>
-                N:
-                {index}
-              </View>
-
+              <View>N: {index}</View>
               <View>{review.author}</View>
-
               <View>{review.reviewMessage}</View>
             </View>
           </View>
@@ -4996,6 +5565,7 @@ function SmileReviews(props: SmileReviewsProps) {
           display: flex;
           border-radius: 5px;
           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          -webkit-font-smoothing: antialiased;
         }
         .image {
           height: 30px;
@@ -5011,9 +5581,66 @@ export default SmileReviews;
 "
 `;
 
-exports[`Taro > jsx > Typescript Test > Submit 1`] = `
+exports[`Taro > jsx > Typescript Test > StoreComment 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function StringLiteralStore(props: any) {
+  const [foo, setFoo] = useState(() => true);
+
+  function bar() {}
+
+  return <>{foo}</>;
+}
+
+export default StringLiteralStore;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > StoreShadowVars 1`] = `
+"\\"use client\\";
+import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function MyComponent(props: any) {
+  const [errors, setErrors] = useState(() => ({}));
+
+  function foo(errors) {
+    return errors;
+  }
+
+  return <>{foo(errors)}</>;
+}
+
+export default MyComponent;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > StoreWithState 1`] = `
+"\\"use client\\";
+import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function MyComponent(props: any) {
+  const [foo, setFoo] = useState(() => false);
+
+  function bar() {
+    return foo;
+  }
+
+  return <>{bar()}</>;
+}
+
+export default MyComponent;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > Submit 1`] = `
+"import * as React from \\"react\\";
 
 export interface ButtonProps {
   attributes?: any;
@@ -5075,8 +5702,7 @@ export default Text;
 `;
 
 exports[`Taro > jsx > Typescript Test > Textarea 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 export interface TextareaProps {
   attributes?: any;
@@ -5104,9 +5730,49 @@ export default Textarea;
 "
 `;
 
-exports[`Taro > jsx > Typescript Test > Video 1`] = `
+exports[`Taro > jsx > Typescript Test > UseValueAndFnFromStore 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
+import { useState, useEffect } from \\"react\\";
+
+type MyProps = {
+  onChange?: (active: boolean) => void;
+};
+type MyStore = {
+  _id?: string;
+  _active?: boolean;
+  _do?: (id?: string) => void;
+};
+import { View, Text } from \\"@tarojs/components\\";
+
+function UseValueAndFnFromStore(props: MyProps) {
+  const [_id, set_id] = useState<MyStore[\\"_id\\"]>(() => \\"abc\\");
+
+  const [_active, set_active] = useState<MyStore[\\"_active\\"]>(() => false);
+
+  function _do(id?: string): ReturnType<MyStore[\\"_do\\"]> {
+    set_active(!!id);
+
+    if (props.onChange) {
+      props.onChange(_active);
+    }
+  }
+
+  useEffect(() => {
+    if (_do) {
+      _do(_id);
+    }
+  });
+
+  return <View>Test</View>;
+}
+
+export default UseValueAndFnFromStore;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > Video 1`] = `
+"import * as React from \\"react\\";
 
 export interface VideoProps {
   attributes?: any;
@@ -5182,15 +5848,46 @@ function MyComponent(props: any) {
     setName(value);
   }
 
+  return <View>Hello {name}</View>;
+}
+
+export default MyComponent;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > basicForFragment 1`] = `
+"\\"use client\\";
+import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function BasicForFragment(props: any) {
+  const [id, setId] = useState(() => \\"xyz\\");
+
   return (
     <View>
-      Hello
-      {name}
+      {[\\"a\\", \\"b\\", \\"c\\"]?.map((option) => (
+        <React.Fragment key={\`key-\${option}\`}>
+          <View>{option}</View>
+        </React.Fragment>
+      ))}
+      {[\\"a\\", \\"b\\", \\"c\\"]?.map((option) => (
+        <React.Fragment key={\`\${id}-\${option}\`}>
+          <View>{option}</View>
+        </React.Fragment>
+      ))}
+      <View>
+        {[\\"d\\", \\"e\\", \\"f\\"]?.map((option) => (
+          <View key={\`\${id}-\${option}\`} value={option}>
+            {option}
+          </View>
+        ))}
+      </View>
     </View>
   );
 }
 
-export default MyComponent;
+export default BasicForFragment;
 "
 `;
 
@@ -5215,12 +5912,10 @@ function MyBasicForNoTagRefComponent(props: any) {
 
   return (
     <TagNameGetterRef>
-      Hello
-      <View>{name}</View>
+      Hello <View>{name}</View>
       {props.actions?.map((action) => (
         <TagName>
           <View />
-
           <Text>{action.text}</Text>
         </TagName>
       ))}
@@ -5273,7 +5968,12 @@ export default MyBasicForwardRefComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > basicForwardRefMetadata 1`] = `
-"\\"use client\\";
+"/**
+          useMetadata:
+          {\\"forwardRef\\":\\"inputRef\\"}
+          */
+
+\\"use client\\";
 import * as React from \\"react\\";
 import { useState, forwardRef } from \\"react\\";
 
@@ -5338,28 +6038,72 @@ function MyBasicOnUpdateReturnComponent(props: any) {
     };
   }, [name]);
 
-  return (
-    <View>
-      Hello!
-      {name}
-    </View>
-  );
+  return <View>Hello! {name}</View>;
 }
 
 export default MyBasicOnUpdateReturnComponent;
 "
 `;
 
-exports[`Taro > jsx > Typescript Test > class + ClassName + css 1`] = `
-"\\"use client\\";
+exports[`Taro > jsx > Typescript Test > basicRefAttributePassing 1`] = `
+"/**
+          useMetadata:
+          {\\"attributePassing\\":{\\"enabled\\":true}}
+          */
+
+\\"use client\\";
 import * as React from \\"react\\";
+import { useRef } from \\"react\\";
+import { Button, View, Text } from \\"@tarojs/components\\";
+
+function BasicRefAttributePassingComponent(props: any) {
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  return <Button ref={buttonRef}>Attribute Passing</Button>;
+}
+
+export default BasicRefAttributePassingComponent;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > basicRefAttributePassingCustomRef 1`] = `
+"/**
+          useMetadata:
+          {\\"attributePassing\\":{\\"enabled\\":true,\\"customRef\\":\\"buttonRef\\"}}
+          */
+
+\\"use client\\";
+import * as React from \\"react\\";
+import { useRef } from \\"react\\";
+import { View, Button, Text } from \\"@tarojs/components\\";
+
+function BasicRefAttributePassingCustomRefComponent(props: any) {
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  return (
+    <View>
+      <Button ref={buttonRef}>Attribute Passing</Button>
+    </View>
+  );
+}
+
+export default BasicRefAttributePassingCustomRefComponent;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > class + ClassName + css 1`] = `
+"import * as React from \\"react\\";
+import MyComp from \\"./my-component\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props: any) {
   return (
     <>
-      <View className=\\"view\\">
-        Hello! I can run in React, Vue, Solid, or Liquid!
+      <View>
+        <MyComp>Hello! I can run in React, Vue, Solid, or Liquid!</MyComp>
+        <View className=\\"view\\">
+          Hello! I can run in React, Vue, Solid, or Liquid!
+        </View>
       </View>
       <style jsx>{\`
         .view {
@@ -5375,8 +6119,7 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > class + css 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props: any) {
@@ -5399,8 +6142,7 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > className + css 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props: any) {
@@ -5440,7 +6182,6 @@ function ClassNameCode(props: Props) {
   return (
     <View>
       <View>Without Binding</View>
-
       <View>With binding</View>
     </View>
   );
@@ -5478,6 +6219,23 @@ function MyBasicComponent(props: any) {
 }
 
 export default MyBasicComponent;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > complexMeta 1`] = `
+"/**
+          useMetadata:
+          {\\"x\\":\\"y\\",\\"asdf\\":{\\"stringValue\\":\\"d\\",\\"booleanValue\\":true,\\"numberValue\\":1,\\"innerObject\\":{\\"stringValue\\":\\"inner\\",\\"numberValue\\":2,\\"booleanValue\\":false},\\"spreadStringValue\\":\\"f\\"}}
+          */
+
+import * as React from \\"react\\";
+import { View } from \\"@tarojs/components\\";
+
+function ComplexMetaRaw(props: any) {
+  return <View />;
+}
+
+export default ComplexMetaRaw;
 "
 `;
 
@@ -5554,8 +6312,7 @@ function ComponentWithContext(props: ComponentWithContextProps) {
         }}
       >
         <>
-          {foo.value}
-
+          <>{foo.value}</>
           <View>other</View>
         </>
       </Context1.Provider>
@@ -5592,8 +6349,7 @@ export default RenderContent;
 `;
 
 exports[`Taro > jsx > Typescript Test > defaultProps 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 export interface ButtonProps {
   attributes?: any;
@@ -5608,51 +6364,45 @@ export interface ButtonProps {
 import { View, Text, Button } from \\"@tarojs/components\\";
 
 function Button(props: ButtonProps) {
+  props = {
+    text: \\"default text\\",
+    link: \\"https://builder.io/\\",
+    openLinkInNewTab: false,
+    onClick: () => {
+      console.log(\\"hi\\");
+    },
+    ...props,
+  };
   return (
     <View>
       {props.link ? (
-        <>
-          <View
-            {...props.attributes}
-            href={props.link}
-            target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
-          >
-            {props.text}
-          </View>
-        </>
+        <View
+          {...props.attributes}
+          href={props.link}
+          target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
+        >
+          {props.text}
+        </View>
       ) : null}
-
       {!props.link ? (
-        <>
-          <Button
-            type=\\"button\\"
-            {...props.attributes}
-            onClick={(event) => props.onClick(event)}
-          >
-            {props.buttonText}
-          </Button>
-        </>
+        <Button
+          type=\\"button\\"
+          {...props.attributes}
+          onClick={(event) => props.onClick()}
+        >
+          {props.buttonText}
+        </Button>
       ) : null}
     </View>
   );
 }
-
-Button.defaultProps = {
-  text: \\"default text\\",
-  link: \\"https://builder.io/\\",
-  openLinkInNewTab: false,
-  onClick: () => {
-    console.log(\\"hi\\");
-  },
-};
 
 export default Button;
 "
 `;
 
 exports[`Taro > jsx > Typescript Test > defaultPropsOutsideComponent 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 export interface ButtonProps {
   attributes?: any;
@@ -5665,49 +6415,43 @@ export interface ButtonProps {
 import { View, Text, Button } from \\"@tarojs/components\\";
 
 function Button(props: ButtonProps) {
+  props = {
+    text: \\"default text\\",
+    link: \\"https://builder.io/\\",
+    openLinkInNewTab: false,
+    onClick: () => {},
+    ...props,
+  };
   return (
     <View>
       {props.link ? (
-        <>
-          <View
-            {...props.attributes}
-            href={props.link}
-            target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
-          >
-            {props.text}
-          </View>
-        </>
+        <View
+          {...props.attributes}
+          href={props.link}
+          target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
+        >
+          {props.text}
+        </View>
       ) : null}
-
       {!props.link ? (
-        <>
-          <Button
-            type=\\"button\\"
-            {...props.attributes}
-            onClick={(event) => props.onClick(event)}
-          >
-            {props.text}
-          </Button>
-        </>
+        <Button
+          type=\\"button\\"
+          {...props.attributes}
+          onClick={(event) => props.onClick(event)}
+        >
+          {props.text}
+        </Button>
       ) : null}
     </View>
   );
 }
-
-Button.defaultProps = {
-  text: \\"default text\\",
-  link: \\"https://builder.io/\\",
-  openLinkInNewTab: false,
-  onClick: () => {},
-};
 
 export default Button;
 "
 `;
 
 exports[`Taro > jsx > Typescript Test > defaultValsWithTypes 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 type Props = {
   name: string;
@@ -5718,16 +6462,43 @@ const DEFAULT_VALUES: Props = {
 };
 
 function ComponentWithTypes(props: Props) {
-  return (
-    <View>
-      {\\" \\"}
-      Hello
-      {props.name || DEFAULT_VALUES.name}
-    </View>
-  );
+  return <View> Hello {props.name || DEFAULT_VALUES.name}</View>;
 }
 
 export default ComponentWithTypes;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > eventInputAndChange 1`] = `
+"\\"use client\\";
+import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Input, Text } from \\"@tarojs/components\\";
+
+function EventInputAndChange(props: any) {
+  const [name, setName] = useState(() => \\"Steve\\");
+
+  return (
+    <>
+      <View>
+        <Input
+          className=\\"input\\"
+          value={name}
+          onInput={(event) => setName(event.target.value)}
+          onChange={(event) => setName(event.target.value)}
+        />
+        Hello! I can run in React, Vue, Solid, or Liquid!
+      </View>
+      <style jsx>{\`
+        .input {
+          color: red;
+        }
+      \`}</style>
+    </>
+  );
+}
+
+export default EventInputAndChange;
 "
 `;
 
@@ -5749,9 +6520,105 @@ export default MyComponent;
 "
 `;
 
-exports[`Taro > jsx > Typescript Test > import types 1`] = `
-"\\"use client\\";
+exports[`Taro > jsx > Typescript Test > figmaMeta 1`] = `
+"/**
+          useMetadata:
+          {\\"figma\\":{\\"name\\":\\"def-button-beta-outlined\\",\\"url\\":\\"https://www.figma.com/xxx\\",\\"props\\":{\\"iconSmall\\":{\\"type\\":\\"instance\\",\\"key\\":\\"📍 Icon Small\\"},\\"iconMedium\\":{\\"type\\":\\"instance\\",\\"key\\":\\"📍 Icon Medium\\"},\\"label\\":{\\"type\\":\\"string\\",\\"key\\":\\"✏️ Label\\"},\\"icon\\":{\\"type\\":\\"boolean\\",\\"key\\":\\"👁️ Icon\\",\\"value\\":{\\"false\\":false,\\"true\\":\\"placeholder\\"}},\\"interactiveState\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Interactive State\\",\\"value\\":{\\"(Def) Enabled\\":false,\\"Hovered\\":false,\\"Pressed\\":false,\\"Focused\\":false,\\"Disabled\\":\\"true\\"}},\\"size\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Size\\",\\"value\\":{\\"(Def) Medium\\":false,\\"Small\\":\\"small\\"}},\\"width\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Width\\",\\"value\\":{\\"(Def) Auto Width\\":false,\\"Full Width\\":\\"full\\"}}}}}
+          */
+
 import * as React from \\"react\\";
+import { Button, View, Text } from \\"@tarojs/components\\";
+
+function FigmaButton(props: any) {
+  return (
+    <Button
+      data-icon={props.icon}
+      data-disabled={props.interactiveState}
+      data-width={props.width}
+      data-size={props.size}
+    >
+      {props.label}
+    </Button>
+  );
+}
+
+export default FigmaButton;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > functionProps 1`] = `
+"import * as React from \\"react\\";
+
+export interface MyBasicComponentProps {
+  id: string;
+}
+
+import { View } from \\"@tarojs/components\\";
+
+function MyBasicComponent(props: MyBasicComponentProps) {
+  return (
+    <View
+      f={() => x}
+      f1={(x) => x}
+      f2={(x) => {}}
+      f3={function () {
+        return x;
+      }}
+      f4={function (x) {
+        return x;
+      }}
+      f5={function (x) {
+        return;
+      }}
+      f6={function () {
+        return;
+      }}
+      f7={(a, b, c) => a + b + c}
+    />
+  );
+}
+
+export default MyBasicComponent;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > getterState 1`] = `
+"import * as React from \\"react\\";
+
+export interface ButtonProps {
+  foo: string;
+}
+
+import { View, Text } from \\"@tarojs/components\\";
+
+function Button(props: ButtonProps) {
+  function foo2() {
+    return props.foo + \\"foo\\";
+  }
+
+  function bar() {
+    return \\"bar\\";
+  }
+
+  function baz(i: number) {
+    return i + foo2().length;
+  }
+
+  return (
+    <View>
+      <View>{foo2()}</View>
+      <View>{bar()}</View>
+      <View>{baz(1)}</View>
+    </View>
+  );
+}
+
+export default Button;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > import types 1`] = `
+"import * as React from \\"react\\";
 
 type RenderContentProps = {
   options?: GetContentOptions;
@@ -5778,6 +6645,31 @@ function RenderContent(props: RenderContentProps) {
 }
 
 export default RenderContent;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > layerName 1`] = `
+"import * as React from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function MyLayerNameComponent(props: any) {
+  return (
+    <>
+      <View>
+        <View className=\\"layer-name\\">
+          Hello! I can run in React, Vue, Solid, or Liquid!
+        </View>
+      </View>
+      <style jsx>{\`
+        .layer-name {
+          padding: 10px;
+        }
+      \`}</style>
+    </>
+  );
+}
+
+export default MyLayerNameComponent;
 "
 `;
 
@@ -5858,8 +6750,7 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > nestedShow 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 interface Props {
   conditionA: boolean;
@@ -5874,9 +6765,7 @@ function NestedShow(props: Props) {
       {props.conditionA ? (
         <>
           {!props.conditionB ? (
-            <>
-              <View>if condition A and condition B</View>
-            </>
+            <View>if condition A and condition B</View>
           ) : (
             <View>else-condition-B</View>
           )}
@@ -5893,8 +6782,7 @@ export default NestedShow;
 `;
 
 exports[`Taro > jsx > Typescript Test > nestedStyles 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function NestedStyles(props: any) {
@@ -5936,16 +6824,117 @@ export default NestedStyles;
 "
 `;
 
+exports[`Taro > jsx > Typescript Test > normalizeLayerNames 1`] = `
+"import * as React from \\"react\\";
+
+export interface MyNormalizedLayerNamesComponentProps {
+  id: string;
+}
+
+import { View, Text } from \\"@tarojs/components\\";
+
+function MyNormalizedLayerNamesComponent(
+  props: MyNormalizedLayerNamesComponentProps
+) {
+  return (
+    <>
+      <View>
+        <View>Emoji</View>
+        <View>Dashes</View>
+        <View>CamelCase</View>
+        <View>Special chars</View>
+        <View>Special chars with dashes</View>
+        <View className=\\"css-0\\">Single Number</View>
+        <View className=\\"css-123\\">Multiple Numbers</View>
+        <View className=\\"name-123\\">Chars with numbers at end</View>
+        <View className=\\"name\\">Chars with numbers at start</View>
+        <View className=\\"name-789\\">Numnbers separated by dash</View>
+        <View>Emoji</View>
+        <View data-name=\\"1\\" className=\\"view\\">
+          Number
+        </View>
+      </View>
+      <style jsx>{\`
+        .css-0 {
+          margin: 10px;
+        }
+        .css-123 {
+          padding: 10px;
+        }
+        .name-123 {
+          border: 1px solid;
+        }
+        .name {
+          color: red;
+        }
+        .name-789 {
+          background: blue;
+        }
+        .view {
+          background: blue;
+        }
+      \`}</style>
+    </>
+  );
+}
+
+export default MyNormalizedLayerNamesComponent;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > onEvent 1`] = `
+"\\"use client\\";
+import * as React from \\"react\\";
+import { useRef, useEffect } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function Embed(props: any) {
+  const elem = useRef<HTMLDivElement>(null);
+  function foo(event) {
+    console.log(\\"test2\\");
+  }
+
+  function elem_onInitEditingBldr(event) {
+    console.log(\\"test\\");
+    foo(event);
+  }
+
+  useEffect(() => {
+    elem.current?.addEventListener(\\"initEditingBldr\\", elem_onInitEditingBldr);
+    return () =>
+      elem.current?.removeEventListener(
+        \\"initEditingBldr\\",
+        elem_onInitEditingBldr
+      );
+  }, []);
+
+  useEffect(() => {
+    elem.current.dispatchEvent(new CustomEvent(\\"initEditingBldr\\"));
+  }, []);
+
+  return (
+    <View ref={elem}>
+      <View>Test</View>
+    </View>
+  );
+}
+
+export default Embed;
+"
+`;
+
 exports[`Taro > jsx > Typescript Test > onInit & onMount 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
-import { useEffect } from \\"react\\";
+import { useRef, useEffect } from \\"react\\";
 import { View } from \\"@tarojs/components\\";
 
 function OnInit(props: any) {
-  useEffect(() => {
+  const hasInitialized = useRef(false);
+  if (!hasInitialized.current) {
     console.log(\\"onInit\\");
-  }, []);
+    hasInitialized.current = true;
+  }
 
   useEffect(() => {
     console.log(\\"onMount\\");
@@ -5961,7 +6950,7 @@ export default OnInit;
 exports[`Taro > jsx > Typescript Test > onInit 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
-import { useState, useEffect } from \\"react\\";
+import { useState, useRef } from \\"react\\";
 
 type Props = {
   name: string;
@@ -5974,20 +6963,36 @@ export const defaultValues = {
 function OnInit(props: Props) {
   const [name, setName] = useState(() => \\"\\");
 
-  useEffect(() => {
+  const hasInitialized = useRef(false);
+  if (!hasInitialized.current) {
     setName(defaultValues.name || props.name);
     console.log(\\"set defaults with props\\");
-  }, []);
+    hasInitialized.current = true;
+  }
 
-  return (
-    <View>
-      Default name defined by parent
-      {name}
-    </View>
-  );
+  return <View>Default name defined by parent {name}</View>;
 }
 
 export default OnInit;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > onInitPlain 1`] = `
+"import * as React from \\"react\\";
+import { useRef } from \\"react\\";
+import { View } from \\"@tarojs/components\\";
+
+function OnInitPlain(props: any) {
+  const hasInitialized = useRef(false);
+  if (!hasInitialized.current) {
+    console.log(\\"onInit\\");
+    hasInitialized.current = true;
+  }
+
+  return <View />;
+}
+
+export default OnInitPlain;
 "
 `;
 
@@ -6006,6 +7011,30 @@ function Comp(props: any) {
     return () => {
       console.log(\\"Runs on unMount\\");
     };
+  }, []);
+
+  return <View />;
+}
+
+export default Comp;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > onMountMultiple 1`] = `
+"\\"use client\\";
+import * as React from \\"react\\";
+import { useEffect } from \\"react\\";
+import { View } from \\"@tarojs/components\\";
+
+function Comp(props: any) {
+  useEffect(() => {
+    console.log(\\"Runs on mount\\");
+  }, []);
+  useEffect(() => {
+    console.log(\\"Another one runs on Mount\\");
+  }, []);
+  useEffect(() => {
+    console.log(\\"SSR runs on Mount\\");
   }, []);
 
   return <View />;
@@ -6060,8 +7089,7 @@ export default OnUpdateWithDeps;
 `;
 
 exports[`Taro > jsx > Typescript Test > preserveExportOrLocalStatement 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 type Types = {
   s: any[];
@@ -6089,8 +7117,7 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > preserveTyping 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 export type A = \\"test\\";
 export interface C {
@@ -6109,10 +7136,7 @@ import { View, Text } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props: MyBasicComponentProps) {
   return (
-    <View>
-      Hello! I can run in React, Vue, Solid, or Liquid!
-      {props.name}
-    </View>
+    <View>Hello! I can run in React, Vue, Solid, or Liquid! {props.name}</View>
   );
 }
 
@@ -6148,8 +7172,7 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > propsInterface 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 interface Person {
   name: string;
@@ -6160,10 +7183,7 @@ import { View, Text } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props: Person | never) {
   return (
-    <View>
-      Hello! I can run in React, Vue, Solid, or Liquid!
-      {props.name}
-    </View>
+    <View>Hello! I can run in React, Vue, Solid, or Liquid! {props.name}</View>
   );
 }
 
@@ -6172,8 +7192,7 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > propsType 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 type Person = {
   name: string;
@@ -6183,10 +7202,7 @@ import { View, Text } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props: Person) {
   return (
-    <View>
-      Hello! I can run in React, Vue, Solid, or Liquid!
-      {props.name}
-    </View>
+    <View>Hello! I can run in React, Vue, Solid, or Liquid! {props.name}</View>
   );
 }
 
@@ -6452,9 +7468,7 @@ function RenderBlock(props: RenderBlockProps) {
       {shouldWrap() ? (
         <>
           {isEmptyHtmlElement(tag()) ? (
-            <>
-              <View {...attributes()} {...actions()} />
-            </>
+            <View {...attributes()} {...actions()} />
           ) : null}
           {!isEmptyHtmlElement(tag()) && repeatItemData() ? (
             <>
@@ -6468,27 +7482,23 @@ function RenderBlock(props: RenderBlockProps) {
             </>
           ) : null}
           {!isEmptyHtmlElement(tag()) && !repeatItemData() ? (
-            <>
-              <View {...attributes()} {...actions()}>
-                <RenderComponentTagRef {...renderComponentProps()} />
-
-                {childrenWithoutParentComponent()?.map((child) => (
-                  <RenderBlock
-                    key={\\"render-block-\\" + child.id}
-                    block={child}
-                    context={childrenContext()}
-                  />
-                ))}
-
-                {childrenWithoutParentComponent()?.map((child) => (
-                  <BlockStyles
-                    key={\\"block-style-\\" + child.id}
-                    block={child}
-                    context={childrenContext()}
-                  />
-                ))}
-              </View>
-            </>
+            <View {...attributes()} {...actions()}>
+              <RenderComponentTagRef {...renderComponentProps()} />
+              {childrenWithoutParentComponent()?.map((child) => (
+                <RenderBlock
+                  key={\\"render-block-\\" + child.id}
+                  block={child}
+                  context={childrenContext()}
+                />
+              ))}
+              {childrenWithoutParentComponent()?.map((child) => (
+                <BlockStyles
+                  key={\\"block-style-\\" + child.id}
+                  block={child}
+                  context={childrenContext()}
+                />
+              ))}
+            </View>
           ) : null}
         </>
       ) : (
@@ -6529,7 +7539,6 @@ function RenderContent(props: Props) {
   useEffect(() => {
     sendComponentsToVisualEditor(props.customComponents);
   }, []);
-
   useEffect(() => {
     dispatchNewContentToVisualEditor(props.content);
   }, [props.content]);
@@ -6569,8 +7578,7 @@ export default RenderContent;
 `;
 
 exports[`Taro > jsx > Typescript Test > rootFragmentMultiNode 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 export interface ButtonProps {
   attributes?: any;
@@ -6585,23 +7593,18 @@ function Button(props: ButtonProps) {
   return (
     <>
       {props.link ? (
-        <>
-          <View
-            {...props.attributes}
-            href={props.link}
-            target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
-          >
-            {props.text}
-          </View>
-        </>
+        <View
+          {...props.attributes}
+          href={props.link}
+          target={props.openLinkInNewTab ? \\"_blank\\" : undefined}
+        >
+          {props.text}
+        </View>
       ) : null}
-
       {!props.link ? (
-        <>
-          <Button type=\\"button\\" {...props.attributes}>
-            {props.text}
-          </Button>
-        </>
+        <Button type=\\"button\\" {...props.attributes}>
+          {props.text}
+        </Button>
       ) : null}
     </>
   );
@@ -6612,8 +7615,7 @@ export default Button;
 `;
 
 exports[`Taro > jsx > Typescript Test > rootShow 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 export interface RenderStylesProps {
   foo: string;
@@ -6640,20 +7642,14 @@ export default RenderStyles;
 `;
 
 exports[`Taro > jsx > Typescript Test > self-referencing component 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyComponent(props: any) {
   return (
     <View>
       {props.name}
-
-      {props.name === \\"Batman\\" ? (
-        <>
-          <MyComponent name=\\"Bruce Wayne\\" />
-        </>
-      ) : null}
+      {props.name === \\"Batman\\" ? <MyComponent name=\\"Bruce Wayne\\" /> : null}
     </View>
   );
 }
@@ -6663,23 +7659,18 @@ export default MyComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > self-referencing component with children 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyComponent(props: any) {
   return (
     <View>
       {props.name}
-
       {props.children}
-
       {props.name === \\"Batman\\" ? (
-        <>
-          <MyComponent name=\\"Bruce\\">
-            <View>Wayne</View>
-          </MyComponent>
-        </>
+        <MyComponent name=\\"Bruce\\">
+          <View>Wayne</View>
+        </MyComponent>
       ) : null}
     </View>
   );
@@ -6689,9 +7680,87 @@ export default MyComponent;
 "
 `;
 
-exports[`Taro > jsx > Typescript Test > showWithFor 1`] = `
+exports[`Taro > jsx > Typescript Test > setState 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Button, Text } from \\"@tarojs/components\\";
+
+function SetState(props: any) {
+  const [n, setN] = useState(() => [\\"123\\"]);
+
+  function someFn() {
+    n[0] = \\"123\\";
+  }
+
+  return (
+    <View>
+      <Button onClick={(event) => someFn()}>Click me</Button>
+    </View>
+  );
+}
+
+export default SetState;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > showExpressions 1`] = `
+"import * as React from \\"react\\";
+
+interface Props {
+  conditionA: boolean;
+  conditionB: boolean;
+}
+
+import { View, Text } from \\"@tarojs/components\\";
+
+function ShowWithOtherValues(props: Props) {
+  return (
+    <View>
+      {props.conditionA ? <>Content0</> : <>ContentA</>}
+      {props.conditionA ? <>ContentA</> : null}
+      {props.conditionA ? <></> : <>ContentA</>}
+      {props.conditionA ? <>ContentB</> : <>{undefined}</>}
+      {props.conditionA ? <>{undefined}</> : <>ContentB</>}
+      {props.conditionA ? <>ContentC</> : null}
+      {props.conditionA ? <></> : <>ContentC</>}
+      {props.conditionA ? <>ContentD</> : null}
+      {props.conditionA ? <></> : <>ContentD</>}
+      {props.conditionA ? <>ContentE</> : <>hello</>}
+      {props.conditionA ? <>hello</> : <>ContentE</>}
+      {props.conditionA ? <>ContentF</> : <>123</>}
+      {props.conditionA ? <>123</> : <>ContentF</>}
+      {props.conditionA === \\"Default\\" ? (
+        <>4mb</>
+      ) : props.conditionB === \\"Complete\\" ? (
+        <>20mb</>
+      ) : (
+        <>9mb</>
+      )}
+      {props.conditionA === \\"Default\\" ? (
+        <>{props.conditionB === \\"Complete\\" ? <>20mb</> : <>9mb</>}</>
+      ) : (
+        <>4mb</>
+      )}
+      {props.conditionA === \\"Default\\" ? (
+        <>
+          {props.conditionB === \\"Complete\\" ? <View>complete</View> : <>9mb</>}
+        </>
+      ) : props.conditionC === \\"Complete\\" ? (
+        <>dff</>
+      ) : (
+        <View>complete else</View>
+      )}
+    </View>
+  );
+}
+
+export default ShowWithOtherValues;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > showWithFor 1`] = `
+"import * as React from \\"react\\";
 
 interface Props {
   conditionA: boolean;
@@ -6720,9 +7789,34 @@ export default NestedShow;
 "
 `;
 
+exports[`Taro > jsx > Typescript Test > showWithOtherValues 1`] = `
+"import * as React from \\"react\\";
+
+interface Props {
+  conditionA: boolean;
+}
+
+import { View, Text } from \\"@tarojs/components\\";
+
+function ShowWithOtherValues(props: Props) {
+  return (
+    <View>
+      {props.conditionA ? <>ContentA</> : null}
+      {props.conditionA ? <>ContentB</> : <>{undefined}</>}
+      {props.conditionA ? <>ContentC</> : null}
+      {props.conditionA ? <>ContentD</> : null}
+      {props.conditionA ? <>ContentE</> : <>hello</>}
+      {props.conditionA ? <>ContentF</> : <>123</>}
+    </View>
+  );
+}
+
+export default ShowWithOtherValues;
+"
+`;
+
 exports[`Taro > jsx > Typescript Test > showWithRootText 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 interface Props {
   conditionA: boolean;
@@ -6740,9 +7834,48 @@ export default ShowRootText;
 "
 `;
 
-exports[`Taro > jsx > Typescript Test > spreadAttrs 1`] = `
+exports[`Taro > jsx > Typescript Test > signalsOnUpdate 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
+import { useEffect } from \\"react\\";
+
+type Props = {
+  id: string;
+  foo: {
+    bar: {
+      baz: number;
+    };
+  };
+};
+import { View, Text } from \\"@tarojs/components\\";
+
+function MyBasicComponent(props: Props) {
+  useEffect(() => {
+    console.log(\\"props.id changed\\", props.id);
+    console.log(\\"props.foo.value.bar.baz changed\\", props.foo.bar.baz);
+  }, [props.id, props.foo.bar.baz]);
+
+  return (
+    <>
+      <View className=\\"view\\">
+        {props.id}
+        {props.foo.bar.baz}
+      </View>
+      <style jsx>{\`
+        .view {
+          padding: 10px;
+        }
+      \`}</style>
+    </>
+  );
+}
+
+export default MyBasicComponent;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > spreadAttrs 1`] = `
+"import * as React from \\"react\\";
 import { Input } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props: any) {
@@ -6754,8 +7887,7 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > spreadNestedProps 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Input } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props: any) {
@@ -6767,8 +7899,7 @@ export default MyBasicComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > spreadProps 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Input } from \\"@tarojs/components\\";
 
 function MyBasicComponent(props: any) {
@@ -6779,9 +7910,48 @@ export default MyBasicComponent;
 "
 `;
 
-exports[`Taro > jsx > Typescript Test > styleClassAndCss 1`] = `
+exports[`Taro > jsx > Typescript Test > store-async-function 1`] = `
+"import * as React from \\"react\\";
+import { View } from \\"@tarojs/components\\";
+
+function StringLiteralStore(props: any) {
+  async function arrowFunction() {
+    return Promise.resolve();
+  }
+
+  async function namedFunction() {
+    return Promise.resolve();
+  }
+
+  async function fetchUsers() {
+    return Promise.resolve();
+  }
+
+  return <View />;
+}
+
+export default StringLiteralStore;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > string-literal-store 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function StringLiteralStore(props: any) {
+  const [foo, setFoo] = useState(() => 123);
+
+  return <View>{foo}</View>;
+}
+
+export default StringLiteralStore;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > styleClassAndCss 1`] = `
+"import * as React from \\"react\\";
 import { View } from \\"@tarojs/components\\";
 
 function MyComponent(props: any) {
@@ -6809,8 +7979,7 @@ export default MyComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > stylePropClassAndCss 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View } from \\"@tarojs/components\\";
 
 function StylePropClassAndCss(props: any) {
@@ -6833,8 +8002,7 @@ export default StylePropClassAndCss;
 `;
 
 exports[`Taro > jsx > Typescript Test > subComponent 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import Foo from \\"./foo-sub-component\\";
 import \\"@tarojs/components\\";
 
@@ -6847,8 +8015,7 @@ export default SubComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > svgComponent 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View } from \\"@tarojs/components\\";
 
 function SvgComponent(props: any) {
@@ -6863,9 +8030,7 @@ function SvgComponent(props: any) {
       <View>
         <View id=\\"prefix__filter0_f\\" filterUnits=\\"userSpaceOnUse\\">
           <feFlood result=\\"BackgroundImageFix\\" />
-
           <feBlend in=\\"SourceGraphic\\" in2=\\"BackgroundImageFix\\" result=\\"shape\\" />
-
           <feGaussianBlur result=\\"effect1_foregroundBlur\\" stdDeviation={7} />
         </View>
       </View>
@@ -6878,8 +8043,7 @@ export default SvgComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > typeDependency 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 
 export type TypeDependencyProps = {
   foo: Foo;
@@ -6897,9 +8061,72 @@ export default TypeDependency;
 "
 `;
 
-exports[`Taro > jsx > Typescript Test > use-style 1`] = `
+exports[`Taro > jsx > Typescript Test > typeExternalProps 1`] = `
+"import * as React from \\"react\\";
+import { FooProps } from \\"./foo-props\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function TypeExternalProps(props: FooProps) {
+  return <View>Hello {props.name}! </View>;
+}
+
+export default TypeExternalProps;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > typeExternalStore 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
+import { useState } from \\"react\\";
+import { FooStore } from \\"./foo-store\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function TypeExternalStore(props: any) {
+  const [_name, set_name] = useState<FooStore[\\"_name\\"]>(() => \\"test\\");
+
+  return <View>Hello {_name}! </View>;
+}
+
+export default TypeExternalStore;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > typeGetterStore 1`] = `
+"\\"use client\\";
+import * as React from \\"react\\";
+import { useState } from \\"react\\";
+
+type GetterStore = {
+  getName: () => string;
+  name: string;
+  get test(): string;
+};
+import { View, Text } from \\"@tarojs/components\\";
+
+function TypeGetterStore(props: any) {
+  const [name, setName] = useState<GetterStore[\\"name\\"]>(() => \\"test\\");
+
+  function getName(): ReturnType<GetterStore[\\"getName\\"]> {
+    if (name === \\"a\\") {
+      return \\"b\\";
+    }
+
+    return name;
+  }
+
+  function test(): ReturnType<GetterStore[\\"test\\"]> {
+    return \\"test\\";
+  }
+
+  return <View>Hello {name}! </View>;
+}
+
+export default TypeGetterStore;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > use-style 1`] = `
+"import * as React from \\"react\\";
 import { Button, View, Text } from \\"@tarojs/components\\";
 
 function MyComponent(props: any) {
@@ -6923,8 +8150,7 @@ export default MyComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > use-style-and-css 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Button, View, Text } from \\"@tarojs/components\\";
 
 function MyComponent(props: any) {
@@ -6953,8 +8179,7 @@ export default MyComponent;
 `;
 
 exports[`Taro > jsx > Typescript Test > use-style-outside-component 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Button, View, Text } from \\"@tarojs/components\\";
 
 function MyComponent(props: any) {
@@ -6980,7 +8205,7 @@ export default MyComponent;
 exports[`Taro > jsx > Typescript Test > useTarget 1`] = `
 "\\"use client\\";
 import * as React from \\"react\\";
-import { useState } from \\"react\\";
+import { useState, useEffect } from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function UseTargetComponent(props: any) {
@@ -6991,10 +8216,43 @@ function UseTargetComponent(props: any) {
 
   const [lastName, setLastName] = useState(() => \\"bar\\");
 
+  const [foo, setFoo] = useState(() => \\"bar\\");
+
+  useEffect(() => {
+    console.log(foo);
+    setFoo(\\"bar\\");
+  }, []);
+
   return <View>{name()}</View>;
 }
 
 export default UseTargetComponent;
+"
+`;
+
+exports[`Taro > jsx > Typescript Test > webComponent 1`] = `
+"import * as React from \\"react\\";
+import { useRef } from \\"react\\";
+import { register } from \\"swiper/element/bundle\\";
+import { View, Text } from \\"@tarojs/components\\";
+
+function MyBasicWebComponent(props: any) {
+  const hasInitialized = useRef(false);
+  if (!hasInitialized.current) {
+    register();
+    hasInitialized.current = true;
+  }
+
+  return (
+    <View slides-per-view=\\"3\\" navigation=\\"true\\" pagination=\\"true\\">
+      <View>Slide 1</View>
+      <View>Slide 2</View>
+      <View>Slide 3</View>
+    </View>
+  );
+}
+
+export default MyBasicWebComponent;
 "
 `;
 
@@ -7076,14 +8334,8 @@ function MyComponent(props) {
         checked={fillings === \\"Guac (extra)\\"}
         onChange={(event) => setFillings(event.target.value)}
       />
-      <View>
-        Tortilla:
-        {tortilla}
-      </View>
-      <View>
-        Fillings:
-        {fillings}
-      </View>
+      <View>Tortilla: {tortilla}</View>
+      <View>Fillings: {fillings}</View>
     </View>
   );
 }
@@ -7120,21 +8372,19 @@ function MyComponent(props) {
   return <Input />;
 }
 
-MyComponent.defaultProps = {};
-
 export default MyComponent;
 "
 `;
 
 exports[`Taro > svelte > Javascript Test > context 1`] = `
-"'>' expected. (33:13)
-  31 | return (
-  32 |
-> 33 | <'activeTab'.Provider  value={activeTab}><View>{activeTab}</View></'activeTab'.Provider>
+"'>' expected. (34:13)
+  32 | return (
+  33 |
+> 34 | <'activeTab'.Provider  value={activeTab}><View>{activeTab}</View></'activeTab'.Provider>
      |             ^
-  34 |
   35 |
-  36 |"
+  36 |
+  37 |"
 `;
 
 exports[`Taro > svelte > Javascript Test > each 1`] = `
@@ -7160,8 +8410,7 @@ export default MyComponent;
 `;
 
 exports[`Taro > svelte > Javascript Test > eventHandlers 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Button, Text } from \\"@tarojs/components\\";
 
 function MyComponent(props) {
@@ -7214,7 +8463,9 @@ function MyComponent(props) {
   return (
     <>
       {show ? (
-        <Button onClick={(event) => toggle(event)}> Hide </Button>
+        <>
+          <Button onClick={(event) => toggle(event)}> Hide </Button>
+        </>
       ) : (
         <Button onClick={(event) => toggle(event)}> Show </Button>
       )}
@@ -7239,7 +8490,7 @@ function MyComponent(props) {
   return (
     <View>
       <Button type=\\"button\\" disabled={disabled}>
-        {props.children}
+        <>{props.children}</>
       </Button>
     </View>
   );
@@ -7259,11 +8510,9 @@ function MyComponent(props) {
   useEffect(() => {
     console.log(\\"onMount\\");
   }, []);
-
   useEffect(() => {
     console.log(\\"onAfterUpdate\\");
   });
-
   useEffect(() => {
     return () => {
       console.log(\\"onDestroy\\");
@@ -7293,8 +8542,7 @@ function MyComponent(props) {
   return (
     <View>
       <Input value={name} />
-      Lowercase:
-      {lowercaseName()}
+      Lowercase: {lowercaseName()}
     </View>
   );
 }
@@ -7336,8 +8584,7 @@ function MyComponent(props) {
         onChange={(event) => setB(event.target.value)}
         value={b}
       />
-      Result:
-      {result}
+      Result: {result}
     </View>
   );
 }
@@ -7347,15 +8594,14 @@ export default MyComponent;
 `;
 
 exports[`Taro > svelte > Javascript Test > slots 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyComponent(props) {
   return (
     <View>
-      {props.children || \\"default\\"}
-      {props.slotTest || <View>default</View>}
+      <>{props.children || \\"default\\"}</>
+      <>{props.Test || <View>default</View>}</>
     </View>
   );
 }
@@ -7365,8 +8611,7 @@ export default MyComponent;
 `;
 
 exports[`Taro > svelte > Javascript Test > style 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Input } from \\"@tarojs/components\\";
 
 function MyComponent(props) {
@@ -7495,14 +8740,8 @@ function MyComponent(props: any) {
         checked={fillings === \\"Guac (extra)\\"}
         onChange={(event) => setFillings(event.target.value)}
       />
-      <View>
-        Tortilla:
-        {tortilla}
-      </View>
-      <View>
-        Fillings:
-        {fillings}
-      </View>
+      <View>Tortilla: {tortilla}</View>
+      <View>Fillings: {fillings}</View>
     </View>
   );
 }
@@ -7539,21 +8778,19 @@ function MyComponent(props: any) {
   return <Input />;
 }
 
-MyComponent.defaultProps = {};
-
 export default MyComponent;
 "
 `;
 
 exports[`Taro > svelte > Typescript Test > context 1`] = `
-"'>' expected. (33:13)
-  31 | return (
-  32 |
-> 33 | <'activeTab'.Provider  value={activeTab}><View>{activeTab}</View></'activeTab'.Provider>
+"'>' expected. (34:13)
+  32 | return (
+  33 |
+> 34 | <'activeTab'.Provider  value={activeTab}><View>{activeTab}</View></'activeTab'.Provider>
      |             ^
-  34 |
   35 |
-  36 |"
+  36 |
+  37 |"
 `;
 
 exports[`Taro > svelte > Typescript Test > each 1`] = `
@@ -7579,8 +8816,7 @@ export default MyComponent;
 `;
 
 exports[`Taro > svelte > Typescript Test > eventHandlers 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Button, Text } from \\"@tarojs/components\\";
 
 function MyComponent(props: any) {
@@ -7633,7 +8869,9 @@ function MyComponent(props: any) {
   return (
     <>
       {show ? (
-        <Button onClick={(event) => toggle(event)}> Hide </Button>
+        <>
+          <Button onClick={(event) => toggle(event)}> Hide </Button>
+        </>
       ) : (
         <Button onClick={(event) => toggle(event)}> Show </Button>
       )}
@@ -7658,7 +8896,7 @@ function MyComponent(props: any) {
   return (
     <View>
       <Button type=\\"button\\" disabled={disabled}>
-        {props.children}
+        <>{props.children}</>
       </Button>
     </View>
   );
@@ -7678,11 +8916,9 @@ function MyComponent(props: any) {
   useEffect(() => {
     console.log(\\"onMount\\");
   }, []);
-
   useEffect(() => {
     console.log(\\"onAfterUpdate\\");
   });
-
   useEffect(() => {
     return () => {
       console.log(\\"onDestroy\\");
@@ -7712,8 +8948,7 @@ function MyComponent(props: any) {
   return (
     <View>
       <Input value={name} />
-      Lowercase:
-      {lowercaseName()}
+      Lowercase: {lowercaseName()}
     </View>
   );
 }
@@ -7755,8 +8990,7 @@ function MyComponent(props: any) {
         onChange={(event) => setB(event.target.value)}
         value={b}
       />
-      Result:
-      {result}
+      Result: {result}
     </View>
   );
 }
@@ -7766,15 +9000,14 @@ export default MyComponent;
 `;
 
 exports[`Taro > svelte > Typescript Test > slots 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { View, Text } from \\"@tarojs/components\\";
 
 function MyComponent(props: any) {
   return (
     <View>
-      {props.children || \\"default\\"}
-      {props.slotTest || <View>default</View>}
+      <>{props.children || \\"default\\"}</>
+      <>{props.Test || <View>default</View>}</>
     </View>
   );
 }
@@ -7784,8 +9017,7 @@ export default MyComponent;
 `;
 
 exports[`Taro > svelte > Typescript Test > style 1`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import { Input } from \\"@tarojs/components\\";
 
 function MyComponent(props: any) {

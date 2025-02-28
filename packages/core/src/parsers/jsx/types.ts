@@ -1,5 +1,5 @@
-import { Project, Symbol } from 'ts-morph';
-import { MitosisComponent } from '../../types/mitosis-component';
+import { MitosisComponent } from '@/types/mitosis-component';
+import { Project } from 'ts-morph';
 
 export type ParseMitosisOptions = {
   jsonHookNames?: string[];
@@ -7,14 +7,20 @@ export type ParseMitosisOptions = {
   typescript: boolean;
   tsProject?: {
     project: Project;
-    signalSymbol: Symbol;
   };
   filePath?: string;
 };
 
+export type ResolvedImport = {
+  path: string;
+  value: string;
+};
+
 export type Context = {
   // Babel has other context
+  cwd?: string;
   builder: {
     component: MitosisComponent;
+    resolvedImports?: ResolvedImport[];
   };
 };

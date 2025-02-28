@@ -1,4 +1,4 @@
-import { onMount, useStore, useTarget } from '@builder.io/mitosis';
+import { onMount, useState, useStore, useTarget } from '@builder.io/mitosis';
 
 export default function UseTargetComponent() {
   const state = useStore({
@@ -25,8 +25,6 @@ export default function UseTargetComponent() {
         swift: 'sw',
         taro: 't',
         template: 'te',
-        vue2: 'v2',
-        vue3: 'v3',
         webcomponent: 'wc',
       });
       return prefix + 'foo';
@@ -35,15 +33,24 @@ export default function UseTargetComponent() {
     lastName: 'bar',
   });
 
+  const [foo, setFoo] = useState('bar');
+
   onMount(() => {
+    console.log(foo);
+    setFoo('bar');
+
     useTarget({
       react: () => {
         console.log('react');
         state.lastName = 'baz';
+        console.log(foo);
+        setFoo('baz');
       },
       qwik: () => {
         console.log('qwik');
         state.lastName = 'baz';
+        console.log(foo);
+        setFoo('baz');
       },
     });
   });

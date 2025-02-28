@@ -1,20 +1,14 @@
+import { getComponentsUsed } from '@/helpers/get-components-used';
+import { getCustomImports } from '@/helpers/get-custom-imports';
+import { getStateObjectStringFromComponent } from '@/helpers/get-state-object-string';
+import { checkIsDefined } from '@/helpers/nullable';
+import { checkIsComponentImport } from '@/helpers/render-imports';
+import { BaseHook, MitosisComponent } from '@/types/mitosis-component';
 import json5 from 'json5';
 import { kebabCase, size, uniq } from 'lodash';
-import { DefaultProps, PropsDefinition } from 'vue/types/options';
-import { getComponentsUsed } from '../../helpers/get-components-used';
-import { getCustomImports } from '../../helpers/get-custom-imports';
-import { getStateObjectStringFromComponent } from '../../helpers/get-state-object-string';
-import { checkIsDefined } from '../../helpers/nullable';
-import { checkIsComponentImport } from '../../helpers/render-imports';
-import { extendedHook, MitosisComponent } from '../../types/mitosis-component';
-import {
-  encodeQuotes,
-  getContextKey,
-  getContextValue,
-  getOnUpdateHookName,
-  mapMitosisComponentToKebabCase,
-} from './helpers';
-import { ToVueOptions } from './types';
+import { stringifySingleScopeOnMount } from '../helpers/on-mount';
+import { encodeQuotes, getContextKey, getContextValue, getOnUpdateHookName } from './helpers';
+import { DefaultProps, PropsDefinition, ToVueOptions } from './types';
 
 const getContextProvideString = (json: MitosisComponent, options: ToVueOptions) => {
   return `{
@@ -46,10 +40,8 @@ function getContextInjectString(component: MitosisComponent, options: ToVueOptio
 const generateComponentImport =
   (options: ToVueOptions) =>
   (componentName: string): string => {
-    if (options.vueVersion >= 3 && options.asyncComponentImports) {
+    if (options.asyncComponentImports) {
       return `'${componentName}': defineAsyncComponent(${componentName})`;
-    } else if (options.vueVersion === 2) {
-      return `'${mapMitosisComponentToKebabCase(componentName)}': ${componentName}`;
     } else {
       return `'${componentName}': ${componentName}`;
     }
@@ -77,8 +69,8 @@ export function generateOptionsApiScript(
   path: string | undefined,
   template: string,
   props: string[],
-  onUpdateWithDeps: extendedHook[],
-  onUpdateWithoutDeps: extendedHook[],
+  onUpdateWithDeps: BaseHook[],
+  onUpdateWithoutDeps: BaseHook[],
 ) {
   const { exports: localExports } = component;
   const localVarAsData: string[] = [];
@@ -230,9 +222,9 @@ export function generateOptionsApiScript(
             : ''
         }
         ${
-          component.hooks.onMount?.code
+          component.hooks.onMount.length
             ? `mounted() {
-                ${component.hooks.onMount.code}
+                ${stringifySingleScopeOnMount(component)}
               },`
             : ''
         }

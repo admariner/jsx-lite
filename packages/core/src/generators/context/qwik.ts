@@ -1,5 +1,5 @@
+import { MitosisContext } from '@/types/mitosis-context';
 import { format } from 'prettier/standalone';
-import { MitosisContext } from '../../types/mitosis-context';
 
 type ContextToQwikOptions = {
   format?: boolean;
@@ -23,7 +23,9 @@ export const contextToQwik =
           ],
         });
       } catch (err) {
-        console.error('Format error for file:', str);
+        if (process.env.NODE_ENV !== 'test') {
+          console.error('Format error for file:', str);
+        }
         throw err;
       }
     }

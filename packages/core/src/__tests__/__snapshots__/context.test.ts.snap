@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Context > Parse context 1`] = `
 {
@@ -22,13 +22,13 @@ exports[`Context > Parse context 1`] = `
     },
     "fooUpperCase": {
       "code": "get fooUpperCase() {
-  return this.foo.toUpperCase();
+  return state.foo.toUpperCase();
 }",
       "type": "getter",
     },
     "someMethod": {
       "code": "someMethod() {
-  return this.fooUpperCase.toLowercase();
+  return state.fooUpperCase.toLowercase();
 }",
       "type": "method",
     },
@@ -47,10 +47,10 @@ exports[`Context > Parse context 2`] = `
 export default createContext({
   foo: \\"bar\\",
   get fooUpperCase() {
-    return this.foo.toUpperCase();
+    return state.foo.toUpperCase();
   },
   someMethod() {
-    return this.fooUpperCase.toLowercase();
+    return state.fooUpperCase.toLowercase();
   },
   content: null,
   context: {},
@@ -69,42 +69,6 @@ exports[`Context > Use and set context in complex components 1`] = `
       "children": [
         {
           "@type": "@builder.io/mitosis/node",
-          "bindings": {},
-          "children": [],
-          "meta": {},
-          "name": "div",
-          "properties": {
-            "_text": "
-      ",
-          },
-          "scope": {},
-        },
-        {
-          "@type": "@builder.io/mitosis/node",
-          "bindings": {},
-          "children": [],
-          "meta": {},
-          "name": "div",
-          "properties": {
-            "_text": "
-      ",
-          },
-          "scope": {},
-        },
-        {
-          "@type": "@builder.io/mitosis/node",
-          "bindings": {},
-          "children": [],
-          "meta": {},
-          "name": "div",
-          "properties": {
-            "_text": "
-      ",
-          },
-          "scope": {},
-        },
-        {
-          "@type": "@builder.io/mitosis/node",
           "bindings": {
             "state.properties": {
               "code": "state.properties",
@@ -112,6 +76,7 @@ exports[`Context > Use and set context in complex components 1`] = `
               "type": "spread",
             },
             "style": {
+              "bindingType": "expression",
               "code": "state.css",
               "type": "single",
             },
@@ -119,20 +84,9 @@ exports[`Context > Use and set context in complex components 1`] = `
           "children": [
             {
               "@type": "@builder.io/mitosis/node",
-              "bindings": {},
-              "children": [],
-              "meta": {},
-              "name": "div",
-              "properties": {
-                "_text": "
-        ",
-              },
-              "scope": {},
-            },
-            {
-              "@type": "@builder.io/mitosis/node",
               "bindings": {
                 "block": {
+                  "bindingType": "expression",
                   "code": "state.useBlock",
                   "type": "single",
                 },
@@ -145,20 +99,9 @@ exports[`Context > Use and set context in complex components 1`] = `
             },
             {
               "@type": "@builder.io/mitosis/node",
-              "bindings": {},
-              "children": [],
-              "meta": {},
-              "name": "div",
-              "properties": {
-                "_text": "
-        ",
-              },
-              "scope": {},
-            },
-            {
-              "@type": "@builder.io/mitosis/node",
               "bindings": {
                 "when": {
+                  "bindingType": "expression",
                   "code": "state.componentRef",
                   "type": "single",
                 },
@@ -168,6 +111,7 @@ exports[`Context > Use and set context in complex components 1`] = `
                   "@type": "@builder.io/mitosis/node",
                   "bindings": {
                     "children": {
+                      "bindingType": "expression",
                       "code": "state.useBlock.children",
                       "type": "single",
                     },
@@ -191,20 +135,9 @@ exports[`Context > Use and set context in complex components 1`] = `
             },
             {
               "@type": "@builder.io/mitosis/node",
-              "bindings": {},
-              "children": [],
-              "meta": {},
-              "name": "div",
-              "properties": {
-                "_text": "
-        ",
-              },
-              "scope": {},
-            },
-            {
-              "@type": "@builder.io/mitosis/node",
               "bindings": {
                 "when": {
+                  "bindingType": "expression",
                   "code": "!state.componentRef && state.useBlock.children && state.useBlock.children.length",
                   "type": "single",
                 },
@@ -212,20 +145,9 @@ exports[`Context > Use and set context in complex components 1`] = `
               "children": [
                 {
                   "@type": "@builder.io/mitosis/node",
-                  "bindings": {},
-                  "children": [],
-                  "meta": {},
-                  "name": "div",
-                  "properties": {
-                    "_text": "
-          ",
-                  },
-                  "scope": {},
-                },
-                {
-                  "@type": "@builder.io/mitosis/node",
                   "bindings": {
                     "each": {
+                      "bindingType": "expression",
                       "code": "state.useBlock.children",
                       "type": "single",
                     },
@@ -235,10 +157,12 @@ exports[`Context > Use and set context in complex components 1`] = `
                       "@type": "@builder.io/mitosis/node",
                       "bindings": {
                         "block": {
+                          "bindingType": "expression",
                           "code": "child",
                           "type": "single",
                         },
                         "index": {
+                          "bindingType": "expression",
                           "code": "index",
                           "type": "single",
                         },
@@ -258,64 +182,16 @@ exports[`Context > Use and set context in complex components 1`] = `
                     "indexName": "index",
                   },
                 },
-                {
-                  "@type": "@builder.io/mitosis/node",
-                  "bindings": {},
-                  "children": [],
-                  "meta": {},
-                  "name": "div",
-                  "properties": {
-                    "_text": "
-        ",
-                  },
-                  "scope": {},
-                },
               ],
               "meta": {},
               "name": "Show",
               "properties": {},
               "scope": {},
             },
-            {
-              "@type": "@builder.io/mitosis/node",
-              "bindings": {},
-              "children": [],
-              "meta": {},
-              "name": "div",
-              "properties": {
-                "_text": "
-      ",
-              },
-              "scope": {},
-            },
           ],
           "meta": {},
           "name": "state.tagName",
           "properties": {},
-          "scope": {},
-        },
-        {
-          "@type": "@builder.io/mitosis/node",
-          "bindings": {},
-          "children": [],
-          "meta": {},
-          "name": "div",
-          "properties": {
-            "_text": "
-      ",
-          },
-          "scope": {},
-        },
-        {
-          "@type": "@builder.io/mitosis/node",
-          "bindings": {},
-          "children": [],
-          "meta": {},
-          "name": "div",
-          "properties": {
-            "_text": "
-    ",
-          },
           "scope": {},
         },
       ],
@@ -335,7 +211,10 @@ exports[`Context > Use and set context in complex components 1`] = `
     "set": {},
   },
   "exports": {},
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [
     {
       "importKind": "value",
@@ -568,28 +447,22 @@ function RenderBlock(props) {
   const ComponentRefRef = componentRef();
 
   return (
-    <>
-      <TagNameRef {...properties()} style={css()}>
-        <BlockStyles block={useBlock()} />
-
-        {componentRef() ? (
-          <ComponentRefRef
-            {...componentOptions()}
-            children={useBlock().children}
-          />
-        ) : null}
-
-        {!componentRef() &&
-        useBlock().children &&
-        useBlock().children.length ? (
-          <>
-            {useBlock().children?.map((child, index) => (
-              <RenderBlock index={index} block={child} />
-            ))}
-          </>
-        ) : null}
-      </TagNameRef>
-    </>
+    <TagNameRef {...properties()} style={css()}>
+      <BlockStyles block={useBlock()} />
+      {componentRef() ? (
+        <ComponentRefRef
+          {...componentOptions()}
+          children={useBlock().children}
+        />
+      ) : null}
+      {!componentRef() && useBlock().children && useBlock().children.length ? (
+        <>
+          {useBlock().children?.map((child, index) => (
+            <RenderBlock index={index} block={child} />
+          ))}
+        </>
+      ) : null}
+    </TagNameRef>
   );
 }
 
@@ -608,23 +481,12 @@ exports[`Context > Use and set context in components 1`] = `
         {
           "@type": "@builder.io/mitosis/node",
           "bindings": {},
-          "children": [],
-          "meta": {},
-          "name": "div",
-          "properties": {
-            "_text": "
-      ",
-          },
-          "scope": {},
-        },
-        {
-          "@type": "@builder.io/mitosis/node",
-          "bindings": {},
           "children": [
             {
               "@type": "@builder.io/mitosis/node",
               "bindings": {
                 "_text": {
+                  "bindingType": "expression",
                   "code": "foo.value",
                   "type": "single",
                 },
@@ -639,18 +501,6 @@ exports[`Context > Use and set context in components 1`] = `
           "meta": {},
           "name": "Fragment",
           "properties": {},
-          "scope": {},
-        },
-        {
-          "@type": "@builder.io/mitosis/node",
-          "bindings": {},
-          "children": [],
-          "meta": {},
-          "name": "div",
-          "properties": {
-            "_text": "
-    ",
-          },
           "scope": {},
         },
       ],
@@ -697,7 +547,10 @@ exports[`Context > Use and set context in components 1`] = `
     },
   },
   "exports": {},
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [
     {
       "importKind": "value",
@@ -759,8 +612,7 @@ export default ComponentWithContext;
 `;
 
 exports[`Context > Use and set context in components 3`] = `
-"\\"use client\\";
-import * as React from \\"react\\";
+"import * as React from \\"react\\";
 import {
   FlatList,
   ScrollView,
@@ -768,6 +620,11 @@ import {
   StyleSheet,
   Image,
   Text,
+  Pressable,
+  TextInput,
+  TouchableOpacity,
+  Button,
+  Linking,
 } from \\"react-native\\";
 import { useContext } from \\"react\\";
 import Context1 from \\"@dummy/1\\";

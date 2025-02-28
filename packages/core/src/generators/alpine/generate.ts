@@ -1,39 +1,30 @@
-import { camelCase, curry, flow, flowRight as compose } from 'lodash';
-import { format } from 'prettier/standalone';
-import { SELF_CLOSING_HTML_TAGS } from '../../constants/html_tags';
-import { babelTransformCode } from '../../helpers/babel-transform';
-import { dashCase } from '../../helpers/dash-case';
-import { fastClone } from '../../helpers/fast-clone';
-import { getRefs } from '../../helpers/get-refs';
-import { getStateObjectStringFromComponent } from '../../helpers/get-state-object-string';
-import { initializeOptions } from '../../helpers/merge-options';
-import { removeSurroundingBlock } from '../../helpers/remove-surrounding-block';
-import { replaceIdentifiers } from '../../helpers/replace-identifiers';
-import { stripMetaProperties } from '../../helpers/strip-meta-properties';
-import { stripStateAndPropsRefs } from '../../helpers/strip-state-and-props-refs';
-import { collectCss } from '../../helpers/styles/collect-css';
+import { SELF_CLOSING_HTML_TAGS } from '@/constants/html_tags';
+import { ToAlpineOptions } from '@/generators/alpine/types';
+import { babelTransformCode } from '@/helpers/babel-transform';
+import { dashCase } from '@/helpers/dash-case';
+import { checkIsEvent } from '@/helpers/event-handlers';
+import { fastClone } from '@/helpers/fast-clone';
+import { getRefs } from '@/helpers/get-refs';
+import { getStateObjectStringFromComponent } from '@/helpers/get-state-object-string';
+import { initializeOptions } from '@/helpers/merge-options';
+import { removeSurroundingBlock } from '@/helpers/remove-surrounding-block';
+import { replaceIdentifiers } from '@/helpers/replace-identifiers';
+import { stripMetaProperties } from '@/helpers/strip-meta-properties';
+import { stripStateAndPropsRefs } from '@/helpers/strip-state-and-props-refs';
+import { collectCss } from '@/helpers/styles/collect-css';
 import {
   runPostCodePlugins,
   runPostJsonPlugins,
   runPreCodePlugins,
   runPreJsonPlugins,
-} from '../../modules/plugins';
-import { MitosisComponent } from '../../types/mitosis-component';
-import { checkIsForNode, ForNode, MitosisNode } from '../../types/mitosis-node';
-import { BaseTranspilerOptions, TranspilerGenerator } from '../../types/transpiler';
+} from '@/modules/plugins';
+import { MitosisComponent } from '@/types/mitosis-component';
+import { ForNode, MitosisNode, checkIsForNode } from '@/types/mitosis-node';
+import { TranspilerGenerator } from '@/types/transpiler';
+import { camelCase, flowRight as compose, curry, flow } from 'lodash';
+import { format } from 'prettier/standalone';
 import { renderMountHook } from './render-mount-hook';
 import { hasRootUpdateHook, renderUpdateHooks } from './render-update-hooks';
-
-export interface ToAlpineOptions extends BaseTranspilerOptions {
-  /**
-   * use @on and : instead of `x-on` and `x-bind`
-   */
-  useShorthandSyntax?: boolean;
-  /**
-   * If true, the javascript won't be extracted into a separate script block.
-   */
-  inlineState?: boolean;
-}
 
 export const checkIsComponentNode = (node: MitosisNode): boolean =>
   node.name === '@builder.io/mitosis/component';
@@ -81,6 +72,8 @@ const getStateObjectString = (json: MitosisComponent) =>
     renderMountHook(json),
     renderUpdateHooks(json),
     replaceStateWithThis,
+    // cleanup bad regexes that result in malformed JSON strings that start with `{,`
+    (x) => (x.startsWith('{,') ? x.replace('{,', '{') : x),
   )(json);
 
 const bindEventHandlerKey = compose(dashCase, removeOnFromEventName);
@@ -175,7 +168,7 @@ const blockToAlpine = (json: MitosisNode | ForNode, options: ToAlpineOptions = {
     // TODO: proper babel transform to replace. Util for this
     const useValue = stripStateAndPropsRefs(value);
 
-    if (key.startsWith('on')) {
+    if (checkIsEvent(key)) {
       str += bindEventHandler(options)(key, value);
     } else if (key === 'ref') {
       str += ` x-ref="${useValue}"`;

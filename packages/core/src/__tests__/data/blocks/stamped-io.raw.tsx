@@ -43,8 +43,8 @@ export default function SmileReviews(props: SmileReviewsProps) {
         <textarea css={{ display: 'block' }} placeholder="How was your experience?" />
         <button
           css={{ display: 'block' }}
-          onClick={(event) => {
-            event.preventDefault();
+          onClick={(ev) => {
+            ev.preventDefault();
             state.showReviewPrompt = false;
           }}
         >
@@ -63,6 +63,7 @@ export default function SmileReviews(props: SmileReviewsProps) {
               display: 'flex',
               borderRadius: '5px',
               boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+              WebkitFontSmoothing: 'antialiased',
             }}
           >
             <img css={{ height: '30px', width: '30px', marginRight: '10px' }} src={review.avatar} />
