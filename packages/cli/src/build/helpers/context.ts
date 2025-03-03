@@ -1,13 +1,14 @@
 import {
+  MitosisConfig,
+  Target,
   checkShouldOutputTypeScript,
+  contextToAngular,
   contextToQwik,
   contextToReact,
   contextToSolid,
   contextToSvelte,
   contextToVue,
-  MitosisConfig,
   parseContext,
-  Target,
 } from '@builder.io/mitosis';
 import { readFile } from 'fs-extra';
 import { camelCase, last, upperFirst } from 'lodash';
@@ -29,11 +30,9 @@ export const generateContextFile = async ({
   } else {
     switch (target) {
       case 'svelte':
-        return contextToSvelte(options.options.svelte)({ context });
+        return contextToSvelte(options.options.svelte || {})({ context });
       case 'vue':
-      case 'vue2':
-      case 'vue3':
-        return contextToVue(options.options[target])({ context });
+        return contextToVue(options.options[target] || {})({ context });
       case 'solid':
         return contextToSolid()({ context });
       case 'preact':
@@ -51,12 +50,13 @@ export const generateContextFile = async ({
         });
       case 'qwik':
         return contextToQwik()({ context });
+      case 'angular':
+        return contextToAngular()({ context });
       default:
         console.warn('Context files are not supported for this target. Outputting no-op');
-        return `
-        // Noop file
-        export default {};
-      `;
+        return `// No op
+          export default {};
+        `;
     }
   }
 };

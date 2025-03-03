@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`qwik > Accordion 1`] = `
 {
@@ -350,7 +350,7 @@ exports[`qwik > For 1`] = `
   useStylesScopedQrl,
 } from \\"@builder.io/qwik\\";
 
-export const MyComponentStyles = \`.cvdfnp5{display:flex;flex-direction:column;position:relative;flex-shrink:0;box-sizing:border-box;margin-top:0px;padding-left:20px;padding-right:20px;padding-top:50px;padding-bottom:50px;width:100vw;margin-left:calc(50% - 50vw)}.cz5wnof{width:100%;align-self:stretch;flex-grow:1;box-sizing:border-box;max-width:1200px;display:flex;flex-direction:column;align-items:stretch;margin-left:auto;margin-right:auto}.cdrk993{text-align:center}\`;
+export const MyComponentStyles = \`.cvdfnp5{display:flex;flex-direction:column;position:relative;flex-shrink:0;box-sizing:border-box;margin-top:0px;padding-left:20px;padding-right:20px;padding-top:50px;padding-bottom:50px;width:100vw;margin-left:calc(50% - 50vw)}.cygyoma{display:flex;flex-direction:column;position:relative;flex-shrink:0;box-sizing:border-box;margin-top:0px;padding-left:20px;padding-right:20px;padding-top:50px;padding-bottom:50px;width:100%;margin-left:auto;align-self:stretch;flex-grow:1;max-width:1200px;align-items:stretch;margin-right:auto}.cdrk993{text-align:center}\`;
 export const MyComponentOnMount = (p) => {
   const s = useStore(
     () => {
@@ -378,7 +378,7 @@ export const MyComponentOnMount = (p) => {
     >
       <section
         builder-id=\\"builder-a58a66676d9b4ecc826c1b8bc5ad91f1\\"
-        class=\\"cz5wnof\\"
+        class=\\"cygyoma\\"
       >
         {(state.simpleList.results || []).map(
           ((item, $index) => {
@@ -397,14 +397,7 @@ export const MyComponentOnMount = (p) => {
                 <div
                   key=\\"builder-927e0013cb8142a9bd46a4f3811d0865\\"
                   class=\\"builder-text\\"
-                  dangerouslySetInnerHTML={(() => {
-                    try {
-                      var _virtual_index = state.resultsItem.data.title;
-                      return _virtual_index;
-                    } catch (err) {
-                      console.warn(\\"Builder code error\\", err);
-                    }
-                  })()}
+                  dangerouslySetInnerHTML={state.resultsItem.data.title}
                 ></div>
               </div>
             );
@@ -558,14 +551,7 @@ export const MyComponentOnMount = (p) => {
       h(\\"div\\", {
         key: \\"builder-1072afed47764e7cb37d088fd66f3a67\\",
         class: \\"builder-text\\",
-        dangerouslySetInnerHTML: (() => {
-          try {
-            var _virtual_index = state.myState;
-            return _virtual_index;
-          } catch (err) {
-            console.warn(\\"Builder code error\\", err);
-          }
-        })(),
+        dangerouslySetInnerHTML: state.myState,
       })
     )
   );
@@ -795,14 +781,7 @@ export const MyComponentOnMount = (p) => {
       h(\\"div\\", {
         key: \\"builder-1072afed47764e7cb37d088fd66f3a67\\",
         class: \\"builder-text\\",
-        dangerouslySetInnerHTML: (() => {
-          try {
-            var _virtual_index = state.myState;
-            return _virtual_index;
-          } catch (err) {
-            console.warn(\\"Builder code error\\", err);
-          }
-        })(),
+        dangerouslySetInnerHTML: state.myState,
       })
     )
   );
@@ -995,14 +974,7 @@ exports.MyComponentOnMount = (p) => {
     h(\\"div\\", {
       key: \\"builder-192569f8d0a943398ec7ab9c327e104f\\",
       class: \\"builder-text\\",
-      dangerouslySetInnerHTML: (() => {
-        try {
-          var _virtual_index = state.title;
-          return _virtual_index;
-        } catch (err) {
-          console.warn(\\"Builder code error\\", err);
-        }
-      })(),
+      dangerouslySetInnerHTML: state.title,
     })
   );
 };
@@ -1258,14 +1230,7 @@ export const ComponentD187055AF171488FAD843ACF045D6BF7OnMount = (p) => {
         <div
           key=\\"builder-2ae3b4104cc0478e85eff49694792d9c\\"
           class=\\"builder-text\\"
-          dangerouslySetInnerHTML={(() => {
-            try {
-              var _virtual_index = state.title;
-              return _virtual_index;
-            } catch (err) {
-              console.warn(\\"Builder code error\\", err);
-            }
-          })()}
+          dangerouslySetInnerHTML={state.title}
         ></div>
       </div>
     </div>
@@ -1478,14 +1443,7 @@ exports.MyComponentOnMount = (p) => {
         <div
           key=\\"builder-71f26e4ffffe4e24940aa12e5250fa5f\\"
           class=\\"builder-text\\"
-          dangerouslySetInnerHTML={(() => {
-            try {
-              var _virtual_index = state.data;
-              return _virtual_index;
-            } catch (err) {
-              console.warn(\\"Builder code error\\", err);
-            }
-          })()}
+          dangerouslySetInnerHTML={state.data}
         ></div>
       </div>
       <CoreButton
@@ -1729,10 +1687,7 @@ export const MyComponentOnMount = (p) => {
   useStylesScopedQrl(qrl(\\"./low.js\\", \\"MyComponentStyles\\", []));
 
   return (
-    <div
-      builder-id=\\"builder-72cc5d17a18e4d7cb5e6a61a4cad2f94\\"
-      class=\\"crt27f8 builder-block\\"
-    >
+    <div class=\\"crt27f8\\">
       <p>
         Hello <span class=\\"names\\">World</span>
       </p>
@@ -1779,8 +1734,92 @@ export const __proxyMerge__ = function __proxyMerge__(state, local) {
 }
 `;
 
+exports[`qwik > jsx > Javascript Test > Advanced 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const MyBasicForShowComponent = component$((props) => {
+  const state = useStore({ name: \\"PatrickJS\\", names: [\\"Steve\\", \\"PatrickJS\\"] });
+
+  return (
+    <main>
+      {(state.names || []).map((person, i) => {
+        return (
+          <div>
+            {i}: {person}
+          </div>
+        );
+      })}
+      {(state.names || []).map((person) => {
+        return <span>{person}</span>;
+      })}
+      {(state.names || []).map((item) => {
+        return <br />;
+      })}
+      {(
+        Array.from({
+          length: 10,
+        }) || []
+      ).map((_, ee) => {
+        return <pre>{ee}</pre>;
+      })}
+      {(
+        Array.from({
+          length: 10,
+        }) || []
+      ).map((item) => {
+        return <p>{index}</p>;
+      })}
+      {(state.names || []).map((person, index) => {
+        return (
+          <span>
+            {person}
+            {index}
+          </span>
+        );
+      })}
+      {(
+        Array.from({
+          length: 10,
+        }) || []
+      ).map((person, count) => {
+        return (
+          <span>
+            {person}
+            {count}
+          </span>
+        );
+      })}
+      {(state.names || []).map((person, i) => {
+        return (
+          <span>
+            {person}
+            {i}
+          </span>
+        );
+      })}
+      {(
+        Array.from({
+          length: 10,
+        }) || []
+      ).map((person, index) => {
+        return (
+          <span>
+            {person}
+            {index}
+          </span>
+        );
+      })}
+    </main>
+  );
+});
+
+export default MyBasicForShowComponent;
+"
+`;
+
 exports[`qwik > jsx > Javascript Test > Basic 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -1803,9 +1842,9 @@ export const MyBasicComponent = component$((props) => {
     <div class=\\"test div-MyBasicComponent\\">
       <input
         value={DEFAULT_VALUES.name || state.name}
-        onChange$={(event) => (state.name = myEvent.target.value)}
+        onChange$={$((event) => (state.name = myEvent.target.value))}
       />
-      Hello! I can run in React, Vue, Solid, or Liquid!
+      Hello! I can run in React, Vue, Solid, or Liquid! &gt;
     </div>
   );
 });
@@ -1821,7 +1860,7 @@ export const STYLES = \`
 `;
 
 exports[`qwik > jsx > Javascript Test > Basic 2`] = `
-"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
 
 export const MyBasicForShowComponent = component$((props) => {
   const state = useStore({ name: \\"PatrickJS\\", names: [\\"Steve\\", \\"PatrickJS\\"] });
@@ -1833,9 +1872,9 @@ export const MyBasicForShowComponent = component$((props) => {
           <>
             <input
               value={state.name}
-              onChange$={(event) => {
+              onChange$={$((event) => {
                 state.name = event.target.value + \\" and \\" + person;
-              }}
+              })}
             />
             Hello {person}! I can run in Qwik, Web Component, React, Vue, Solid,
             or Liquid!
@@ -1852,6 +1891,7 @@ export default MyBasicForShowComponent;
 
 exports[`qwik > jsx > Javascript Test > Basic Context 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -1885,7 +1925,7 @@ export const MyBasicComponent = component$((props) => {
     <div>
       {myService.method(\\"hello\\") + state.name}
       Hello! I can run in React, Vue, Solid, or Liquid!
-      <input onChange$={(event) => state.onChange} />
+      <input onChange$={$((event) => state.onChange)} />
     </div>
   );
 });
@@ -1944,7 +1984,13 @@ export default MyBasicOutputsComponent;
 `;
 
 exports[`qwik > jsx > Javascript Test > Basic Outputs Meta 1`] = `
-"import {
+"
+          /**
+          useMetadata:
+          {\\"outputs\\":[\\"onMessage\\",\\"onEvent\\"],\\"baz\\":\\"metadata inside component\\"}
+          */
+
+          import {
   Fragment,
   component$,
   h,
@@ -2031,6 +2077,7 @@ export default MyBasicChildComponent;
 
 exports[`qwik > jsx > Javascript Test > BasicFor 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -2051,9 +2098,9 @@ export const MyBasicForComponent = component$((props) => {
           <Fragment>
             <input
               value={state.name}
-              onChange$={(event) => {
+              onChange$={$((event) => {
                 state.name = event.target.value + \\" and \\" + person;
-              }}
+              })}
             />
             Hello {person}! I can run in Qwik, Web Component, React, Vue, Solid,
             or Liquid!
@@ -2070,6 +2117,7 @@ export default MyBasicForComponent;
 
 exports[`qwik > jsx > Javascript Test > BasicRef 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -2105,8 +2153,8 @@ export const MyBasicRefComponent = component$((props) => {
             class=\\"input-MyBasicRefComponent\\"
             ref={inputRef}
             value={state.name}
-            onBlur$={(event) => state.onBlur()}
-            onChange$={(event) => (state.name = event.target.value)}
+            onBlur$={$((event) => state.onBlur())}
+            onChange$={$((event) => (state.name = event.target.value))}
           />
           <label for=\\"cars\\" ref={inputNoArgRef}>
             Choose a car:
@@ -2135,7 +2183,7 @@ export const STYLES = \`
 `;
 
 exports[`qwik > jsx > Javascript Test > BasicRefAssignment 1`] = `
-"import { Fragment, component$, h, useSignal } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h, useSignal } from \\"@builder.io/qwik\\";
 
 export const handlerClick = function handlerClick(
   props,
@@ -2153,7 +2201,9 @@ export const MyBasicRefAssignmentComponent = component$((props) => {
 
   return (
     <div>
-      <button onClick$={(event) => state.handlerClick(evt)}>Click</button>
+      <button onClick$={$((event) => await state.handlerClick(evt))}>
+        Click
+      </button>
     </div>
   );
 });
@@ -2164,6 +2214,7 @@ export default MyBasicRefAssignmentComponent;
 
 exports[`qwik > jsx > Javascript Test > BasicRefPrevious 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -2197,7 +2248,7 @@ export const MyPreviousComponent = component$((props) => {
       <h1>
         Now: {state.count}, before: {prevCount.value}
       </h1>
-      <button onClick$={(event) => (state.count += 1)}>Increment</button>
+      <button onClick$={$((event) => (state.count += 1))}>Increment</button>
     </div>
   );
 });
@@ -2303,9 +2354,7 @@ export const STYLES = \`
 `;
 
 exports[`qwik > jsx > Javascript Test > ContentSlotHtml 1`] = `
-"import { Slot } from \\"./med.js\\";
-
-import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { Fragment, Slot, component$, h } from \\"@builder.io/qwik\\";
 
 export const ContentSlotCode = component$((props) => {
   return (
@@ -2326,9 +2375,8 @@ export default ContentSlotCode;
 `;
 
 exports[`qwik > jsx > Javascript Test > ContentSlotJSX 1`] = `
-"import { Slot } from \\"./med.js\\";
-
-import {
+"import {
+  $,
   Fragment,
   Slot,
   component$,
@@ -2337,7 +2385,7 @@ import {
   useStore,
 } from \\"@builder.io/qwik\\";
 
-export const show = function show(props, state) {
+export const show = function show(props, state, cls) {
   props.slotContent ? 1 : \\"\\";
 };
 export const ContentSlotJsxCode = component$((props) => {
@@ -2353,7 +2401,7 @@ export const ContentSlotJsxCode = component$((props) => {
           name={props.slotContent ? \\"name1\\" : \\"name2\\"}
           title={props.slotContent ? \\"title1\\" : \\"title2\\"}
           {...props.attributes}
-          onClick$={(event) => show(props, state)}
+          onClick$={$((event) => show(props, state, cls))}
           class={cls.value}
         >
           {state.showContent && props.slotContent ? (
@@ -2531,6 +2579,7 @@ export default CustomCode;
 
 exports[`qwik > jsx > Javascript Test > Form 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -2549,7 +2598,13 @@ import {
   set,
 } from \\"@fake\\";
 
-export const onSubmit = function onSubmit(props, state, formRef, event) {
+export const onSubmit = function onSubmit(
+  props,
+  state,
+  submissionState,
+  formRef,
+  event
+) {
   const sendWithJs = props.sendWithJs || props.sendSubmissionsTo === \\"email\\";
 
   if (props.sendSubmissionsTo === \\"zapier\\") {
@@ -2784,7 +2839,9 @@ export const FormComponent = component$((props) => {
       })()}
       method={props.method}
       name={props.name}
-      onSubmit$={(event) => onSubmit(props, state, formRef, event)}
+      onSubmit$={$((event) =>
+        onSubmit(props, state, submissionState, formRef, event)
+      )}
       {...props.attributes}
     >
       {props.builderBlock && props.builderBlock.children
@@ -2839,6 +2896,7 @@ export const STYLES = \`
 
 exports[`qwik > jsx > Javascript Test > Image 1`] = `
 "import {
+  $,
   Fragment,
   Slot,
   component$,
@@ -2912,7 +2970,7 @@ export const Image = component$((props) => {
               \\" img-Image\\"
             }
             src={props.image}
-            onLoad$={(event) => setLoaded(props, state, pictureRef)}
+            onLoad$={$((event) => setLoaded(props, state, pictureRef))}
             srcset={props.srcset}
             sizes={props.sizes}
           />
@@ -2988,7 +3046,7 @@ export default ImgComponent;
 `;
 
 exports[`qwik > jsx > Javascript Test > Input 1`] = `
-"import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h } from \\"@builder.io/qwik\\";
 
 import { Builder } from \\"@builder.io/sdk\\";
 
@@ -3007,7 +3065,7 @@ export const FormInputComponent = component$((props) => {
       value={props.value}
       defaultValue={props.defaultValue}
       required={props.required}
-      onChange$={(event) => props.onChange?.(event.target.value)}
+      onChange$={$((event) => props.onChange?.(event.target.value))}
     />
   );
 });
@@ -3019,7 +3077,7 @@ export default FormInputComponent;
 exports[`qwik > jsx > Javascript Test > InputParent 1`] = `
 "import FormInputComponent from \\"./input.raw\\";
 
-import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+import { $, Fragment, component$, h } from \\"@builder.io/qwik\\";
 
 export const handleChange = function handleChange(props, state, value) {
   console.log(value);
@@ -3031,12 +3089,30 @@ export const Stepper = component$((props) => {
     <FormInputComponent
       name=\\"kingzez\\"
       type=\\"text\\"
-      onChange$={(event) => handleChange(props, state, value)}
+      onChange$={$((event) => handleChange(props, state, value))}
     ></FormInputComponent>
   );
 });
 
 export default Stepper;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > NestedStore 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const NestedStore = component$((props) => {
+  const state = useStore({ _id: \\"abc\\", _messageId: state._id + \\"-message\\" });
+
+  return (
+    <div id={state._id}>
+      Test
+      <p id={state._messageId}>Message</p>
+    </div>
+  );
+});
+
+export default NestedStore;
 "
 `;
 
@@ -3144,9 +3220,7 @@ export default SelectComponent;
 `;
 
 exports[`qwik > jsx > Javascript Test > SlotDefault 1`] = `
-"import { Slot } from \\"./med.js\\";
-
-import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { Fragment, Slot, component$, h } from \\"@builder.io/qwik\\";
 
 export const SlotCode = component$((props) => {
   return (
@@ -3165,9 +3239,7 @@ export default SlotCode;
 exports[`qwik > jsx > Javascript Test > SlotHtml 1`] = `
 "import ContentSlotCode from \\"./content-slot-jsx.raw\\";
 
-import { Slot } from \\"./med.js\\";
-
-import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+import { Fragment, Slot, component$, h } from \\"@builder.io/qwik\\";
 
 export const SlotCode = component$((props) => {
   return (
@@ -3209,13 +3281,12 @@ export default SlotCode;
 `;
 
 exports[`qwik > jsx > Javascript Test > SlotNamed 1`] = `
-"import { Slot } from \\"./med.js\\";
-
-import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { Fragment, Slot, component$, h } from \\"@builder.io/qwik\\";
 
 export const SlotCode = component$((props) => {
   return (
     <div>
+      <Slot name=\\"myAwesomeSlot\\"></Slot>
       <Slot name=\\"top\\"></Slot>
       <Slot name=\\"left\\">Default left</Slot>
       <Slot>Default Child</Slot>
@@ -3229,6 +3300,7 @@ export default SlotCode;
 
 exports[`qwik > jsx > Javascript Test > Stamped.io 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -3267,7 +3339,7 @@ export const SmileReviews = component$((props) => {
 
   return (
     <div data-user={state.name}>
-      <button onClick$={(event) => (state.showReviewPrompt = true)}>
+      <button onClick$={$((event) => (state.showReviewPrompt = true))}>
         Write a review
       </button>
       {state.showReviewPrompt || \\"asdf\\" ? (
@@ -3279,12 +3351,11 @@ export const SmileReviews = component$((props) => {
             class=\\"textarea-SmileReviews\\"
           ></textarea>
           <button
-            preventdefault:click=\\"\\"
+            preventdefault:click
             class=\\"button-SmileReviews\\"
-            onClick$={(event) => {
-              event.preventDefault();
+            onClick$={$((event) => {
               state.showReviewPrompt = false;
-            }}
+            })}
           >
             Submit
           </button>
@@ -3325,6 +3396,7 @@ export const STYLES = \`
   display: flex;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  -webkit-font-smoothing: antialiased;
 }
 .img-SmileReviews {
   height: 30px;
@@ -3332,6 +3404,52 @@ export const STYLES = \`
   margin-right: 10px;
 }
 \`;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > StoreComment 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const bar = function bar(props, state) {};
+export const StringLiteralStore = component$((props) => {
+  const state = useStore({ foo: true });
+
+  return <Fragment>{state.foo}</Fragment>;
+});
+
+export default StringLiteralStore;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > StoreShadowVars 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const foo = function foo(props, state, errors) {
+  return errors;
+};
+export const MyComponent = component$((props) => {
+  const state = useStore({ errors: {} });
+
+  return <Fragment>{foo(props, state, state.errors)}</Fragment>;
+});
+
+export default MyComponent;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > StoreWithState 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const bar = function bar(props, state) {
+  return state.foo;
+};
+export const MyComponent = component$((props) => {
+  const state = useStore({ foo: false });
+
+  return <Fragment>{bar(props, state)}</Fragment>;
+});
+
+export default MyComponent;
 "
 `;
 
@@ -3397,6 +3515,31 @@ export default Textarea;
 "
 `;
 
+exports[`qwik > jsx > Javascript Test > UseValueAndFnFromStore 1`] = `
+"import { Fragment, component$, h, useStore, useTask$ } from \\"@builder.io/qwik\\";
+
+export const _do = function _do(props, state, id) {
+  state._active = !!id;
+
+  if (props.onChange) {
+    props.onChange(state._active);
+  }
+};
+export const UseValueAndFnFromStore = component$((props) => {
+  const state = useStore({ _active: false, _id: \\"abc\\" });
+  useTask$(({ track }) => {
+    if (_do.bind(null, props, state)) {
+      _do(props, state, state._id);
+    }
+  });
+
+  return <div>Test</div>;
+});
+
+export default UseValueAndFnFromStore;
+"
+`;
+
 exports[`qwik > jsx > Javascript Test > Video 1`] = `
 "import { Fragment, component$, h } from \\"@builder.io/qwik\\";
 
@@ -3452,6 +3595,45 @@ export default MyComponent;
 "
 `;
 
+exports[`qwik > jsx > Javascript Test > basicForFragment 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const BasicForFragment = component$((props) => {
+  const state = useStore({ id: \\"xyz\\" });
+
+  return (
+    <div>
+      {([\\"a\\", \\"b\\", \\"c\\"] || []).map((option) => {
+        return (
+          <Fragment key={\`key-\${option}\`}>
+            <div>{option}</div>
+          </Fragment>
+        );
+      })}
+      {([\\"a\\", \\"b\\", \\"c\\"] || []).map((option) => {
+        return (
+          <Fragment key={\`\${state.id}-\${option}\`}>
+            <div>{option}</div>
+          </Fragment>
+        );
+      })}
+      <select>
+        {([\\"d\\", \\"e\\", \\"f\\"] || []).map((option) => {
+          return (
+            <option key={\`\${state.id}-\${option}\`} value={option}>
+              {option}
+            </option>
+          );
+        })}
+      </select>
+    </div>
+  );
+});
+
+export default BasicForFragment;
+"
+`;
+
 exports[`qwik > jsx > Javascript Test > basicForNoTagReference 1`] = `
 "import {
   Fragment,
@@ -3488,6 +3670,7 @@ export default MyBasicForNoTagRefComponent;
 
 exports[`qwik > jsx > Javascript Test > basicForwardRef 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -3506,7 +3689,7 @@ export const MyBasicForwardRefComponent = component$((props) => {
         class=\\"input-MyBasicForwardRefComponent\\"
         ref={props.inputRef}
         value={state.name}
-        onChange$={(event) => (state.name = event.target.value)}
+        onChange$={$((event) => (state.name = event.target.value))}
       />
     </div>
   );
@@ -3523,7 +3706,14 @@ export const STYLES = \`
 `;
 
 exports[`qwik > jsx > Javascript Test > basicForwardRefMetadata 1`] = `
-"import {
+"
+          /**
+          useMetadata:
+          {\\"forwardRef\\":\\"inputRef\\"}
+          */
+
+          import {
+  $,
   Fragment,
   component$,
   h,
@@ -3542,7 +3732,7 @@ export const MyBasicForwardRefComponent = component$((props) => {
         class=\\"input-MyBasicForwardRefComponent\\"
         ref={props.inputRef}
         value={state.name}
-        onChange$={(event) => (state.name = event.target.value)}
+        onChange$={$((event) => (state.name = event.target.value))}
       />
     </div>
   );
@@ -3558,15 +3748,66 @@ export const STYLES = \`
 "
 `;
 
+exports[`qwik > jsx > Javascript Test > basicRefAttributePassing 1`] = `
+"
+          /**
+          useMetadata:
+          {\\"attributePassing\\":{\\"enabled\\":true}}
+          */
+
+          import { Fragment, component$, h, useSignal } from \\"@builder.io/qwik\\";
+
+export const BasicRefAttributePassingComponent = component$((props) => {
+  const buttonRef = useSignal();
+
+  return <button ref={buttonRef}>Attribute Passing</button>;
+});
+
+export default BasicRefAttributePassingComponent;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > basicRefAttributePassingCustomRef 1`] = `
+"
+          /**
+          useMetadata:
+          {\\"attributePassing\\":{\\"enabled\\":true,\\"customRef\\":\\"buttonRef\\"}}
+          */
+
+          import { Fragment, component$, h, useSignal } from \\"@builder.io/qwik\\";
+
+export const BasicRefAttributePassingCustomRefComponent = component$(
+  (props) => {
+    const buttonRef = useSignal();
+
+    return (
+      <div>
+        <button ref={buttonRef}>Attribute Passing</button>
+      </div>
+    );
+  }
+);
+
+export default BasicRefAttributePassingCustomRefComponent;
+"
+`;
+
 exports[`qwik > jsx > Javascript Test > class + ClassName + css 1`] = `
-"import { Fragment, component$, h, useStylesScoped$ } from \\"@builder.io/qwik\\";
+"import MyComp from \\"./my-component.jsx\\";
+
+import { Fragment, component$, h, useStylesScoped$ } from \\"@builder.io/qwik\\";
 
 export const MyBasicComponent = component$((props) => {
   useStylesScoped$(STYLES);
 
   return (
-    <div class=\\"test2 test div-MyBasicComponent\\">
-      Hello! I can run in React, Vue, Solid, or Liquid!
+    <div>
+      <MyComp class=\\"test\\" className=\\"test2\\">
+        Hello! I can run in React, Vue, Solid, or Liquid!
+      </MyComp>
+      <div class=\\"test2 test div-MyBasicComponent\\">
+        Hello! I can run in React, Vue, Solid, or Liquid!
+      </div>
     </div>
   );
 });
@@ -3684,6 +3925,23 @@ export const STYLES = \`
 "
 `;
 
+exports[`qwik > jsx > Javascript Test > complexMeta 1`] = `
+"
+          /**
+          useMetadata:
+          {\\"x\\":\\"y\\",\\"asdf\\":{\\"stringValue\\":\\"d\\",\\"booleanValue\\":true,\\"numberValue\\":1,\\"innerObject\\":{\\"stringValue\\":\\"inner\\",\\"numberValue\\":2,\\"booleanValue\\":false},\\"spreadStringValue\\":\\"f\\"}}
+          */
+
+          import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+
+export const ComplexMetaRaw = component$((props) => {
+  return <div></div>;
+});
+
+export default ComplexMetaRaw;
+"
+`;
+
 exports[`qwik > jsx > Javascript Test > contentState 1`] = `
 "import {
   Fragment,
@@ -3712,7 +3970,7 @@ export default RenderContent;
 `;
 
 exports[`qwik > jsx > Javascript Test > defaultProps 1`] = `
-"import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h } from \\"@builder.io/qwik\\";
 
 export const Button = component$((props) => {
   return (
@@ -3730,7 +3988,7 @@ export const Button = component$((props) => {
         <button
           type=\\"button\\"
           {...props.attributes}
-          onClick$={(event) => props.onClick(event)}
+          onClick$={$((event) => props.onClick())}
         >
           {props.buttonText}
         </button>
@@ -3744,7 +4002,7 @@ export default Button;
 `;
 
 exports[`qwik > jsx > Javascript Test > defaultPropsOutsideComponent 1`] = `
-"import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h } from \\"@builder.io/qwik\\";
 
 export const Button = component$((props) => {
   return (
@@ -3762,7 +4020,7 @@ export const Button = component$((props) => {
         <button
           type=\\"button\\"
           {...props.attributes}
-          onClick$={(event) => props.onClick(event)}
+          onClick$={$((event) => props.onClick(event))}
         >
           {props.text}
         </button>
@@ -3789,6 +4047,44 @@ export default ComponentWithTypes;
 "
 `;
 
+exports[`qwik > jsx > Javascript Test > eventInputAndChange 1`] = `
+"import {
+  $,
+  Fragment,
+  component$,
+  h,
+  useStore,
+  useStylesScoped$,
+} from \\"@builder.io/qwik\\";
+
+export const EventInputAndChange = component$((props) => {
+  useStylesScoped$(STYLES);
+
+  const state = useStore({ name: \\"Steve\\" });
+
+  return (
+    <div>
+      <input
+        class=\\"input-EventInputAndChange\\"
+        value={state.name}
+        onInput$={$((event) => (state.name = event.target.value))}
+        onChange$={$((event) => (state.name = event.target.value))}
+      />
+      Hello! I can run in React, Vue, Solid, or Liquid!
+    </div>
+  );
+});
+
+export default EventInputAndChange;
+
+export const STYLES = \`
+.input-EventInputAndChange {
+  color: red;
+}
+\`;
+"
+`;
+
 exports[`qwik > jsx > Javascript Test > expressionState 1`] = `
 "import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
 
@@ -3803,6 +4099,89 @@ export const MyComponent = component$((props) => {
 });
 
 export default MyComponent;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > figmaMeta 1`] = `
+"
+          /**
+          useMetadata:
+          {\\"figma\\":{\\"name\\":\\"def-button-beta-outlined\\",\\"url\\":\\"https://www.figma.com/xxx\\",\\"props\\":{\\"iconSmall\\":{\\"type\\":\\"instance\\",\\"key\\":\\"📍 Icon Small\\"},\\"iconMedium\\":{\\"type\\":\\"instance\\",\\"key\\":\\"📍 Icon Medium\\"},\\"label\\":{\\"type\\":\\"string\\",\\"key\\":\\"✏️ Label\\"},\\"icon\\":{\\"type\\":\\"boolean\\",\\"key\\":\\"👁️ Icon\\",\\"value\\":{\\"false\\":false,\\"true\\":\\"placeholder\\"}},\\"interactiveState\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Interactive State\\",\\"value\\":{\\"(Def) Enabled\\":false,\\"Hovered\\":false,\\"Pressed\\":false,\\"Focused\\":false,\\"Disabled\\":\\"true\\"}},\\"size\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Size\\",\\"value\\":{\\"(Def) Medium\\":false,\\"Small\\":\\"small\\"}},\\"width\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Width\\",\\"value\\":{\\"(Def) Auto Width\\":false,\\"Full Width\\":\\"full\\"}}}}}
+          */
+
+          import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+
+export const FigmaButton = component$((props) => {
+  return (
+    <button
+      data-icon={props.icon}
+      data-disabled={props.interactiveState}
+      data-width={props.width}
+      data-size={props.size}
+    >
+      {props.label}
+    </button>
+  );
+});
+
+export default FigmaButton;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > functionProps 1`] = `
+"SyntaxError: Identifier expected. (5:98)
+  3 | export const MyBasicComponent=component$((props)=>{
+  4 |
+> 5 | return (<p f={(()=>{() => x})()} f1={(()=>{x => x})()} f2={(()=>{x => {}})()} f3={(()=>{function () {
+    |                                                                                                  ^
+  6 |   return x;
+  7 | }})()} f4={(()=>{function (x) {
+  8 |   return x;
+========================================================================
+import{Fragment,component$,h}from\\"@builder.io/qwik\\";
+
+export const MyBasicComponent=component$((props)=>{
+
+return (<p f={(()=>{() => x})()} f1={(()=>{x => x})()} f2={(()=>{x => {}})()} f3={(()=>{function () {
+  return x;
+}})()} f4={(()=>{function (x) {
+  return x;
+}})()} f5={(()=>{function (x) {
+  return;
+}})()} f6={(()=>{function () {
+  return;
+}})()} f7={(()=>{(a, b, c) => a + b + c})()}></p>)});
+
+export default MyBasicComponent;
+
+========================================================================"
+`;
+
+exports[`qwik > jsx > Javascript Test > getterState 1`] = `
+"import { Fragment, component$, h, useComputed$ } from \\"@builder.io/qwik\\";
+
+export const baz = function baz(props, state, foo2, bar, i) {
+  return i + foo2.value.length;
+};
+export const Button = component$((props) => {
+  const foo2 = useComputed$(() => {
+    return props.foo + \\"foo\\";
+  });
+  const bar = useComputed$(() => {
+    return \\"bar\\";
+  });
+  const state = {};
+
+  return (
+    <div>
+      <p>{foo2.value}</p>
+      <p>{bar.value}</p>
+      <p>{baz(props, state, foo2, bar, 1)}</p>
+    </div>
+  );
+});
+
+export default Button;
 "
 `;
 
@@ -3838,6 +4217,31 @@ export const RenderContent = component$((props) => {
 });
 
 export default RenderContent;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > layerName 1`] = `
+"import { Fragment, component$, h, useStylesScoped$ } from \\"@builder.io/qwik\\";
+
+export const MyLayerNameComponent = component$((props) => {
+  useStylesScoped$(STYLES);
+
+  return (
+    <section>
+      <div class=\\"layer-name-MyLayerNameComponent\\">
+        Hello! I can run in React, Vue, Solid, or Liquid!
+      </div>
+    </section>
+  );
+});
+
+export default MyLayerNameComponent;
+
+export const STYLES = \`
+.layer-name-MyLayerNameComponent {
+  padding: 10px;
+}
+\`;
 "
 `;
 
@@ -3971,6 +4375,104 @@ export const STYLES = \`
 "
 `;
 
+exports[`qwik > jsx > Javascript Test > normalizeLayerNames 1`] = `
+"import { Fragment, component$, h, useStylesScoped$ } from \\"@builder.io/qwik\\";
+
+export const MyNormalizedLayerNamesComponent = component$((props) => {
+  useStylesScoped$(STYLES);
+
+  return (
+    <section>
+      <div>Emoji</div>
+      <div>Dashes</div>
+      <div>CamelCase</div>
+      <div>Special chars</div>
+      <div>Special chars with dashes</div>
+      <div class=\\"css-0-MyNormalizedLayerNamesComponent\\">Single Number</div>
+      <div class=\\"css-123-MyNormalizedLayerNamesComponent\\">
+        Multiple Numbers
+      </div>
+      <div class=\\"name-123-MyNormalizedLayerNamesComponent\\">
+        Chars with numbers at end
+      </div>
+      <div class=\\"name-MyNormalizedLayerNamesComponent\\">
+        Chars with numbers at start
+      </div>
+      <div class=\\"name-789-MyNormalizedLayerNamesComponent\\">
+        Numnbers separated by dash
+      </div>
+      <div>Emoji</div>
+      <div data-name=\\"1\\" class=\\"div-MyNormalizedLayerNamesComponent\\">
+        Number
+      </div>
+    </section>
+  );
+});
+
+export default MyNormalizedLayerNamesComponent;
+
+export const STYLES = \`
+.css-0-MyNormalizedLayerNamesComponent {
+  margin: 10px;
+}
+.css-123-MyNormalizedLayerNamesComponent {
+  padding: 10px;
+}
+.name-123-MyNormalizedLayerNamesComponent {
+  border: 1px solid;
+}
+.name-MyNormalizedLayerNamesComponent {
+  color: red;
+}
+.name-789-MyNormalizedLayerNamesComponent {
+  background: blue;
+}
+.div-MyNormalizedLayerNamesComponent {
+  background: blue;
+}
+\`;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > onEvent 1`] = `
+"import {
+  $,
+  Fragment,
+  component$,
+  h,
+  useOn,
+  useSignal,
+  useVisibleTask$,
+} from \\"@builder.io/qwik\\";
+
+export const foo = function foo(props, state, elem, event) {
+  console.log(\\"test2\\");
+};
+export const Embed = component$((props) => {
+  const elem = useSignal();
+  const state = {};
+  useOn(
+    \\"initEditingBldr\\",
+    $((event, element) => {
+      console.log(\\"test\\");
+      foo(props, state, elem, event);
+    }) as Parameters<typeof useOn>[1]
+  );
+  useVisibleTask$(() => {
+    elem.value.dispatchEvent(new CustomEvent(\\"initEditingBldr\\"));
+  });
+
+  return (
+    <div class=\\"builder-embed\\" ref={elem}>
+      <div>Test</div>
+    </div>
+  );
+});
+
+export default Embed;
+"
+`;
+
 exports[`qwik > jsx > Javascript Test > onInit & onMount 1`] = `
 "import {
   Fragment,
@@ -4015,12 +4517,54 @@ export default OnInit;
 "
 `;
 
+exports[`qwik > jsx > Javascript Test > onInitPlain 1`] = `
+"import { Fragment, component$, h, useTask$ } from \\"@builder.io/qwik\\";
+
+export const OnInitPlain = component$((props) => {
+  useTask$(() => {
+    console.log(\\"onInit\\");
+  });
+
+  return <div></div>;
+});
+
+export default OnInitPlain;
+"
+`;
+
 exports[`qwik > jsx > Javascript Test > onMount 1`] = `
 "import { Fragment, component$, h, useVisibleTask$ } from \\"@builder.io/qwik\\";
 
 export const Comp = component$((props) => {
   useVisibleTask$(() => {
     console.log(\\"Runs on mount\\");
+  });
+
+  return <div></div>;
+});
+
+export default Comp;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > onMountMultiple 1`] = `
+"import {
+  Fragment,
+  component$,
+  h,
+  useTask$,
+  useVisibleTask$,
+} from \\"@builder.io/qwik\\";
+
+export const Comp = component$((props) => {
+  useVisibleTask$(() => {
+    console.log(\\"Runs on mount\\");
+  });
+  useVisibleTask$(() => {
+    console.log(\\"Another one runs on Mount\\");
+  });
+  useTask$(() => {
+    console.log(\\"SSR runs on Mount\\");
   });
 
   return <div></div>;
@@ -4428,6 +4972,7 @@ export default RenderBlock;
 
 exports[`qwik > jsx > Javascript Test > renderContentExample 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -4473,7 +5018,7 @@ export const RenderContent = component$((props) => {
   return (
     <div
       class=\\"div-RenderContent\\"
-      onClick$={(event) => trackClick(props.content.id)}
+      onClick$={$((event) => trackClick(props.content.id))}
     >
       <RenderBlocks blocks={props.content.blocks}></RenderBlocks>
     </div>
@@ -4569,6 +5114,46 @@ export default MyComponent;
 "
 `;
 
+exports[`qwik > jsx > Javascript Test > setState 1`] = `
+"import { $, Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const someFn = function someFn(props, state) {
+  state.n[0] = \\"123\\";
+};
+export const SetState = component$((props) => {
+  const state = useStore({ n: [\\"123\\"] });
+
+  return (
+    <div>
+      <button onClick$={$((event) => someFn(props, state))}>Click me</button>
+    </div>
+  );
+});
+
+export default SetState;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > showExpressions 1`] = `
+"SyntaxError: Expression expected. (5:115)
+  3 | export const ShowWithOtherValues=component$((props)=>{
+  4 |
+> 5 | return (<div>{props.conditionA?<>Content0</>:<>ContentA</>}{props.conditionA?<>ContentA</>:null}{props.conditionA?:<>ContentA</>}{props.conditionA?<>ContentB</>:<>{undefined}</>}{props.conditionA?<>{undefined}</>:<>ContentB</>}{props.conditionA?<>ContentC</>:null}{props.conditionA?:<>ContentC</>}{props.conditionA?<>ContentD</>:null}{props.conditionA?:<>ContentD</>}{props.conditionA?<>ContentE</>:<>hello</>}{props.conditionA?<>hello</>:<>ContentE</>}{props.conditionA?<>ContentF</>:<>123</>}{props.conditionA?<>123</>:<>ContentF</>}{props.conditionA === 'Default'?<>4mb</>:props.conditionB === 'Complete'?<>20mb</>:<>9mb</>}{props.conditionA === 'Default'?props.conditionB === 'Complete'?<>20mb</>:<>9mb</>:<>4mb</>}{props.conditionA === 'Default'?props.conditionB === 'Complete'?<div>complete</div>:<>9mb</>:props.conditionC === 'Complete'?<>dff</>:<div>complete else</div>}</div>)});
+    |                                                                                                                   ^
+  6 |
+  7 | export default ShowWithOtherValues;
+========================================================================
+import{Fragment,component$,h}from\\"@builder.io/qwik\\";
+
+export const ShowWithOtherValues=component$((props)=>{
+
+return (<div>{props.conditionA?<>Content0</>:<>ContentA</>}{props.conditionA?<>ContentA</>:null}{props.conditionA?:<>ContentA</>}{props.conditionA?<>ContentB</>:<>{undefined}</>}{props.conditionA?<>{undefined}</>:<>ContentB</>}{props.conditionA?<>ContentC</>:null}{props.conditionA?:<>ContentC</>}{props.conditionA?<>ContentD</>:null}{props.conditionA?:<>ContentD</>}{props.conditionA?<>ContentE</>:<>hello</>}{props.conditionA?<>hello</>:<>ContentE</>}{props.conditionA?<>ContentF</>:<>123</>}{props.conditionA?<>123</>:<>ContentF</>}{props.conditionA === 'Default'?<>4mb</>:props.conditionB === 'Complete'?<>20mb</>:<>9mb</>}{props.conditionA === 'Default'?props.conditionB === 'Complete'?<>20mb</>:<>9mb</>:<>4mb</>}{props.conditionA === 'Default'?props.conditionB === 'Complete'?<div>complete</div>:<>9mb</>:props.conditionC === 'Complete'?<>dff</>:<div>complete else</div>}</div>)});
+
+export default ShowWithOtherValues;
+
+========================================================================"
+`;
+
 exports[`qwik > jsx > Javascript Test > showWithFor 1`] = `
 "import { Fragment, component$, h } from \\"@builder.io/qwik\\";
 
@@ -4590,6 +5175,26 @@ export default NestedShow;
 "
 `;
 
+exports[`qwik > jsx > Javascript Test > showWithOtherValues 1`] = `
+"import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+
+export const ShowWithOtherValues = component$((props) => {
+  return (
+    <div>
+      {props.conditionA ? <>ContentA</> : null}
+      {props.conditionA ? <>ContentB</> : <>{undefined}</>}
+      {props.conditionA ? <>ContentC</> : null}
+      {props.conditionA ? <>ContentD</> : null}
+      {props.conditionA ? <>ContentE</> : <>hello</>}
+      {props.conditionA ? <>ContentF</> : <>123</>}
+    </div>
+  );
+});
+
+export default ShowWithOtherValues;
+"
+`;
+
 exports[`qwik > jsx > Javascript Test > showWithRootText 1`] = `
 "import { Fragment, component$, h } from \\"@builder.io/qwik\\";
 
@@ -4598,6 +5203,43 @@ export const ShowRootText = component$((props) => {
 });
 
 export default ShowRootText;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > signalsOnUpdate 1`] = `
+"import {
+  Fragment,
+  component$,
+  h,
+  useStylesScoped$,
+  useTask$,
+} from \\"@builder.io/qwik\\";
+
+export const MyBasicComponent = component$((props) => {
+  useStylesScoped$(STYLES);
+
+  useTask$(({ track }) => {
+    track(() => props.id);
+    track(() => props.foo.value.bar.baz);
+    console.log(\\"props.id changed\\", props.id);
+    console.log(\\"props.foo.value.bar.baz changed\\", props.foo.value.bar.baz);
+  });
+
+  return (
+    <div class=\\"test div-MyBasicComponent\\">
+      {props.id}
+      {props.foo.value.bar.baz}
+    </div>
+  );
+});
+
+export default MyBasicComponent;
+
+export const STYLES = \`
+.div-MyBasicComponent {
+  padding: 10px;
+}
+\`;
 "
 `;
 
@@ -4631,6 +5273,41 @@ export const MyBasicComponent = component$((props) => {
 });
 
 export default MyBasicComponent;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > store-async-function 1`] = `
+"import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+
+export const arrowFunction = async function arrowFunction() {
+  return Promise.resolve();
+};
+export const namedFunction = async function namedFunction() {
+  return Promise.resolve();
+};
+export const fetchUsers = async function fetchUsers() {
+  return Promise.resolve();
+};
+export const StringLiteralStore = component$((props) => {
+  const state = {};
+
+  return <div></div>;
+});
+
+export default StringLiteralStore;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > string-literal-store 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const StringLiteralStore = component$((props) => {
+  const state = useStore({ foo: 123 });
+
+  return <div>{state.foo}</div>;
+});
+
+export default StringLiteralStore;
 "
 `;
 
@@ -4746,6 +5423,59 @@ export default TypeDependency;
 "
 `;
 
+exports[`qwik > jsx > Javascript Test > typeExternalProps 1`] = `
+"import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+
+export const TypeExternalProps = component$((props) => {
+  return <div>Hello {props.name}! </div>;
+});
+
+export default TypeExternalProps;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > typeExternalStore 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const TypeExternalStore = component$((props) => {
+  const state = useStore({ _name: \\"test\\" });
+
+  return <div>Hello {state._name}! </div>;
+});
+
+export default TypeExternalStore;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > typeGetterStore 1`] = `
+"import {
+  Fragment,
+  component$,
+  h,
+  useComputed$,
+  useStore,
+} from \\"@builder.io/qwik\\";
+
+export const getName = function getName(props, state, test) {
+  if (state.name === \\"a\\") {
+    return \\"b\\";
+  }
+
+  return state.name;
+};
+export const TypeGetterStore = component$((props) => {
+  const test = useComputed$(() => {
+    return \\"test\\";
+  });
+  const state = useStore({ name: \\"test\\" });
+
+  return <div>Hello {state.name}! </div>;
+});
+
+export default TypeGetterStore;
+"
+`;
+
 exports[`qwik > jsx > Javascript Test > use-style 1`] = `
 "import { Fragment, component$, h, useStylesScoped$ } from \\"@builder.io/qwik\\";
 
@@ -4834,16 +5564,43 @@ export const UseTargetComponent = component$((props) => {
     const prefix = \\"q\\";
     return prefix + \\"foo\\";
   });
-  const state = useStore({ lastName: \\"bar\\" });
+  const state = useStore({ foo: \\"bar\\", lastName: \\"bar\\" });
   useVisibleTask$(() => {
+    console.log(state.foo);
+    state.foo = \\"bar\\";
     console.log(\\"qwik\\");
     state.lastName = \\"baz\\";
+    console.log(state.foo);
+    state.foo = \\"baz\\";
   });
 
   return <div>{name.value}</div>;
 });
 
 export default UseTargetComponent;
+"
+`;
+
+exports[`qwik > jsx > Javascript Test > webComponent 1`] = `
+"import { Fragment, component$, h, useTask$ } from \\"@builder.io/qwik\\";
+
+import { register } from \\"swiper/element/bundle\\";
+
+export const MyBasicWebComponent = component$((props) => {
+  useTask$(() => {
+    register();
+  });
+
+  return (
+    <swiper-container slides-per-view=\\"3\\" navigation=\\"true\\" pagination=\\"true\\">
+      <swiper-slide>Slide 1</swiper-slide>
+      <swiper-slide>Slide 2</swiper-slide>
+      <swiper-slide>Slide 3</swiper-slide>
+    </swiper-container>
+  );
+});
+
+export default MyBasicWebComponent;
 "
 `;
 
@@ -4864,8 +5621,95 @@ export default MyBasicComponent;
 "
 `;
 
+exports[`qwik > jsx > Typescript Test > Advanced 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const MyBasicForShowComponent = component$((props: any) => {
+  const state = useStore<any>({
+    name: \\"PatrickJS\\",
+    names: [\\"Steve\\", \\"PatrickJS\\"],
+  });
+
+  return (
+    <main>
+      {(state.names || []).map((person, i) => {
+        return (
+          <div>
+            {i}: {person}
+          </div>
+        );
+      })}
+      {(state.names || []).map((person) => {
+        return <span>{person}</span>;
+      })}
+      {(state.names || []).map((item) => {
+        return <br />;
+      })}
+      {(
+        Array.from({
+          length: 10,
+        }) || []
+      ).map((_, ee) => {
+        return <pre>{ee}</pre>;
+      })}
+      {(
+        Array.from({
+          length: 10,
+        }) || []
+      ).map((item) => {
+        return <p>{index}</p>;
+      })}
+      {(state.names || []).map((person, index) => {
+        return (
+          <span>
+            {person}
+            {index}
+          </span>
+        );
+      })}
+      {(
+        Array.from({
+          length: 10,
+        }) || []
+      ).map((person, count) => {
+        return (
+          <span>
+            {person}
+            {count}
+          </span>
+        );
+      })}
+      {(state.names || []).map((person, i) => {
+        return (
+          <span>
+            {person}
+            {i}
+          </span>
+        );
+      })}
+      {(
+        Array.from({
+          length: 10,
+        }) || []
+      ).map((person, index) => {
+        return (
+          <span>
+            {person}
+            {index}
+          </span>
+        );
+      })}
+    </main>
+  );
+});
+
+export default MyBasicForShowComponent;
+"
+`;
+
 exports[`qwik > jsx > Typescript Test > Basic 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -4891,9 +5735,9 @@ export const MyBasicComponent = component$((props: MyBasicComponentProps) => {
     <div class=\\"test div-MyBasicComponent\\">
       <input
         value={DEFAULT_VALUES.name || state.name}
-        onChange$={(event) => (state.name = myEvent.target.value)}
+        onChange$={$((event) => (state.name = myEvent.target.value))}
       />
-      Hello! I can run in React, Vue, Solid, or Liquid!
+      Hello! I can run in React, Vue, Solid, or Liquid! &gt;
     </div>
   );
 });
@@ -4909,7 +5753,7 @@ export const STYLES = \`
 `;
 
 exports[`qwik > jsx > Typescript Test > Basic 2`] = `
-"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
 
 export const MyBasicForShowComponent = component$((props: any) => {
   const state = useStore<any>({
@@ -4924,9 +5768,9 @@ export const MyBasicForShowComponent = component$((props: any) => {
           <>
             <input
               value={state.name}
-              onChange$={(event) => {
+              onChange$={$((event) => {
                 state.name = event.target.value + \\" and \\" + person;
-              }}
+              })}
             />
             Hello {person}! I can run in Qwik, Web Component, React, Vue, Solid,
             or Liquid!
@@ -4943,6 +5787,7 @@ export default MyBasicForShowComponent;
 
 exports[`qwik > jsx > Typescript Test > Basic Context 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -4976,7 +5821,7 @@ export const MyBasicComponent = component$((props: any) => {
     <div>
       {myService.method(\\"hello\\") + state.name}
       Hello! I can run in React, Vue, Solid, or Liquid!
-      <input onChange$={(event) => state.onChange} />
+      <input onChange$={$((event) => state.onChange)} />
     </div>
   );
 });
@@ -5042,7 +5887,13 @@ export default MyBasicOutputsComponent;
 `;
 
 exports[`qwik > jsx > Typescript Test > Basic Outputs Meta 1`] = `
-"import {
+"
+          /**
+          useMetadata:
+          {\\"outputs\\":[\\"onMessage\\",\\"onEvent\\"],\\"baz\\":\\"metadata inside component\\"}
+          */
+
+          import {
   Fragment,
   component$,
   h,
@@ -5133,6 +5984,7 @@ export default MyBasicChildComponent;
 
 exports[`qwik > jsx > Typescript Test > BasicFor 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -5156,9 +6008,9 @@ export const MyBasicForComponent = component$((props: any) => {
           <Fragment>
             <input
               value={state.name}
-              onChange$={(event) => {
+              onChange$={$((event) => {
                 state.name = event.target.value + \\" and \\" + person;
-              }}
+              })}
             />
             Hello {person}! I can run in Qwik, Web Component, React, Vue, Solid,
             or Liquid!
@@ -5175,6 +6027,7 @@ export default MyBasicForComponent;
 
 exports[`qwik > jsx > Typescript Test > BasicRef 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -5213,8 +6066,8 @@ export const MyBasicRefComponent = component$((props: Props) => {
             class=\\"input-MyBasicRefComponent\\"
             ref={inputRef}
             value={state.name}
-            onBlur$={(event) => state.onBlur()}
-            onChange$={(event) => (state.name = event.target.value)}
+            onBlur$={$((event) => state.onBlur())}
+            onChange$={$((event) => (state.name = event.target.value))}
           />
           <label for=\\"cars\\" ref={inputNoArgRef}>
             Choose a car:
@@ -5243,7 +6096,7 @@ export const STYLES = \`
 `;
 
 exports[`qwik > jsx > Typescript Test > BasicRefAssignment 1`] = `
-"import { Fragment, component$, h, useSignal } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h, useSignal } from \\"@builder.io/qwik\\";
 
 export interface Props {
   showInput: boolean;
@@ -5264,7 +6117,9 @@ export const MyBasicRefAssignmentComponent = component$((props: Props) => {
 
   return (
     <div>
-      <button onClick$={(event) => state.handlerClick(evt)}>Click</button>
+      <button onClick$={$((event) => await state.handlerClick(evt))}>
+        Click
+      </button>
     </div>
   );
 });
@@ -5275,6 +6130,7 @@ export default MyBasicRefAssignmentComponent;
 
 exports[`qwik > jsx > Typescript Test > BasicRefPrevious 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -5311,7 +6167,7 @@ export const MyPreviousComponent = component$((props: Props) => {
       <h1>
         Now: {state.count}, before: {prevCount.value}
       </h1>
-      <button onClick$={(event) => (state.count += 1)}>Increment</button>
+      <button onClick$={$((event) => (state.count += 1))}>Increment</button>
     </div>
   );
 });
@@ -5439,9 +6295,7 @@ export const STYLES = \`
 exports[`qwik > jsx > Typescript Test > ContentSlotHtml 1`] = `
 "import { JSX } from \\"../../../../jsx-runtime\\";
 
-import { Slot } from \\"./med.js\\";
-
-import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+import { Fragment, Slot, component$, h } from \\"@builder.io/qwik\\";
 
 type Props = {
   [key: string]: string | JSX.Element;
@@ -5468,9 +6322,8 @@ export default ContentSlotCode;
 exports[`qwik > jsx > Typescript Test > ContentSlotJSX 1`] = `
 "import { JSX } from \\"../../../../jsx-runtime\\";
 
-import { Slot } from \\"./med.js\\";
-
 import {
+  $,
   Fragment,
   Slot,
   component$,
@@ -5482,7 +6335,7 @@ import {
 type Props = {
   [key: string]: string | JSX.Element;
 };
-export const show = function show(props, state) {
+export const show = function show(props, state, cls) {
   props.slotContent ? 1 : \\"\\";
 };
 export const ContentSlotJsxCode = component$((props: Props) => {
@@ -5498,7 +6351,7 @@ export const ContentSlotJsxCode = component$((props: Props) => {
           name={props.slotContent ? \\"name1\\" : \\"name2\\"}
           title={props.slotContent ? \\"title1\\" : \\"title2\\"}
           {...props.attributes}
-          onClick$={(event) => show(props, state)}
+          onClick$={$((event) => show(props, state, cls))}
           class={cls.value}
         >
           {state.showContent && props.slotContent ? (
@@ -5684,6 +6537,7 @@ export default CustomCode;
 
 exports[`qwik > jsx > Typescript Test > Form 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -5728,6 +6582,7 @@ export type FormState = \\"unsubmitted\\" | \\"sending\\" | \\"success\\" | \\"e
 export const onSubmit = function onSubmit(
   props,
   state,
+  submissionState,
   formRef,
   event: Event & {
     currentTarget: HTMLFormElement;
@@ -5970,7 +6825,9 @@ export const FormComponent = component$((props: FormProps) => {
       })()}
       method={props.method}
       name={props.name}
-      onSubmit$={(event) => onSubmit(props, state, formRef, event)}
+      onSubmit$={$((event) =>
+        onSubmit(props, state, submissionState, formRef, event)
+      )}
       {...props.attributes}
     >
       {props.builderBlock && props.builderBlock.children
@@ -6025,6 +6882,7 @@ export const STYLES = \`
 
 exports[`qwik > jsx > Typescript Test > Image 1`] = `
 "import {
+  $,
   Fragment,
   Slot,
   component$,
@@ -6116,7 +6974,7 @@ export const Image = component$((props: ImageProps) => {
               \\" img-Image\\"
             }
             src={props.image}
-            onLoad$={(event) => setLoaded(props, state, pictureRef)}
+            onLoad$={$((event) => setLoaded(props, state, pictureRef))}
             srcset={props.srcset}
             sizes={props.sizes}
           />
@@ -6208,7 +7066,7 @@ export default ImgComponent;
 `;
 
 exports[`qwik > jsx > Typescript Test > Input 1`] = `
-"import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h } from \\"@builder.io/qwik\\";
 
 import { Builder } from \\"@builder.io/sdk\\";
 
@@ -6237,7 +7095,7 @@ export const FormInputComponent = component$((props: FormInputProps) => {
       value={props.value}
       defaultValue={props.defaultValue}
       required={props.required}
-      onChange$={(event) => props.onChange?.(event.target.value)}
+      onChange$={$((event) => props.onChange?.(event.target.value))}
     />
   );
 });
@@ -6249,7 +7107,7 @@ export default FormInputComponent;
 exports[`qwik > jsx > Typescript Test > InputParent 1`] = `
 "import FormInputComponent from \\"./input.raw\\";
 
-import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+import { $, Fragment, component$, h } from \\"@builder.io/qwik\\";
 
 export const handleChange = function handleChange(props, state, value: string) {
   console.log(value);
@@ -6261,12 +7119,37 @@ export const Stepper = component$((props: any) => {
     <FormInputComponent
       name=\\"kingzez\\"
       type=\\"text\\"
-      onChange$={(event) => handleChange(props, state, value)}
+      onChange$={$((event) => handleChange(props, state, value))}
     ></FormInputComponent>
   );
 });
 
 export default Stepper;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > NestedStore 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+type MyStore = {
+  _id?: string;
+  _messageId?: string;
+};
+export const NestedStore = component$((props: any) => {
+  const state = useStore<any>({
+    _id: \\"abc\\",
+    _messageId: state._id + \\"-message\\",
+  });
+
+  return (
+    <div id={state._id}>
+      Test
+      <p id={state._messageId}>Message</p>
+    </div>
+  );
+});
+
+export default NestedStore;
 "
 `;
 
@@ -6398,9 +7281,7 @@ export default SelectComponent;
 `;
 
 exports[`qwik > jsx > Typescript Test > SlotDefault 1`] = `
-"import { Slot } from \\"./med.js\\";
-
-import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { Fragment, Slot, component$, h } from \\"@builder.io/qwik\\";
 
 type Props = {
   [key: string]: string;
@@ -6422,9 +7303,7 @@ export default SlotCode;
 exports[`qwik > jsx > Typescript Test > SlotHtml 1`] = `
 "import ContentSlotCode from \\"./content-slot-jsx.raw\\";
 
-import { Slot } from \\"./med.js\\";
-
-import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+import { Fragment, Slot, component$, h } from \\"@builder.io/qwik\\";
 
 type Props = {
   [key: string]: string;
@@ -6472,9 +7351,7 @@ export default SlotCode;
 `;
 
 exports[`qwik > jsx > Typescript Test > SlotNamed 1`] = `
-"import { Slot } from \\"./med.js\\";
-
-import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { Fragment, Slot, component$, h } from \\"@builder.io/qwik\\";
 
 type Props = {
   [key: string]: string;
@@ -6482,6 +7359,7 @@ type Props = {
 export const SlotCode = component$((props: Props) => {
   return (
     <div>
+      <Slot name=\\"myAwesomeSlot\\"></Slot>
       <Slot name=\\"top\\"></Slot>
       <Slot name=\\"left\\">Default left</Slot>
       <Slot>Default Child</Slot>
@@ -6495,6 +7373,7 @@ export default SlotCode;
 
 exports[`qwik > jsx > Typescript Test > Stamped.io 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -6537,7 +7416,7 @@ export const SmileReviews = component$((props: SmileReviewsProps) => {
 
   return (
     <div data-user={state.name}>
-      <button onClick$={(event) => (state.showReviewPrompt = true)}>
+      <button onClick$={$((event) => (state.showReviewPrompt = true))}>
         Write a review
       </button>
       {state.showReviewPrompt || \\"asdf\\" ? (
@@ -6549,12 +7428,11 @@ export const SmileReviews = component$((props: SmileReviewsProps) => {
             class=\\"textarea-SmileReviews\\"
           ></textarea>
           <button
-            preventdefault:click=\\"\\"
+            preventdefault:click
             class=\\"button-SmileReviews\\"
-            onClick$={(event) => {
-              event.preventDefault();
+            onClick$={$((event) => {
               state.showReviewPrompt = false;
-            }}
+            })}
           >
             Submit
           </button>
@@ -6595,6 +7473,7 @@ export const STYLES = \`
   display: flex;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  -webkit-font-smoothing: antialiased;
 }
 .img-SmileReviews {
   height: 30px;
@@ -6602,6 +7481,52 @@ export const STYLES = \`
   margin-right: 10px;
 }
 \`;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > StoreComment 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const bar = function bar(props, state) {};
+export const StringLiteralStore = component$((props: any) => {
+  const state = useStore<any>({ foo: true });
+
+  return <Fragment>{state.foo}</Fragment>;
+});
+
+export default StringLiteralStore;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > StoreShadowVars 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const foo = function foo(props, state, errors) {
+  return errors;
+};
+export const MyComponent = component$((props: any) => {
+  const state = useStore<any>({ errors: {} });
+
+  return <Fragment>{foo(props, state, state.errors)}</Fragment>;
+});
+
+export default MyComponent;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > StoreWithState 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const bar = function bar(props, state) {
+  return state.foo;
+};
+export const MyComponent = component$((props: any) => {
+  const state = useStore<any>({ foo: false });
+
+  return <Fragment>{bar(props, state)}</Fragment>;
+});
+
+export default MyComponent;
 "
 `;
 
@@ -6685,6 +7610,39 @@ export default Textarea;
 "
 `;
 
+exports[`qwik > jsx > Typescript Test > UseValueAndFnFromStore 1`] = `
+"import { Fragment, component$, h, useStore, useTask$ } from \\"@builder.io/qwik\\";
+
+type MyProps = {
+  onChange?: (active: boolean) => void;
+};
+type MyStore = {
+  _id?: string;
+  _active?: boolean;
+  _do?: (id?: string) => void;
+};
+export const _do = function _do(props, state, id?: string) {
+  state._active = !!id;
+
+  if (props.onChange) {
+    props.onChange(state._active);
+  }
+};
+export const UseValueAndFnFromStore = component$((props: MyProps) => {
+  const state = useStore<any>({ _active: false, _id: \\"abc\\" });
+  useTask$(({ track }) => {
+    if (_do.bind(null, props, state)) {
+      _do(props, state, state._id);
+    }
+  });
+
+  return <div>Test</div>;
+});
+
+export default UseValueAndFnFromStore;
+"
+`;
+
 exports[`qwik > jsx > Typescript Test > Video 1`] = `
 "import { Fragment, component$, h } from \\"@builder.io/qwik\\";
 
@@ -6765,6 +7723,45 @@ export default MyComponent;
 "
 `;
 
+exports[`qwik > jsx > Typescript Test > basicForFragment 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const BasicForFragment = component$((props: any) => {
+  const state = useStore<any>({ id: \\"xyz\\" });
+
+  return (
+    <div>
+      {([\\"a\\", \\"b\\", \\"c\\"] || []).map((option) => {
+        return (
+          <Fragment key={\`key-\${option}\`}>
+            <div>{option}</div>
+          </Fragment>
+        );
+      })}
+      {([\\"a\\", \\"b\\", \\"c\\"] || []).map((option) => {
+        return (
+          <Fragment key={\`\${state.id}-\${option}\`}>
+            <div>{option}</div>
+          </Fragment>
+        );
+      })}
+      <select>
+        {([\\"d\\", \\"e\\", \\"f\\"] || []).map((option) => {
+          return (
+            <option key={\`\${state.id}-\${option}\`} value={option}>
+              {option}
+            </option>
+          );
+        })}
+      </select>
+    </div>
+  );
+});
+
+export default BasicForFragment;
+"
+`;
+
 exports[`qwik > jsx > Typescript Test > basicForNoTagReference 1`] = `
 "import {
   Fragment,
@@ -6805,6 +7802,7 @@ export default MyBasicForNoTagRefComponent;
 
 exports[`qwik > jsx > Typescript Test > basicForwardRef 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -6827,7 +7825,7 @@ export const MyBasicForwardRefComponent = component$((props: Props) => {
         class=\\"input-MyBasicForwardRefComponent\\"
         ref={props.inputRef}
         value={state.name}
-        onChange$={(event) => (state.name = event.target.value)}
+        onChange$={$((event) => (state.name = event.target.value))}
       />
     </div>
   );
@@ -6844,7 +7842,14 @@ export const STYLES = \`
 `;
 
 exports[`qwik > jsx > Typescript Test > basicForwardRefMetadata 1`] = `
-"import {
+"
+          /**
+          useMetadata:
+          {\\"forwardRef\\":\\"inputRef\\"}
+          */
+
+          import {
+  $,
   Fragment,
   component$,
   h,
@@ -6867,7 +7872,7 @@ export const MyBasicForwardRefComponent = component$((props: Props) => {
         class=\\"input-MyBasicForwardRefComponent\\"
         ref={props.inputRef}
         value={state.name}
-        onChange$={(event) => (state.name = event.target.value)}
+        onChange$={$((event) => (state.name = event.target.value))}
       />
     </div>
   );
@@ -6883,15 +7888,66 @@ export const STYLES = \`
 "
 `;
 
+exports[`qwik > jsx > Typescript Test > basicRefAttributePassing 1`] = `
+"
+          /**
+          useMetadata:
+          {\\"attributePassing\\":{\\"enabled\\":true}}
+          */
+
+          import { Fragment, component$, h, useSignal } from \\"@builder.io/qwik\\";
+
+export const BasicRefAttributePassingComponent = component$((props: any) => {
+  const buttonRef = useSignal<Element>();
+
+  return <button ref={buttonRef}>Attribute Passing</button>;
+});
+
+export default BasicRefAttributePassingComponent;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > basicRefAttributePassingCustomRef 1`] = `
+"
+          /**
+          useMetadata:
+          {\\"attributePassing\\":{\\"enabled\\":true,\\"customRef\\":\\"buttonRef\\"}}
+          */
+
+          import { Fragment, component$, h, useSignal } from \\"@builder.io/qwik\\";
+
+export const BasicRefAttributePassingCustomRefComponent = component$(
+  (props: any) => {
+    const buttonRef = useSignal<Element>();
+
+    return (
+      <div>
+        <button ref={buttonRef}>Attribute Passing</button>
+      </div>
+    );
+  }
+);
+
+export default BasicRefAttributePassingCustomRefComponent;
+"
+`;
+
 exports[`qwik > jsx > Typescript Test > class + ClassName + css 1`] = `
-"import { Fragment, component$, h, useStylesScoped$ } from \\"@builder.io/qwik\\";
+"import MyComp from \\"./my-component.jsx\\";
+
+import { Fragment, component$, h, useStylesScoped$ } from \\"@builder.io/qwik\\";
 
 export const MyBasicComponent = component$((props: any) => {
   useStylesScoped$(STYLES);
 
   return (
-    <div class=\\"test2 test div-MyBasicComponent\\">
-      Hello! I can run in React, Vue, Solid, or Liquid!
+    <div>
+      <MyComp class=\\"test\\" className=\\"test2\\">
+        Hello! I can run in React, Vue, Solid, or Liquid!
+      </MyComp>
+      <div class=\\"test2 test div-MyBasicComponent\\">
+        Hello! I can run in React, Vue, Solid, or Liquid!
+      </div>
     </div>
   );
 });
@@ -7015,6 +8071,23 @@ export const STYLES = \`
 "
 `;
 
+exports[`qwik > jsx > Typescript Test > complexMeta 1`] = `
+"
+          /**
+          useMetadata:
+          {\\"x\\":\\"y\\",\\"asdf\\":{\\"stringValue\\":\\"d\\",\\"booleanValue\\":true,\\"numberValue\\":1,\\"innerObject\\":{\\"stringValue\\":\\"inner\\",\\"numberValue\\":2,\\"booleanValue\\":false},\\"spreadStringValue\\":\\"f\\"}}
+          */
+
+          import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+
+export const ComplexMetaRaw = component$((props: any) => {
+  return <div></div>;
+});
+
+export default ComplexMetaRaw;
+"
+`;
+
 exports[`qwik > jsx > Typescript Test > contentState 1`] = `
 "import {
   Fragment,
@@ -7043,7 +8116,7 @@ export default RenderContent;
 `;
 
 exports[`qwik > jsx > Typescript Test > defaultProps 1`] = `
-"import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h } from \\"@builder.io/qwik\\";
 
 export interface ButtonProps {
   attributes?: any;
@@ -7070,7 +8143,7 @@ export const Button = component$((props: ButtonProps) => {
         <button
           type=\\"button\\"
           {...props.attributes}
-          onClick$={(event) => props.onClick(event)}
+          onClick$={$((event) => props.onClick())}
         >
           {props.buttonText}
         </button>
@@ -7084,7 +8157,7 @@ export default Button;
 `;
 
 exports[`qwik > jsx > Typescript Test > defaultPropsOutsideComponent 1`] = `
-"import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h } from \\"@builder.io/qwik\\";
 
 export interface ButtonProps {
   attributes?: any;
@@ -7109,7 +8182,7 @@ export const Button = component$((props: ButtonProps) => {
         <button
           type=\\"button\\"
           {...props.attributes}
-          onClick$={(event) => props.onClick(event)}
+          onClick$={$((event) => props.onClick(event))}
         >
           {props.text}
         </button>
@@ -7139,6 +8212,44 @@ export default ComponentWithTypes;
 "
 `;
 
+exports[`qwik > jsx > Typescript Test > eventInputAndChange 1`] = `
+"import {
+  $,
+  Fragment,
+  component$,
+  h,
+  useStore,
+  useStylesScoped$,
+} from \\"@builder.io/qwik\\";
+
+export const EventInputAndChange = component$((props: any) => {
+  useStylesScoped$(STYLES);
+
+  const state = useStore<any>({ name: \\"Steve\\" });
+
+  return (
+    <div>
+      <input
+        class=\\"input-EventInputAndChange\\"
+        value={state.name}
+        onInput$={$((event) => (state.name = event.target.value))}
+        onChange$={$((event) => (state.name = event.target.value))}
+      />
+      Hello! I can run in React, Vue, Solid, or Liquid!
+    </div>
+  );
+});
+
+export default EventInputAndChange;
+
+export const STYLES = \`
+.input-EventInputAndChange {
+  color: red;
+}
+\`;
+"
+`;
+
 exports[`qwik > jsx > Typescript Test > expressionState 1`] = `
 "import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
 
@@ -7153,6 +8264,95 @@ export const MyComponent = component$((props: any) => {
 });
 
 export default MyComponent;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > figmaMeta 1`] = `
+"
+          /**
+          useMetadata:
+          {\\"figma\\":{\\"name\\":\\"def-button-beta-outlined\\",\\"url\\":\\"https://www.figma.com/xxx\\",\\"props\\":{\\"iconSmall\\":{\\"type\\":\\"instance\\",\\"key\\":\\"📍 Icon Small\\"},\\"iconMedium\\":{\\"type\\":\\"instance\\",\\"key\\":\\"📍 Icon Medium\\"},\\"label\\":{\\"type\\":\\"string\\",\\"key\\":\\"✏️ Label\\"},\\"icon\\":{\\"type\\":\\"boolean\\",\\"key\\":\\"👁️ Icon\\",\\"value\\":{\\"false\\":false,\\"true\\":\\"placeholder\\"}},\\"interactiveState\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Interactive State\\",\\"value\\":{\\"(Def) Enabled\\":false,\\"Hovered\\":false,\\"Pressed\\":false,\\"Focused\\":false,\\"Disabled\\":\\"true\\"}},\\"size\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Size\\",\\"value\\":{\\"(Def) Medium\\":false,\\"Small\\":\\"small\\"}},\\"width\\":{\\"type\\":\\"enum\\",\\"key\\":\\"Width\\",\\"value\\":{\\"(Def) Auto Width\\":false,\\"Full Width\\":\\"full\\"}}}}}
+          */
+
+          import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+
+export const FigmaButton = component$((props: any) => {
+  return (
+    <button
+      data-icon={props.icon}
+      data-disabled={props.interactiveState}
+      data-width={props.width}
+      data-size={props.size}
+    >
+      {props.label}
+    </button>
+  );
+});
+
+export default FigmaButton;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > functionProps 1`] = `
+"SyntaxError: Identifier expected. (8:98)
+   6 | export const MyBasicComponent=component$((props:MyBasicComponentProps)=>{
+   7 |
+>  8 | return (<p f={(()=>{() => x})()} f1={(()=>{x => x})()} f2={(()=>{x => {}})()} f3={(()=>{function () {
+     |                                                                                                  ^
+   9 |   return x;
+  10 | }})()} f4={(()=>{function (x) {
+  11 |   return x;
+========================================================================
+import{Fragment,component$,h}from\\"@builder.io/qwik\\";
+
+export interface MyBasicComponentProps {
+  id: string;
+}
+export const MyBasicComponent=component$((props:MyBasicComponentProps)=>{
+
+return (<p f={(()=>{() => x})()} f1={(()=>{x => x})()} f2={(()=>{x => {}})()} f3={(()=>{function () {
+  return x;
+}})()} f4={(()=>{function (x) {
+  return x;
+}})()} f5={(()=>{function (x) {
+  return;
+}})()} f6={(()=>{function () {
+  return;
+}})()} f7={(()=>{(a, b, c) => a + b + c})()}></p>)});
+
+export default MyBasicComponent;
+
+========================================================================"
+`;
+
+exports[`qwik > jsx > Typescript Test > getterState 1`] = `
+"import { Fragment, component$, h, useComputed$ } from \\"@builder.io/qwik\\";
+
+export interface ButtonProps {
+  foo: string;
+}
+export const baz = function baz(props, state, foo2, bar, i: number) {
+  return i + foo2.value.length;
+};
+export const Button = component$((props: ButtonProps) => {
+  const foo2 = useComputed$(() => {
+    return props.foo + \\"foo\\";
+  });
+  const bar = useComputed$(() => {
+    return \\"bar\\";
+  });
+  const state: any = {};
+
+  return (
+    <div>
+      <p>{foo2.value}</p>
+      <p>{bar.value}</p>
+      <p>{baz(props, state, foo2, bar, 1)}</p>
+    </div>
+  );
+});
+
+export default Button;
 "
 `;
 
@@ -7198,6 +8398,31 @@ export const RenderContent = component$((props: RenderContentProps) => {
 });
 
 export default RenderContent;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > layerName 1`] = `
+"import { Fragment, component$, h, useStylesScoped$ } from \\"@builder.io/qwik\\";
+
+export const MyLayerNameComponent = component$((props: any) => {
+  useStylesScoped$(STYLES);
+
+  return (
+    <section>
+      <div class=\\"layer-name-MyLayerNameComponent\\">
+        Hello! I can run in React, Vue, Solid, or Liquid!
+      </div>
+    </section>
+  );
+});
+
+export default MyLayerNameComponent;
+
+export const STYLES = \`
+.layer-name-MyLayerNameComponent {
+  padding: 10px;
+}
+\`;
 "
 `;
 
@@ -7335,6 +8560,109 @@ export const STYLES = \`
 "
 `;
 
+exports[`qwik > jsx > Typescript Test > normalizeLayerNames 1`] = `
+"import { Fragment, component$, h, useStylesScoped$ } from \\"@builder.io/qwik\\";
+
+export interface MyNormalizedLayerNamesComponentProps {
+  id: string;
+}
+export const MyNormalizedLayerNamesComponent = component$(
+  (props: MyNormalizedLayerNamesComponentProps) => {
+    useStylesScoped$(STYLES);
+
+    return (
+      <section>
+        <div>Emoji</div>
+        <div>Dashes</div>
+        <div>CamelCase</div>
+        <div>Special chars</div>
+        <div>Special chars with dashes</div>
+        <div class=\\"css-0-MyNormalizedLayerNamesComponent\\">Single Number</div>
+        <div class=\\"css-123-MyNormalizedLayerNamesComponent\\">
+          Multiple Numbers
+        </div>
+        <div class=\\"name-123-MyNormalizedLayerNamesComponent\\">
+          Chars with numbers at end
+        </div>
+        <div class=\\"name-MyNormalizedLayerNamesComponent\\">
+          Chars with numbers at start
+        </div>
+        <div class=\\"name-789-MyNormalizedLayerNamesComponent\\">
+          Numnbers separated by dash
+        </div>
+        <div>Emoji</div>
+        <div data-name=\\"1\\" class=\\"div-MyNormalizedLayerNamesComponent\\">
+          Number
+        </div>
+      </section>
+    );
+  }
+);
+
+export default MyNormalizedLayerNamesComponent;
+
+export const STYLES = \`
+.css-0-MyNormalizedLayerNamesComponent {
+  margin: 10px;
+}
+.css-123-MyNormalizedLayerNamesComponent {
+  padding: 10px;
+}
+.name-123-MyNormalizedLayerNamesComponent {
+  border: 1px solid;
+}
+.name-MyNormalizedLayerNamesComponent {
+  color: red;
+}
+.name-789-MyNormalizedLayerNamesComponent {
+  background: blue;
+}
+.div-MyNormalizedLayerNamesComponent {
+  background: blue;
+}
+\`;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > onEvent 1`] = `
+"import {
+  $,
+  Fragment,
+  component$,
+  h,
+  useOn,
+  useSignal,
+  useVisibleTask$,
+} from \\"@builder.io/qwik\\";
+
+export const foo = function foo(props, state, elem, event) {
+  console.log(\\"test2\\");
+};
+export const Embed = component$((props: any) => {
+  const elem = useSignal<Element>();
+  const state: any = {};
+  useOn(
+    \\"initEditingBldr\\",
+    $((event, element) => {
+      console.log(\\"test\\");
+      foo(props, state, elem, event);
+    }) as Parameters<typeof useOn>[1]
+  );
+  useVisibleTask$(() => {
+    elem.value.dispatchEvent(new CustomEvent(\\"initEditingBldr\\"));
+  });
+
+  return (
+    <div class=\\"builder-embed\\" ref={elem}>
+      <div>Test</div>
+    </div>
+  );
+});
+
+export default Embed;
+"
+`;
+
 exports[`qwik > jsx > Typescript Test > onInit & onMount 1`] = `
 "import {
   Fragment,
@@ -7382,12 +8710,54 @@ export default OnInit;
 "
 `;
 
+exports[`qwik > jsx > Typescript Test > onInitPlain 1`] = `
+"import { Fragment, component$, h, useTask$ } from \\"@builder.io/qwik\\";
+
+export const OnInitPlain = component$((props: any) => {
+  useTask$(() => {
+    console.log(\\"onInit\\");
+  });
+
+  return <div></div>;
+});
+
+export default OnInitPlain;
+"
+`;
+
 exports[`qwik > jsx > Typescript Test > onMount 1`] = `
 "import { Fragment, component$, h, useVisibleTask$ } from \\"@builder.io/qwik\\";
 
 export const Comp = component$((props: any) => {
   useVisibleTask$(() => {
     console.log(\\"Runs on mount\\");
+  });
+
+  return <div></div>;
+});
+
+export default Comp;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > onMountMultiple 1`] = `
+"import {
+  Fragment,
+  component$,
+  h,
+  useTask$,
+  useVisibleTask$,
+} from \\"@builder.io/qwik\\";
+
+export const Comp = component$((props: any) => {
+  useVisibleTask$(() => {
+    console.log(\\"Runs on mount\\");
+  });
+  useVisibleTask$(() => {
+    console.log(\\"Another one runs on Mount\\");
+  });
+  useTask$(() => {
+    console.log(\\"SSR runs on Mount\\");
   });
 
   return <div></div>;
@@ -7849,6 +9219,7 @@ export default RenderBlock;
 
 exports[`qwik > jsx > Typescript Test > renderContentExample 1`] = `
 "import {
+  $,
   Fragment,
   component$,
   h,
@@ -7901,7 +9272,7 @@ export const RenderContent = component$((props: Props) => {
   return (
     <div
       class=\\"div-RenderContent\\"
-      onClick$={(event) => trackClick(props.content.id)}
+      onClick$={$((event) => trackClick(props.content.id))}
     >
       <RenderBlocks blocks={props.content.blocks}></RenderBlocks>
     </div>
@@ -8006,6 +9377,50 @@ export default MyComponent;
 "
 `;
 
+exports[`qwik > jsx > Typescript Test > setState 1`] = `
+"import { $, Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const someFn = function someFn(props, state) {
+  state.n[0] = \\"123\\";
+};
+export const SetState = component$((props: any) => {
+  const state = useStore<any>({ n: [\\"123\\"] });
+
+  return (
+    <div>
+      <button onClick$={$((event) => someFn(props, state))}>Click me</button>
+    </div>
+  );
+});
+
+export default SetState;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > showExpressions 1`] = `
+"SyntaxError: Expression expected. (9:115)
+   7 | export const ShowWithOtherValues=component$((props:Props)=>{
+   8 |
+>  9 | return (<div>{props.conditionA?<>Content0</>:<>ContentA</>}{props.conditionA?<>ContentA</>:null}{props.conditionA?:<>ContentA</>}{props.conditionA?<>ContentB</>:<>{undefined}</>}{props.conditionA?<>{undefined}</>:<>ContentB</>}{props.conditionA?<>ContentC</>:null}{props.conditionA?:<>ContentC</>}{props.conditionA?<>ContentD</>:null}{props.conditionA?:<>ContentD</>}{props.conditionA?<>ContentE</>:<>hello</>}{props.conditionA?<>hello</>:<>ContentE</>}{props.conditionA?<>ContentF</>:<>123</>}{props.conditionA?<>123</>:<>ContentF</>}{props.conditionA === 'Default'?<>4mb</>:props.conditionB === 'Complete'?<>20mb</>:<>9mb</>}{props.conditionA === 'Default'?props.conditionB === 'Complete'?<>20mb</>:<>9mb</>:<>4mb</>}{props.conditionA === 'Default'?props.conditionB === 'Complete'?<div>complete</div>:<>9mb</>:props.conditionC === 'Complete'?<>dff</>:<div>complete else</div>}</div>)});
+     |                                                                                                                   ^
+  10 |
+  11 | export default ShowWithOtherValues;
+========================================================================
+import{Fragment,component$,h}from\\"@builder.io/qwik\\";
+
+interface Props {
+  conditionA: boolean;
+  conditionB: boolean;
+}
+export const ShowWithOtherValues=component$((props:Props)=>{
+
+return (<div>{props.conditionA?<>Content0</>:<>ContentA</>}{props.conditionA?<>ContentA</>:null}{props.conditionA?:<>ContentA</>}{props.conditionA?<>ContentB</>:<>{undefined}</>}{props.conditionA?<>{undefined}</>:<>ContentB</>}{props.conditionA?<>ContentC</>:null}{props.conditionA?:<>ContentC</>}{props.conditionA?<>ContentD</>:null}{props.conditionA?:<>ContentD</>}{props.conditionA?<>ContentE</>:<>hello</>}{props.conditionA?<>hello</>:<>ContentE</>}{props.conditionA?<>ContentF</>:<>123</>}{props.conditionA?<>123</>:<>ContentF</>}{props.conditionA === 'Default'?<>4mb</>:props.conditionB === 'Complete'?<>20mb</>:<>9mb</>}{props.conditionA === 'Default'?props.conditionB === 'Complete'?<>20mb</>:<>9mb</>:<>4mb</>}{props.conditionA === 'Default'?props.conditionB === 'Complete'?<div>complete</div>:<>9mb</>:props.conditionC === 'Complete'?<>dff</>:<div>complete else</div>}</div>)});
+
+export default ShowWithOtherValues;
+
+========================================================================"
+`;
+
 exports[`qwik > jsx > Typescript Test > showWithFor 1`] = `
 "import { Fragment, component$, h } from \\"@builder.io/qwik\\";
 
@@ -8031,6 +9446,29 @@ export default NestedShow;
 "
 `;
 
+exports[`qwik > jsx > Typescript Test > showWithOtherValues 1`] = `
+"import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+
+interface Props {
+  conditionA: boolean;
+}
+export const ShowWithOtherValues = component$((props: Props) => {
+  return (
+    <div>
+      {props.conditionA ? <>ContentA</> : null}
+      {props.conditionA ? <>ContentB</> : <>{undefined}</>}
+      {props.conditionA ? <>ContentC</> : null}
+      {props.conditionA ? <>ContentD</> : null}
+      {props.conditionA ? <>ContentE</> : <>hello</>}
+      {props.conditionA ? <>ContentF</> : <>123</>}
+    </div>
+  );
+});
+
+export default ShowWithOtherValues;
+"
+`;
+
 exports[`qwik > jsx > Typescript Test > showWithRootText 1`] = `
 "import { Fragment, component$, h } from \\"@builder.io/qwik\\";
 
@@ -8042,6 +9480,51 @@ export const ShowRootText = component$((props: Props) => {
 });
 
 export default ShowRootText;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > signalsOnUpdate 1`] = `
+"import {
+  Fragment,
+  component$,
+  h,
+  useStylesScoped$,
+  useTask$,
+} from \\"@builder.io/qwik\\";
+
+type Props = {
+  id: string;
+  foo: {
+    bar: {
+      baz: number;
+    };
+  };
+};
+export const MyBasicComponent = component$((props: Props) => {
+  useStylesScoped$(STYLES);
+
+  useTask$(({ track }) => {
+    track(() => props.id);
+    track(() => props.foo.bar.baz);
+    console.log(\\"props.id changed\\", props.id);
+    console.log(\\"props.foo.value.bar.baz changed\\", props.foo.bar.baz);
+  });
+
+  return (
+    <div class=\\"test div-MyBasicComponent\\">
+      {props.id}
+      {props.foo.bar.baz}
+    </div>
+  );
+});
+
+export default MyBasicComponent;
+
+export const STYLES = \`
+.div-MyBasicComponent {
+  padding: 10px;
+}
+\`;
 "
 `;
 
@@ -8075,6 +9558,41 @@ export const MyBasicComponent = component$((props: any) => {
 });
 
 export default MyBasicComponent;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > store-async-function 1`] = `
+"import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+
+export const arrowFunction = async function arrowFunction() {
+  return Promise.resolve();
+};
+export const namedFunction = async function namedFunction() {
+  return Promise.resolve();
+};
+export const fetchUsers = async function fetchUsers() {
+  return Promise.resolve();
+};
+export const StringLiteralStore = component$((props: any) => {
+  const state: any = {};
+
+  return <div></div>;
+});
+
+export default StringLiteralStore;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > string-literal-store 1`] = `
+"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const StringLiteralStore = component$((props: any) => {
+  const state = useStore<any>({ foo: 123 });
+
+  return <div>{state.foo}</div>;
+});
+
+export default StringLiteralStore;
 "
 `;
 
@@ -8198,6 +9716,68 @@ export default TypeDependency;
 "
 `;
 
+exports[`qwik > jsx > Typescript Test > typeExternalProps 1`] = `
+"import { FooProps } from \\"./foo-props\\";
+
+import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+
+export const TypeExternalProps = component$((props: FooProps) => {
+  return <div>Hello {props.name}! </div>;
+});
+
+export default TypeExternalProps;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > typeExternalStore 1`] = `
+"import { FooStore } from \\"./foo-store\\";
+
+import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+
+export const TypeExternalStore = component$((props: any) => {
+  const state = useStore<any>({ _name: \\"test\\" });
+
+  return <div>Hello {state._name}! </div>;
+});
+
+export default TypeExternalStore;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > typeGetterStore 1`] = `
+"import {
+  Fragment,
+  component$,
+  h,
+  useComputed$,
+  useStore,
+} from \\"@builder.io/qwik\\";
+
+type GetterStore = {
+  getName: () => string;
+  name: string;
+  get test(): string;
+};
+export const getName = function getName(props, state, test) {
+  if (state.name === \\"a\\") {
+    return \\"b\\";
+  }
+
+  return state.name;
+};
+export const TypeGetterStore = component$((props: any) => {
+  const test = useComputed$(() => {
+    return \\"test\\";
+  });
+  const state = useStore<any>({ name: \\"test\\" });
+
+  return <div>Hello {state.name}! </div>;
+});
+
+export default TypeGetterStore;
+"
+`;
+
 exports[`qwik > jsx > Typescript Test > use-style 1`] = `
 "import { Fragment, component$, h, useStylesScoped$ } from \\"@builder.io/qwik\\";
 
@@ -8286,16 +9866,43 @@ export const UseTargetComponent = component$((props: any) => {
     const prefix = \\"q\\";
     return prefix + \\"foo\\";
   });
-  const state = useStore<any>({ lastName: \\"bar\\" });
+  const state = useStore<any>({ foo: \\"bar\\", lastName: \\"bar\\" });
   useVisibleTask$(() => {
+    console.log(state.foo);
+    state.foo = \\"bar\\";
     console.log(\\"qwik\\");
     state.lastName = \\"baz\\";
+    console.log(state.foo);
+    state.foo = \\"baz\\";
   });
 
   return <div>{name.value}</div>;
 });
 
 export default UseTargetComponent;
+"
+`;
+
+exports[`qwik > jsx > Typescript Test > webComponent 1`] = `
+"import { Fragment, component$, h, useTask$ } from \\"@builder.io/qwik\\";
+
+import { register } from \\"swiper/element/bundle\\";
+
+export const MyBasicWebComponent = component$((props: any) => {
+  useTask$(() => {
+    register();
+  });
+
+  return (
+    <swiper-container slides-per-view=\\"3\\" navigation=\\"true\\" pagination=\\"true\\">
+      <swiper-slide>Slide 1</swiper-slide>
+      <swiper-slide>Slide 2</swiper-slide>
+      <swiper-slide>Slide 3</swiper-slide>
+    </swiper-container>
+  );
+});
+
+export default MyBasicWebComponent;
 "
 `;
 
@@ -8368,14 +9975,7 @@ exports.MyComponentOnMount = (p) => {
     h(\\"div\\", {
       key: \\"builder-192569f8d0a943398ec7ab9c327e104f\\",
       class: \\"builder-text\\",
-      dangerouslySetInnerHTML: (() => {
-        try {
-          var _virtual_index = state.title;
-          return _virtual_index;
-        } catch (err) {
-          console.warn(\\"Builder code error\\", err);
-        }
-      })(),
+      dangerouslySetInnerHTML: state.title,
     })
   );
 };
@@ -8483,14 +10083,7 @@ export const MyComponentOnMount = (p) => {
         data: {},
       },
     }),
-    h(
-      \\"div\\",
-      {
-        \\"builder-id\\": \\"builder-0362b5109657483c9f7cb083fbbef511\\",
-        class: \\"cxvcn5v builder-block\\",
-      },
-      \\"<p>Main Text</p>\\"
-    )
+    h(\\"div\\", { class: \\"cxvcn5v\\" }, \\"<p>Main Text</p>\\")
   );
 };
 export const __proxyMerge__ = function __proxyMerge__(state, local) {
@@ -8796,7 +10389,7 @@ export const __proxyMerge__ = function __proxyMerge__(state, local) {
 `;
 
 exports[`qwik > svelte > Javascript Test > basic 1`] = `
-"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
 
 export const MyComponent = component$((props) => {
   const state = useStore({ name: \\"Steve\\" });
@@ -8804,7 +10397,7 @@ export const MyComponent = component$((props) => {
   return (
     <div>
       <input
-        onChange$={(event) => (state.name = event.target.value)}
+        onChange$={$((event) => (state.name = event.target.value))}
         value={state.name}
       />
       Hello! I can run in React, Vue, Solid, or Liquid!
@@ -8817,7 +10410,7 @@ export default MyComponent;
 `;
 
 exports[`qwik > svelte > Javascript Test > bindGroup 1`] = `
-"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
 
 export const MyComponent = component$((props) => {
   const state = useStore({ fillings: [], tortilla: \\"Plain\\" });
@@ -8830,7 +10423,7 @@ export const MyComponent = component$((props) => {
         checked={(() => {
           state.tortilla === \\"Plain\\";
         })()}
-        onChange$={(event) => (state.tortilla = event.target.value)}
+        onChange$={$((event) => (state.tortilla = event.target.value))}
       />
       <input
         type=\\"radio\\"
@@ -8838,7 +10431,7 @@ export const MyComponent = component$((props) => {
         checked={(() => {
           state.tortilla === \\"Whole wheat\\";
         })()}
-        onChange$={(event) => (state.tortilla = event.target.value)}
+        onChange$={$((event) => (state.tortilla = event.target.value))}
       />
       <input
         type=\\"radio\\"
@@ -8846,7 +10439,7 @@ export const MyComponent = component$((props) => {
         checked={(() => {
           state.tortilla === \\"Spinach\\";
         })()}
-        onChange$={(event) => (state.tortilla = event.target.value)}
+        onChange$={$((event) => (state.tortilla = event.target.value))}
       />
       <br />
       <br />
@@ -8856,7 +10449,7 @@ export const MyComponent = component$((props) => {
         checked={(() => {
           state.fillings === \\"Rice\\";
         })()}
-        onChange$={(event) => (state.fillings = event.target.value)}
+        onChange$={$((event) => (state.fillings = event.target.value))}
       />
       <input
         type=\\"checkbox\\"
@@ -8864,7 +10457,7 @@ export const MyComponent = component$((props) => {
         checked={(() => {
           state.fillings === \\"Beans\\";
         })()}
-        onChange$={(event) => (state.fillings = event.target.value)}
+        onChange$={$((event) => (state.fillings = event.target.value))}
       />
       <input
         type=\\"checkbox\\"
@@ -8872,7 +10465,7 @@ export const MyComponent = component$((props) => {
         checked={(() => {
           state.fillings === \\"Cheese\\";
         })()}
-        onChange$={(event) => (state.fillings = event.target.value)}
+        onChange$={$((event) => (state.fillings = event.target.value))}
       />
       <input
         type=\\"checkbox\\"
@@ -8880,7 +10473,7 @@ export const MyComponent = component$((props) => {
         checked={(() => {
           state.fillings === \\"Guac (extra)\\";
         })()}
-        onChange$={(event) => (state.fillings = event.target.value)}
+        onChange$={$((event) => (state.fillings = event.target.value))}
       />
       <p>Tortilla: {state.tortilla}</p>
       <p>Fillings: {state.fillings}</p>
@@ -8966,7 +10559,7 @@ export default MyComponent;
 `;
 
 exports[`qwik > svelte > Javascript Test > eventHandlers 1`] = `
-"import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h } from \\"@builder.io/qwik\\";
 
 export const log = function log(props, state, msg = \\"hello\\") {
   console.log(msg);
@@ -8976,9 +10569,9 @@ export const MyComponent = component$((props) => {
 
   return (
     <div>
-      <button onClick$={(event) => state.log(\\"hi\\")}>Log</button>
-      <button onClick$={(event) => state.log(event)}>Log</button>
-      <button onClick$={(event) => state.log(event)}>Log</button>
+      <button onClick$={$((event) => state.log(\\"hi\\"))}>Log</button>
+      <button onClick$={$((event) => state.log(event))}>Log</button>
+      <button onClick$={$((event) => state.log(event))}>Log</button>
     </div>
   );
 });
@@ -9001,7 +10594,7 @@ export default MyComponent;
 `;
 
 exports[`qwik > svelte > Javascript Test > ifElse 1`] = `
-"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
 
 export const toggle = function toggle(props, state) {
   state.show = !state.show;
@@ -9012,9 +10605,9 @@ export const MyComponent = component$((props) => {
   return (
     <>
       {state.show ? (
-        <button onClick$={(event) => state.toggle(event)}> Hide </button>
+        <button onClick$={$((event) => state.toggle(event))}> Hide </button>
       ) : (
-        <button onClick$={(event) => state.toggle(event)}> Show </button>
+        <button onClick$={$((event) => state.toggle(event))}> Show </button>
       )}
     </>
   );
@@ -9027,9 +10620,7 @@ export default MyComponent;
 exports[`qwik > svelte > Javascript Test > imports 1`] = `
 "import Button from \\"./Button.jsx\\";
 
-import { Slot } from \\"./med.js\\";
-
-import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+import { Fragment, Slot, component$, h, useStore } from \\"@builder.io/qwik\\";
 
 export const MyComponent = component$((props) => {
   const state = useStore({ disabled: false });
@@ -9099,7 +10690,14 @@ export default MyComponent;
 `;
 
 exports[`qwik > svelte > Javascript Test > reactiveWithFn 1`] = `
-"import { Fragment, component$, h, useStore, useTask$ } from \\"@builder.io/qwik\\";
+"import {
+  $,
+  Fragment,
+  component$,
+  h,
+  useStore,
+  useTask$,
+} from \\"@builder.io/qwik\\";
 
 export const calculateResult = function calculateResult(props, state, a_, b_) {
   state.result = a_ * b_;
@@ -9116,12 +10714,12 @@ export const MyComponent = component$((props) => {
     <div>
       <input
         type=\\"number\\"
-        onChange$={(event) => (state.a = event.target.value)}
+        onChange$={$((event) => (state.a = event.target.value))}
         value={state.a}
       />
       <input
         type=\\"number\\"
-        onChange$={(event) => (state.b = event.target.value)}
+        onChange$={$((event) => (state.b = event.target.value))}
         value={state.b}
       />
       Result: {state.result}
@@ -9134,9 +10732,7 @@ export default MyComponent;
 `;
 
 exports[`qwik > svelte > Javascript Test > slots 1`] = `
-"import { Slot } from \\"./med.js\\";
-
-import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { Fragment, Slot, component$, h } from \\"@builder.io/qwik\\";
 
 export const MyComponent = component$((props) => {
   return (
@@ -9199,7 +10795,7 @@ export default MyComponent;
 `;
 
 exports[`qwik > svelte > Typescript Test > basic 1`] = `
-"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
 
 export const MyComponent = component$((props: any) => {
   const state = useStore<any>({ name: \\"Steve\\" });
@@ -9207,7 +10803,7 @@ export const MyComponent = component$((props: any) => {
   return (
     <div>
       <input
-        onChange$={(event) => (state.name = event.target.value)}
+        onChange$={$((event) => (state.name = event.target.value))}
         value={state.name}
       />
       Hello! I can run in React, Vue, Solid, or Liquid!
@@ -9220,7 +10816,7 @@ export default MyComponent;
 `;
 
 exports[`qwik > svelte > Typescript Test > bindGroup 1`] = `
-"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
 
 export const MyComponent = component$((props: any) => {
   const state = useStore<any>({ fillings: [], tortilla: \\"Plain\\" });
@@ -9233,7 +10829,7 @@ export const MyComponent = component$((props: any) => {
         checked={(() => {
           state.tortilla === \\"Plain\\";
         })()}
-        onChange$={(event) => (state.tortilla = event.target.value)}
+        onChange$={$((event) => (state.tortilla = event.target.value))}
       />
       <input
         type=\\"radio\\"
@@ -9241,7 +10837,7 @@ export const MyComponent = component$((props: any) => {
         checked={(() => {
           state.tortilla === \\"Whole wheat\\";
         })()}
-        onChange$={(event) => (state.tortilla = event.target.value)}
+        onChange$={$((event) => (state.tortilla = event.target.value))}
       />
       <input
         type=\\"radio\\"
@@ -9249,7 +10845,7 @@ export const MyComponent = component$((props: any) => {
         checked={(() => {
           state.tortilla === \\"Spinach\\";
         })()}
-        onChange$={(event) => (state.tortilla = event.target.value)}
+        onChange$={$((event) => (state.tortilla = event.target.value))}
       />
       <br />
       <br />
@@ -9259,7 +10855,7 @@ export const MyComponent = component$((props: any) => {
         checked={(() => {
           state.fillings === \\"Rice\\";
         })()}
-        onChange$={(event) => (state.fillings = event.target.value)}
+        onChange$={$((event) => (state.fillings = event.target.value))}
       />
       <input
         type=\\"checkbox\\"
@@ -9267,7 +10863,7 @@ export const MyComponent = component$((props: any) => {
         checked={(() => {
           state.fillings === \\"Beans\\";
         })()}
-        onChange$={(event) => (state.fillings = event.target.value)}
+        onChange$={$((event) => (state.fillings = event.target.value))}
       />
       <input
         type=\\"checkbox\\"
@@ -9275,7 +10871,7 @@ export const MyComponent = component$((props: any) => {
         checked={(() => {
           state.fillings === \\"Cheese\\";
         })()}
-        onChange$={(event) => (state.fillings = event.target.value)}
+        onChange$={$((event) => (state.fillings = event.target.value))}
       />
       <input
         type=\\"checkbox\\"
@@ -9283,7 +10879,7 @@ export const MyComponent = component$((props: any) => {
         checked={(() => {
           state.fillings === \\"Guac (extra)\\";
         })()}
-        onChange$={(event) => (state.fillings = event.target.value)}
+        onChange$={$((event) => (state.fillings = event.target.value))}
       />
       <p>Tortilla: {state.tortilla}</p>
       <p>Fillings: {state.fillings}</p>
@@ -9369,7 +10965,7 @@ export default MyComponent;
 `;
 
 exports[`qwik > svelte > Typescript Test > eventHandlers 1`] = `
-"import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h } from \\"@builder.io/qwik\\";
 
 export const log = function log(props, state, msg = \\"hello\\") {
   console.log(msg);
@@ -9379,9 +10975,9 @@ export const MyComponent = component$((props: any) => {
 
   return (
     <div>
-      <button onClick$={(event) => state.log(\\"hi\\")}>Log</button>
-      <button onClick$={(event) => state.log(event)}>Log</button>
-      <button onClick$={(event) => state.log(event)}>Log</button>
+      <button onClick$={$((event) => state.log(\\"hi\\"))}>Log</button>
+      <button onClick$={$((event) => state.log(event))}>Log</button>
+      <button onClick$={$((event) => state.log(event))}>Log</button>
     </div>
   );
 });
@@ -9404,7 +11000,7 @@ export default MyComponent;
 `;
 
 exports[`qwik > svelte > Typescript Test > ifElse 1`] = `
-"import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+"import { $, Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
 
 export const toggle = function toggle(props, state) {
   state.show = !state.show;
@@ -9415,9 +11011,9 @@ export const MyComponent = component$((props: any) => {
   return (
     <>
       {state.show ? (
-        <button onClick$={(event) => state.toggle(event)}> Hide </button>
+        <button onClick$={$((event) => state.toggle(event))}> Hide </button>
       ) : (
-        <button onClick$={(event) => state.toggle(event)}> Show </button>
+        <button onClick$={$((event) => state.toggle(event))}> Show </button>
       )}
     </>
   );
@@ -9430,9 +11026,7 @@ export default MyComponent;
 exports[`qwik > svelte > Typescript Test > imports 1`] = `
 "import Button from \\"./Button.jsx\\";
 
-import { Slot } from \\"./med.js\\";
-
-import { Fragment, component$, h, useStore } from \\"@builder.io/qwik\\";
+import { Fragment, Slot, component$, h, useStore } from \\"@builder.io/qwik\\";
 
 export const MyComponent = component$((props: any) => {
   const state = useStore<any>({ disabled: false });
@@ -9502,7 +11096,14 @@ export default MyComponent;
 `;
 
 exports[`qwik > svelte > Typescript Test > reactiveWithFn 1`] = `
-"import { Fragment, component$, h, useStore, useTask$ } from \\"@builder.io/qwik\\";
+"import {
+  $,
+  Fragment,
+  component$,
+  h,
+  useStore,
+  useTask$,
+} from \\"@builder.io/qwik\\";
 
 export const calculateResult = function calculateResult(props, state, a_, b_) {
   state.result = a_ * b_;
@@ -9519,12 +11120,12 @@ export const MyComponent = component$((props: any) => {
     <div>
       <input
         type=\\"number\\"
-        onChange$={(event) => (state.a = event.target.value)}
+        onChange$={$((event) => (state.a = event.target.value))}
         value={state.a}
       />
       <input
         type=\\"number\\"
-        onChange$={(event) => (state.b = event.target.value)}
+        onChange$={$((event) => (state.b = event.target.value))}
         value={state.b}
       />
       Result: {state.result}
@@ -9537,9 +11138,7 @@ export default MyComponent;
 `;
 
 exports[`qwik > svelte > Typescript Test > slots 1`] = `
-"import { Slot } from \\"./med.js\\";
-
-import { Fragment, component$, h } from \\"@builder.io/qwik\\";
+"import { Fragment, Slot, component$, h } from \\"@builder.io/qwik\\";
 
 export const MyComponent = component$((props: any) => {
   return (

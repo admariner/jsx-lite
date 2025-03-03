@@ -1,33 +1,34 @@
+import { createSingleBinding } from '@/helpers/bindings';
+import { createMitosisNode } from '@/helpers/create-mitosis-node';
+import { dedent } from '@/helpers/dedent';
+import { fastClone } from '@/helpers/fast-clone';
+import { filterEmptyTextNodes } from '@/helpers/filter-empty-text-nodes';
+import { getComponentsUsed } from '@/helpers/get-components-used';
+import { getRefs } from '@/helpers/get-refs';
+import { stringifyContextValue } from '@/helpers/get-state-object-string';
+import { isMitosisNode } from '@/helpers/is-mitosis-node';
+import { isRootTextNode } from '@/helpers/is-root-text-node';
+import { initializeOptions } from '@/helpers/merge-options';
+import { checkIsDefined } from '@/helpers/nullable';
+import { processOnEventHooksPlugin } from '@/helpers/on-event';
+import { CODE_PROCESSOR_PLUGIN } from '@/helpers/plugins/process-code';
+import { renderPreComponent } from '@/helpers/render-imports';
+import { stripMetaProperties } from '@/helpers/strip-meta-properties';
+import { collectCss } from '@/helpers/styles/collect-css';
+import { hasCss } from '@/helpers/styles/helpers';
+import { MitosisComponent } from '@/types/mitosis-component';
+import { TranspilerGenerator } from '@/types/transpiler';
 import { uniq } from 'fp-ts/lib/Array';
 import * as S from 'fp-ts/string';
 import hash from 'hash-sum';
+import traverse from 'neotraverse/legacy';
 import { format } from 'prettier/standalone';
-import traverse from 'traverse';
-import { createSingleBinding } from '../../helpers/bindings';
-import { createMitosisNode } from '../../helpers/create-mitosis-node';
-import { dedent } from '../../helpers/dedent';
-import { fastClone } from '../../helpers/fast-clone';
-import { filterEmptyTextNodes } from '../../helpers/filter-empty-text-nodes';
-import { getComponentsUsed } from '../../helpers/get-components-used';
-import { getRefs } from '../../helpers/get-refs';
-import { stringifyContextValue } from '../../helpers/get-state-object-string';
-import { isMitosisNode } from '../../helpers/is-mitosis-node';
-import { isRootTextNode } from '../../helpers/is-root-text-node';
-import { initializeOptions } from '../../helpers/merge-options';
-import { checkIsDefined } from '../../helpers/nullable';
-import { CODE_PROCESSOR_PLUGIN } from '../../helpers/plugins/process-code';
-import { renderPreComponent } from '../../helpers/render-imports';
-import { stripMetaProperties } from '../../helpers/strip-meta-properties';
-import { collectCss } from '../../helpers/styles/collect-css';
-import { hasCss } from '../../helpers/styles/helpers';
 import {
   runPostCodePlugins,
   runPostJsonPlugins,
   runPreCodePlugins,
   runPreJsonPlugins,
 } from '../../modules/plugins';
-import { MitosisComponent } from '../../types/mitosis-component';
-import { TranspilerGenerator } from '../../types/transpiler';
 import { hasGetContext } from '../helpers/context';
 import { blockToSolid } from './blocks';
 import { getState } from './state';
@@ -63,6 +64,9 @@ function getContextString(component: MitosisComponent, options: ToSolidOptions) 
 const getRefsString = (json: MitosisComponent, options: ToSolidOptions) =>
   Array.from(getRefs(json))
     .map((ref) => {
+      // fix prettier issue when encounter `let props.ref`
+      // Prettier playground: https://prettier.io/playground/#N4Igxg9gdgLgprEAuEAzArlMMCW0AEAsgJ4DCEAtgA7QIwAUVAThFQM5ICGUxAlPsAA6UfPgA2cGPmas2AOhxQq6GACU4qANzDRTSeiYj6O0fgA8i5VPx7UAXmAz2CpSvWoAhAF9RAegB8JqK8wl7CcAAeNExSACYanOhiUiTk1LSwmiAANCCsuNBsyKCcTCwA7gAKpQhFKJxi5ZzERbkARkycYADWkgDKnBRwADKKcMioDWxw7Z09-VRdigDmyDBM6DMg0xQ4axtbkVRwTDhDsA0AKidQpThwdZNi07lsKxIAiugQ8BNTWwArNgRPrvOBfH7jJBPF4gACO33glRY7GQIE4bAAtFA4HB4rEciB1pwcGIVmkKJw0Q0xIS3lBlhIAIIwdY4NoqOCVE6jHF-Z5bAAWMAoYgA6oKcPA2IswHA+rUpTgAG5S4hosBsVogZWbACSUHisD6YFOVBgTMNfRgxAk-NhMmmYs6VDRzAeJ2V41yimmMWRnGWlPtW0WTD9aJtxzYppw5sJzEUMDFOFiMEFyAAHAAGXJ6BE4PQBoNU6H-XIwThtFNpjNIABMuXQ00uVce5ZAcAobTx+OG3GW6EDcAAYhAmJTWStqSoICAvF4gA
+      if (ref.includes('.')) return '';
       const typeParameter = (options.typescript && json['refs'][ref]?.typeParameter) || '';
       return `let ${ref}${typeParameter ? ': ' + typeParameter : ''};`;
     })
@@ -90,8 +94,7 @@ function addProviderComponents(json: MitosisComponent, options: ToSolidOptions) 
 
 const DEFAULT_OPTIONS: ToSolidOptions = {
   state: 'signals',
-  stylesType: 'styled-components',
-  plugins: [],
+  stylesType: 'style-tag',
 };
 
 export const componentToSolid: TranspilerGenerator<Partial<ToSolidOptions>> =
@@ -107,6 +110,7 @@ export const componentToSolid: TranspilerGenerator<Partial<ToSolidOptions>> =
     });
     options.plugins = [
       ...(options.plugins || []),
+      processOnEventHooksPlugin(),
       CODE_PROCESSOR_PLUGIN((codeType) => {
         switch (codeType) {
           case 'state':
@@ -160,8 +164,8 @@ export const componentToSolid: TranspilerGenerator<Partial<ToSolidOptions>> =
         hasGetContext(json) ? 'useContext' : undefined,
         hasShowComponent ? 'Show' : undefined,
         hasForComponent ? 'For' : undefined,
-        json.hooks.onMount?.code ? 'onMount' : undefined,
-        ...(json.hooks.onUpdate?.length ? ['on', 'createEffect'] : []),
+        json.hooks.onMount.length ? 'onMount' : undefined,
+        ...(json.hooks.onUpdate?.length ? ['on', 'createEffect', 'createMemo'] : []),
         ...(state?.import.solidjs ?? []),
       ].filter(checkIsDefined),
     );
@@ -176,34 +180,60 @@ export const componentToSolid: TranspilerGenerator<Partial<ToSolidOptions>> =
     ${!foundDynamicComponents ? '' : `import { Dynamic } from 'solid-js/web';`}
     ${storeImports.length > 0 ? `import { ${storeImports.join(', ')} } from 'solid-js/store';` : ''}
     ${
-      !componentHasStyles && options.stylesType === 'styled-components'
-        ? ''
-        : `import { css } from "solid-styled-components";`
+      componentHasStyles && options.stylesType === 'styled-components'
+        ? 'import { css } from "solid-styled-components";'
+        : ``
     }
     ${json.types && options.typescript ? json.types.join('\n') : ''}
-    ${renderPreComponent({ component: json, target: 'solid' })}
+    ${renderPreComponent({
+      explicitImportFileExtension: options.explicitImportFileExtension,
+      component: json,
+      target: 'solid',
+    })}
 
     function ${json.name}(${propsArgs}) {
       ${state?.str ?? ''}
 
       ${getRefsString(json, options)}
       ${getContextString(json, options)}
+      ${json.hooks.onInit?.code ?? ''}
 
-      ${!json.hooks.onMount?.code ? '' : `onMount(() => { ${json.hooks.onMount.code} })`}
+      ${json.hooks.onMount.map((hook) => `onMount(() => { ${hook.code} })`).join('\n')}
       ${
         json.hooks.onUpdate
           ? json.hooks.onUpdate
               .map((hook, index) => {
-                if (hook.deps) {
-                  const hookName = `onUpdateFn_${index}`;
-                  return `
+                // TO-DO: support `onUpdate` without `deps`
+                if (!hook.deps) return '';
+
+                const hookName = `onUpdateFn_${index}`;
+
+                const depsArray = hook.deps
+                  .slice(1, hook.deps.length - 1)
+                  .split(',')
+                  .map((x) => x.trim());
+
+                const getReactiveDepName = (dep: string) => {
+                  const newLocal = dep.replace(/(\.|\?|\(|\)|\[|\])/g, '_');
+                  return `${hookName}_${newLocal}`;
+                };
+
+                const needsMemo = (dep: string) => true;
+
+                const reactiveDepsWorkaround = depsArray
+                  .filter(needsMemo)
+                  .map((dep) => `const ${getReactiveDepName(dep)} = createMemo(() => ${dep});`)
+                  .join('\n');
+
+                const depsArrayStr = depsArray
+                  .map((x) => (needsMemo(x) ? `${getReactiveDepName(x)}()` : x))
+                  .join(', ');
+
+                return `
+                    ${reactiveDepsWorkaround}
                     function ${hookName}() { ${hook.code} };
-                    createEffect(on(() => ${hook.deps}, ${hookName}));
+                    createEffect(on(() => [${depsArrayStr}], ${hookName}));
                   `;
-                } else {
-                  // TO-DO: support `onUpdate` without `deps`
-                  return '';
-                }
               })
               .join('\n')
           : ''
@@ -212,12 +242,11 @@ export const componentToSolid: TranspilerGenerator<Partial<ToSolidOptions>> =
       return (${addWrapper ? '<>' : ''}
         ${json.children
           .filter(filterEmptyTextNodes)
-          .map((item) => blockToSolid({ component, json: item, options }))
+          .map((item) => blockToSolid(item, component, options, addWrapper))
           .join('\n')}
         ${
           options.stylesType === 'style-tag' && css && css.trim().length > 4
-            ? // We add the jsx attribute so prettier formats this nicely
-              `<style jsx>{\`${css}\`}</style>`
+            ? `<style>{\`${css}\`}</style>`
             : ''
         }
         ${shouldInjectCustomStyles ? `<style>{\`${json.style}\`}</style>` : ''}

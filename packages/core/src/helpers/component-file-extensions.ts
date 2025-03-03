@@ -1,4 +1,5 @@
-import { checkShouldOutputTypeScript, MitosisConfig, Target } from '@builder.io/mitosis';
+import { MitosisConfig, Target } from '@/types/config';
+import { checkShouldOutputTypeScript } from './output';
 
 const COMPONENT_EXTENSIONS = {
   jsx: ['.lite.tsx', '.lite.jsx'],
@@ -23,6 +24,21 @@ export const checkIsMitosisComponentFilePath = (filePath: string) =>
  */
 export const INPUT_EXTENSION_REGEX = /\.(svelte|(lite(\.tsx|\.jsx)?))/g;
 
+const getExplicitFileExtension = (
+  path: string,
+  explicitBuildFileExtensions?: Record<string, RegExp>,
+): string | undefined => {
+  if (explicitBuildFileExtensions) {
+    for (const [extension, regex] of Object.entries(explicitBuildFileExtensions)) {
+      const match = path.match(regex);
+      if (match) {
+        return extension;
+      }
+    }
+  }
+  return undefined;
+};
+
 export const renameComponentFile = ({
   path,
   target,
@@ -31,28 +47,62 @@ export const renameComponentFile = ({
   path: string;
   target: Target;
   options: MitosisConfig;
-}) =>
-  path.replace(
-    INPUT_EXTENSION_REGEX,
+}) => {
+  const explicitExtension = getExplicitFileExtension(
+    path,
+    options.options[target]?.explicitBuildFileExtensions,
+  );
+
+  const extension =
+    explicitExtension ??
     getComponentFileExtensionForTarget({
       type: 'filename',
       target,
       isTypescript: checkShouldOutputTypeScript({ options, target }),
-    }),
-  );
+    });
+
+  return path.replace(INPUT_EXTENSION_REGEX, extension);
+};
 
 /**
  * just like `INPUT_EXTENSION_REGEX`, but adds trailing quotes to the end of import paths.
  */
 const INPUT_EXTENSION_IMPORT_REGEX = /\.(svelte|(lite(\.tsx|\.jsx)?))(?<quote>['"])/g;
 
-export const renameImport = ({ importPath, target }: { importPath: string; target: Target }) => {
+export const renameComponentImport = ({
+  importPath,
+  target,
+  explicitImportFileExtension,
+}: {
+  importPath: string;
+  target: Target;
+  explicitImportFileExtension: boolean;
+}) => {
   return importPath.replace(
     INPUT_EXTENSION_IMPORT_REGEX,
     `${getComponentFileExtensionForTarget({
       type: 'import',
       target,
+      explicitImportFileExtension,
     })}$4`,
+  );
+};
+
+export const renameImport = ({
+  importPath,
+  target,
+  explicitImportFileExtension,
+}: {
+  importPath: string;
+  target: Target;
+  explicitImportFileExtension: boolean;
+}) => {
+  return importPath.replace(
+    /\.js(['"])/g,
+    `${getFileExtensionForTarget({
+      target,
+      explicitImportFileExtension,
+    })}$1`,
   );
 };
 
@@ -62,6 +112,7 @@ type Args = { target: Target } & (
        * Whether we are rendering an import statement or a filename.
        */
       type: 'import';
+      explicitImportFileExtension: boolean;
     }
   | {
       /**
@@ -79,8 +130,14 @@ type Args = { target: Target } & (
  */
 export const getComponentFileExtensionForTarget = (args: Args): string => {
   switch (args.target) {
-    case 'angular':
-      return '.ts';
+    case 'angular': {
+      switch (args.type) {
+        case 'import':
+          return '.js';
+        case 'filename':
+          return args.isTypescript ? '.ts' : '.js';
+      }
+    }
     case 'alpine':
     case 'html':
       return '.html';
@@ -89,8 +146,6 @@ export const getComponentFileExtensionForTarget = (args: Args): string => {
     case 'swift':
       return '.swift';
     case 'vue':
-    case 'vue2':
-    case 'vue3':
       return '.vue';
     case 'webcomponent':
       return '.ts';
@@ -114,7 +169,7 @@ export const getComponentFileExtensionForTarget = (args: Args): string => {
       switch (args.type) {
         case 'import':
           // we can't have `.jsx`/`.tsx` extensions in the import paths, so we stick with implicit file extensions.
-          return '';
+          return args.explicitImportFileExtension ? '.js' : '';
         case 'filename':
           return args.isTypescript ? '.tsx' : '.jsx';
       }
@@ -122,5 +177,34 @@ export const getComponentFileExtensionForTarget = (args: Args): string => {
       return '.marko';
     default:
       return '.js';
+  }
+};
+
+export const getFileExtensionForTarget = ({
+  target,
+  explicitImportFileExtension,
+}: {
+  target: Target;
+  explicitImportFileExtension: boolean;
+}): string => {
+  switch (target) {
+    case 'angular':
+    case 'alpine':
+    case 'html':
+    case 'svelte':
+    case 'swift':
+    case 'vue':
+    case 'webcomponent':
+    case 'lit':
+    case 'qwik':
+    case 'react':
+    case 'reactNative':
+    case 'rsc':
+    case 'solid':
+    case 'stencil':
+    case 'marko':
+    case 'preact':
+    default:
+      return explicitImportFileExtension ? '.js' : '';
   }
 };

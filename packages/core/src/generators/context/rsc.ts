@@ -1,6 +1,6 @@
+import { stringifyContextValue } from '@/helpers/get-state-object-string';
+import { MitosisContext } from '@/types/mitosis-context';
 import { format } from 'prettier/standalone';
-import { stringifyContextValue } from '../../helpers/get-state-object-string';
-import { MitosisContext } from '../../types/mitosis-context';
 
 type ContextToRscOptions = {
   format?: boolean;
@@ -26,7 +26,9 @@ export const contextToRsc =
           ],
         });
       } catch (err) {
-        console.error('Format error for file:', str);
+        if (process.env.NODE_ENV !== 'test') {
+          console.error('Format error for file:', str);
+        }
         throw err;
       }
     }

@@ -1,16 +1,18 @@
+import { babelTransformExpression } from '@/helpers/babel-transform';
+import { checkIsEvent } from '@/helpers/event-handlers';
+import { filterEmptyTextNodes } from '@/helpers/filter-empty-text-nodes';
+import { isMitosisNode } from '@/helpers/is-mitosis-node';
+import { objectHasKey } from '@/helpers/typescript';
+import { MitosisComponent } from '@/types/mitosis-component';
+import { checkIsForNode, MitosisNode } from '@/types/mitosis-node';
 import { types } from '@babel/core';
 import { kebabCase } from 'lodash';
 import { SELF_CLOSING_HTML_TAGS } from '../../constants/html_tags';
-import { babelTransformExpression } from '../../helpers/babel-transform';
-import { filterEmptyTextNodes } from '../../helpers/filter-empty-text-nodes';
-import { objectHasKey } from '../../helpers/typescript';
-import { MitosisComponent } from '../../types/mitosis-component';
-import { checkIsForNode, MitosisNode } from '../../types/mitosis-node';
 import { collectClassString } from './helpers/styles';
 import { ToSolidOptions } from './types';
 
 const ATTTRIBUTE_MAPPERS = {
-  for: 'htmlFor',
+  // for: 'htmlFor',
 };
 
 const transformAttributeName = (name: string) => {
@@ -18,20 +20,26 @@ const transformAttributeName = (name: string) => {
   return name;
 };
 
-export const blockToSolid = ({
-  json,
-  options,
-  component,
-}: {
-  json: MitosisNode;
-  options: ToSolidOptions;
-  component: MitosisComponent;
-}): string => {
-  if (json.properties._text) {
-    return json.properties._text;
-  }
-  if (json.bindings._text?.code) {
-    return `{${json.bindings._text.code}}`;
+export const blockToSolid = (
+  json: MitosisNode,
+  component: MitosisComponent,
+  options: ToSolidOptions,
+  insideJsx: boolean,
+): string => {
+  if (insideJsx) {
+    if (json.properties._text) {
+      return json.properties._text;
+    }
+    if (json.bindings._text?.code) {
+      return `{${json.bindings._text.code}}`;
+    }
+  } else {
+    if (json.properties._text) {
+      return `<>${json.properties._text}</>`;
+    }
+    if (json.bindings._text?.code) {
+      return `${json.bindings._text.code}`;
+    }
   }
 
   if (checkIsForNode(json)) {
@@ -43,42 +51,49 @@ export const blockToSolid = ({
       const ${json.scope.indexName || 'index'} = _index();
       return ${needsWrapper ? '<>' : ''}${json.children
       .filter(filterEmptyTextNodes)
-      .map((child) => blockToSolid({ component, json: child, options }))}}}
+      .map((child) => blockToSolid(child, component, options, needsWrapper))}}}
       ${needsWrapper ? '</>' : ''}
     </For>`;
   }
 
   let str = '';
 
-  if (json.name === 'Fragment') {
+  const isFragment = json.name === 'Fragment';
+
+  if (isFragment) {
     str += '<';
   } else {
     str += `<${json.name} `;
   }
 
-  if (json.name === 'Show' && json.meta.else) {
-    str += `fallback={${blockToSolid({ component, json: json.meta.else as any, options })}}`;
+  if (json.name === 'Show' && isMitosisNode(json.meta.else)) {
+    str += `fallback={${blockToSolid(json.meta.else, component, options, false)}}`;
   }
 
   const classString = collectClassString(json, options);
-  if (classString) {
+  if (classString && !isFragment) {
     str += ` class=${classString} `;
   }
 
   for (const key in json.properties) {
+    if (isFragment) continue;
+
     const value = json.properties[key];
     const newKey = transformAttributeName(key);
     str += ` ${newKey}="${value}" `;
   }
   for (const key in json.bindings) {
+    if (isFragment) continue;
+
     const { code, arguments: cusArg = ['event'], type } = json.bindings[key]!;
     if (!code) continue;
 
     if (type === 'spread') {
       str += ` {...(${code})} `;
-    } else if (key.startsWith('on')) {
+    } else if (checkIsEvent(key)) {
       const useKey = key === 'onChange' && json.name === 'input' ? 'onInput' : key;
-      str += ` ${useKey}={(${cusArg.join(',')}) => ${code}} `;
+      const asyncKeyword = json.bindings[key]?.async ? 'async ' : '';
+      str += ` ${useKey}={${asyncKeyword}(${cusArg.join(',')}) => ${code}} `;
     } else if (key === 'ref' && options.typescript) {
       str += ` ${key}={${code}!} `;
     } else {
@@ -116,11 +131,11 @@ export const blockToSolid = ({
   if (json.children) {
     str += json.children
       .filter(filterEmptyTextNodes)
-      .map((item) => blockToSolid({ component, json: item, options }))
+      .map((item) => blockToSolid(item, component, options, true))
       .join('\n');
   }
 
-  if (json.name === 'Fragment') {
+  if (isFragment) {
     str += '</>';
   } else {
     str += `</${json.name}>`;

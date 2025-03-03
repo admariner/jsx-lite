@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Styles > class binding and CSS are merged 1`] = `
 {
@@ -9,10 +9,12 @@ exports[`Styles > class binding and CSS are merged 1`] = `
         "@type": "@builder.io/mitosis/node",
         "bindings": {
           "class": {
+            "bindingType": "expression",
             "code": "state.classState + ' div'",
             "type": "single",
           },
           "style": {
+            "bindingType": "expression",
             "code": "state.styleState",
             "type": "single",
           },
@@ -43,7 +45,10 @@ exports[`Styles > class binding and CSS are merged 1`] = `
       "set": {},
     },
     "exports": {},
-    "hooks": {},
+    "hooks": {
+      "onEvent": [],
+      "onMount": [],
+    },
     "imports": [],
     "inputs": [],
     "meta": {},
@@ -107,7 +112,10 @@ exports[`Styles > class property and CSS are merged 1`] = `
       "set": {},
     },
     "exports": {},
-    "hooks": {},
+    "hooks": {
+      "onEvent": [],
+      "onMount": [],
+    },
     "imports": [],
     "inputs": [],
     "meta": {},

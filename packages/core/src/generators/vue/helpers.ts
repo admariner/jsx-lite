@@ -1,19 +1,19 @@
-import { types } from '@babel/core';
-import { flow, identity, pipe } from 'fp-ts/lib/function';
-import { pickBy } from 'lodash';
-import { VALID_HTML_TAGS } from '../../constants/html_tags';
-import { babelTransformExpression } from '../../helpers/babel-transform';
-import { stringifyContextValue } from '../../helpers/get-state-object-string';
-import { Nullable } from '../../helpers/nullable';
-import { stripGetter } from '../../helpers/patterns';
+import { babelTransformExpression } from '@/helpers/babel-transform';
+import { stringifyContextValue } from '@/helpers/get-state-object-string';
+import { Nullable } from '@/helpers/nullable';
+import { stripGetter } from '@/helpers/patterns';
 import {
   replaceIdentifiers,
   replacePropsIdentifier,
   replaceStateIdentifier,
-} from '../../helpers/replace-identifiers';
-import { isSlotProperty, replaceSlotsInString } from '../../helpers/slots';
-import { ContextGetInfo, ContextSetInfo, MitosisComponent } from '../../types/mitosis-component';
-import { MitosisNode } from '../../types/mitosis-node';
+} from '@/helpers/replace-identifiers';
+import { isSlotProperty, replaceSlotsInString } from '@/helpers/slots';
+import { ContextGetInfo, ContextSetInfo, MitosisComponent } from '@/types/mitosis-component';
+import { MitosisNode } from '@/types/mitosis-node';
+import { types } from '@babel/core';
+import { flow, identity, pipe } from 'fp-ts/lib/function';
+import { pickBy } from 'lodash';
+import { VALID_HTML_TAGS } from '../../constants/html_tags';
 import { ToVueOptions } from './types';
 
 export const addPropertiesToJson =
@@ -124,13 +124,15 @@ function processRefs({
   options: ToVueOptions;
   thisPrefix: ProcessBinding['thisPrefix'];
 }) {
-  const refs = options.api === 'options' ? getContextNames(component) : getAllRefs(component);
+  const { api } = options;
+  const refs = api === 'options' ? getContextNames(component) : getAllRefs(component);
 
   return babelTransformExpression(input, {
     Identifier(path: babel.NodePath<babel.types.Identifier>) {
       const name = path.node.name;
-      if (refs.includes(name) && shouldAppendValueToRef(path)) {
-        const newValue = options.api === 'options' ? `${thisPrefix}.${name}` : `${name}.value`;
+      // Composition api should use .value all the time
+      if (refs.includes(name) && (api === 'composition' || shouldAppendValueToRef(path))) {
+        const newValue = api === 'options' ? `${thisPrefix}.${name}` : `${name}.value`;
         path.replaceWith(types.identifier(newValue));
       }
     },

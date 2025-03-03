@@ -26,6 +26,12 @@ type ReplaceArgs = {
   to: ReplaceTo;
 };
 
+export type NodeMap = {
+  from: types.Node;
+  condition?: (path: babel.NodePath<types.Node>) => boolean;
+  to: types.Node;
+};
+
 /**
  * Given a `to` function given by the user, figure out the best argument to provide to the `to` function.
  * This function makes a best guess based on the AST structure it's dealing with.
@@ -151,9 +157,11 @@ export const replaceIdentifiers = ({ code, from, to }: ReplaceArgs) => {
             !types.isMemberExpression(path.parent) &&
             !types.isOptionalMemberExpression(path.parent) &&
             // function declaration identifiers shouldn't be transformed
-            !types.isFunctionDeclaration(path.parent)
+            !types.isFunctionDeclaration(path.parent) &&
             // variable declaration identifiers shouldn't be transformed
             // !(types.isVariableDeclarator(path.parent) && path.parent.id === path.node)
+            // object -> { detail: { state: 'something' } } shouldn't be transformed to { detail: { this: 'something' } }
+            !types.isObjectProperty(path.parent)
           ) {
             _replaceIdentifiers(path, { from, to });
           }
@@ -180,17 +188,7 @@ const isNewlyGenerated = (node: types.Node) => (node as AllowMeta)?._builder_met
  * Replaces all instances of a Babel AST Node with a new Node within a code string.
  * Uses `generate()` to convert the Node to a string and compare them.
  */
-export const replaceNodes = ({
-  code,
-  nodeMaps,
-}: {
-  code: string;
-  nodeMaps: {
-    from: types.Node;
-    condition?: (path: babel.NodePath<types.Node>) => boolean;
-    to: types.Node;
-  }[];
-}) => {
+export const replaceNodes = ({ code, nodeMaps }: { code: string; nodeMaps: NodeMap[] }) => {
   const searchAndReplace = (path: babel.NodePath<types.Node>) => {
     if (isNewlyGenerated(path.node) || isNewlyGenerated(path.parent)) return;
 
@@ -218,6 +216,9 @@ export const replaceNodes = ({
   };
 
   return babelTransformExpression(code, {
+    ThisExpression(path) {
+      searchAndReplace(path);
+    },
     MemberExpression(path) {
       searchAndReplace(path);
     },

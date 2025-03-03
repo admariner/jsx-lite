@@ -1,7 +1,6 @@
-import type { MitosisComponent } from '@builder.io/mitosis';
+import type { MitosisComponent, ToReactOptions } from '@builder.io/mitosis';
 import {
   Button,
-  createTheme,
   Divider,
   FormControlLabel,
   MenuItem,
@@ -13,14 +12,13 @@ import {
   ThemeProvider,
   Tooltip,
   Typography,
+  createTheme,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { useLocalObservable, useObserver } from 'mobx-react-lite';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
-import stringify from 'fast-json-stable-stringify';
-import { adapt } from 'webcomponents-in-react';
 import { breakpoints } from '../../constants/breakpoints';
 import { colors } from '../../constants/colors';
 import { defaultCode, templates } from '../../constants/templates/jsx-templates';
@@ -135,18 +133,7 @@ const AlphaPreviewMessage = () => (
   </ThemeProvider>
 );
 
-const builderOptions = {
-  useDefaultStyles: false,
-  hideAnimateTab: true,
-};
-
-const BuilderEditor = adapt('builder-editor');
-
 const smallBreakpoint = breakpoints.mediaQueries.small;
-
-const builderEnvParam = getQueryParam('builderEnv');
-
-const useSaveButton = getQueryParam('realTime') !== 'true';
 
 const TabLogo = (props: { src: string }) => {
   const size = 12;
@@ -208,22 +195,14 @@ type Editor = EditorRefArgs[0];
 export default function Fiddle() {
   const monaco = useMonaco();
 
-  const [staticState] = useState(() => ({
-    ignoreNextBuilderUpdate: false,
-  }));
-  const [builderData, setBuilderData] = useState<any>(null);
   const state = useLocalObservable(() => ({
     code: getQueryParam('code') || defaultCode,
     inputCode: defaultInputCode,
     output: '',
     outputTab: getQueryParam('outputTab') || 'vue',
-    pendingBuilderChange: null as any,
     inputTab: getQueryParam('inputTab') || 'jsx',
-    builderData: {} as any,
-    isDraggingBuilderCodeBar: false,
     isDraggingJSXCodeBar: false,
     jsxCodeTabWidth: Number(localStorageGet('jsxCodeTabWidth')) || 45,
-    builderPaneHeight: Number(localStorageGet('builderPaneHeight')) || 35,
     setEditorRef(editor: Editor, monaco: EditorRefArgs[1]) {
       monacoEditorRef.current = editor;
       if (editor) {
@@ -246,18 +225,6 @@ export default function Fiddle() {
             if (elementIndex === -1) {
               return;
             }
-
-            (
-              document.querySelector('builder-editor iframe') as HTMLIFrameElement
-            )?.contentWindow?.postMessage(
-              {
-                type: 'builder.changeSelection',
-                data: {
-                  index: elementIndex,
-                },
-              },
-              '*',
-            );
           });
         }
       }
@@ -265,34 +232,20 @@ export default function Fiddle() {
     options: {
       typescript: localStorageGet('options.typescript') || ('false' as 'true' | 'false'),
       reactStyleType:
-        localStorageGet('options.reactStyleType') || ('styled-jsx' as 'emotion' | 'styled-jsx'),
+        localStorageGet('options.reactStyleType') ||
+        ('styled-jsx' as 'emotion' | 'styled-jsx' as ToReactOptions['stylesType']),
       reactStateType:
         localStorageGet('options.reactStateType') || ('useState' as 'useState' | 'mobx' | 'solid'),
       svelteStateType:
         localStorageGet('options.svelteStateType') || ('variables' as 'variables' | 'proxies'),
-      vueApi: localStorageGet('options.vueApi') || ('options' as 'options' | 'composition'),
-      vueVersion: localStorageGet('options.vueVersion') || ('2' as '2' | '3'),
+      vueApi: localStorageGet('options.vueApi') || ('composition' as 'options' | 'composition'),
       alpineShorthandSyntax: localStorageGet('options.alpineShorthandSyntax') || 'false',
       alpineInline: localStorageGet('options.alpineInline') || 'false',
       angularStandalone: localStorageGet('options.angularStandalone') || 'false',
     },
-    applyPendingBuilderChange(update?: any) {
-      const builderJson = update || state.pendingBuilderChange;
-      if (!builderJson) {
-        return;
-      }
-      mitosisCore().then((mitosis) => {
-        const jsxJson = mitosis.builderContentToMitosisComponent(builderJson);
-        state.code = mitosis.componentToMitosis()({ component: jsxJson });
-        state.pendingBuilderChange = null;
-      });
-    },
 
     async updateOutput() {
       try {
-        state.pendingBuilderChange = null;
-        staticState.ignoreNextBuilderUpdate = true;
-
         let json: MitosisComponent;
 
         const { parseSvelte, parseJsx } = await mitosisCore();
@@ -345,13 +298,8 @@ export default function Fiddle() {
           await generator({
             output: state.outputTab,
             options: { ...generateOptions(), ...commonOptions },
-            vueVersion: state.options.vueVersion,
           })
         )({ component: json, path: '' });
-
-        const { componentToBuilder } = await mitosisCore();
-        const newBuilderData = await componentToBuilder()({ component: json });
-        setBuilderData(newBuilderData);
       } catch (err) {
         if (debug) {
           throw err;
@@ -362,77 +310,17 @@ export default function Fiddle() {
     },
   }));
 
-  useEventListener<KeyboardEvent>(document.body, 'keydown', (e) => {
-    // Cancel cmd+s, sometimes people hit it instinctively when editing code and the browser
-    // "save webpage" dialog is unwanted and annoying
-    if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-      e.preventDefault();
-      state.applyPendingBuilderChange();
-    }
-  });
-
   useEventListener<MouseEvent>(document.body, 'mousemove', (e) => {
     if (state.isDraggingJSXCodeBar) {
       const windowWidth = window.innerWidth;
       const pointerRelativeXpos = e.clientX;
       const newWidth = Math.max((pointerRelativeXpos / windowWidth) * 100, 5);
       state.jsxCodeTabWidth = Math.min(newWidth, 95);
-    } else if (state.isDraggingBuilderCodeBar) {
-      const bannerHeight = 0;
-      const windowHeight = window.innerHeight;
-      const pointerRelativeYPos = e.clientY;
-      const newHeight = Math.max(
-        (1 - (pointerRelativeYPos + bannerHeight) / windowHeight) * 100,
-        5,
-      );
-      state.builderPaneHeight = Math.min(newHeight, 95);
     }
   });
 
   useEventListener<MouseEvent>(document.body, 'mouseup', (e) => {
     state.isDraggingJSXCodeBar = false;
-    state.isDraggingBuilderCodeBar = false;
-  });
-  useEventListener<MessageEvent>(window, 'message', (e) => {
-    if (e.data?.type === 'builder.saveCommand') {
-      if (e.data.data || state.pendingBuilderChange) {
-        state.applyPendingBuilderChange(e.data.data || state.pendingBuilderChange);
-      }
-    } else if (e.data?.type === 'builder.selectionChange') {
-      if (SYNC_SELECTIONS) {
-        // TODO: only do this when this editor does *not* have focus
-        const { selectionIndices } = e.data.data;
-        if (Array.isArray(selectionIndices)) {
-          const index = selectionIndices[0];
-          if (typeof index === 'number') {
-            const code = state.code;
-            let match: RegExpExecArray | null;
-
-            let i = 0;
-            while ((match = openTagRe.exec(code)) != null) {
-              if (!match) {
-                break;
-              }
-              if (i++ === index) {
-                const index = match.index;
-                const length = match[1].length;
-                if (monaco) {
-                  const start = indexToRowAndColumn(code, index - 1);
-                  const end = indexToRowAndColumn(code, index + length + 1);
-                  const startPosition = new monaco.Position(start.row + 1, start.column + 1);
-                  const endPosition = new monaco.Position(end.row + 1, end.column + 1);
-
-                  monacoEditorRef.current?.setSelection(
-                    monaco.Selection.fromPositions(startPosition, endPosition),
-                  );
-                }
-                break;
-              }
-            }
-          }
-        }
-      }
-    }
   });
 
   const monacoEditorRef = useRef<Editor | null>(null);
@@ -440,12 +328,6 @@ export default function Fiddle() {
   useReaction(
     () => state.jsxCodeTabWidth,
     (width) => localStorageSet('jsxCodeTabWidth', width),
-    { fireImmediately: false, delay: 1000 },
-  );
-
-  useReaction(
-    () => state.builderPaneHeight,
-    (width) => localStorageSet('builderPaneHeight', width),
     { fireImmediately: false, delay: 1000 },
   );
 
@@ -598,24 +480,6 @@ export default function Fiddle() {
                 🔆
               </Button>
 
-              <a
-                target="_blank"
-                rel="noreferrer"
-                css={{
-                  marginRight: 25,
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-                href="https://github.com/builderio/figma-html"
-              >
-                <span css={{ [smallBreakpoint]: { display: 'none' } }}>Figma</span>
-                <img
-                  width={20}
-                  src="https://cdn.builder.io/api/v1/image/assets%2FYJIGb4i01jvw0SRdL5Bt%2Ffb77e93c28e044178e4694cc939bf4cf"
-                  css={{ marginLeft: 10 }}
-                  alt="Figma Logo"
-                />
-              </a>
               <a
                 target="_blank"
                 rel="noreferrer"
@@ -1090,47 +954,6 @@ export default function Fiddle() {
                 }}
               >
                 <Typography variant="body2" css={{ marginRight: 'auto', marginLeft: 10 }}>
-                  Version:
-                </Typography>
-                <RadioGroup
-                  css={{
-                    flexDirection: 'row',
-                    marginRight: 10,
-                    '& .MuiFormControlLabel-label': {
-                      fontSize: 12,
-                    },
-                  }}
-                  aria-label="Vue Version"
-                  name="vueApi"
-                  value={state.options.vueVersion}
-                  onChange={(e) => {
-                    state.options.vueVersion = e.target.value;
-                    state.updateOutput();
-                  }}
-                >
-                  <FormControlLabel
-                    value="2"
-                    control={<Radio color="primary" />}
-                    labelPlacement="start"
-                    label="Vue 2"
-                  />
-                  <FormControlLabel
-                    value="3"
-                    labelPlacement="start"
-                    control={<Radio color="primary" />}
-                    label="Vue 3"
-                  />
-                </RadioGroup>
-              </div>
-              <Divider css={{ opacity: 0.6 }} />
-              <div
-                css={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  backgroundColor: 'rgba(0, 0, 0, 0.03)',
-                }}
-              >
-                <Typography variant="body2" css={{ marginRight: 'auto', marginLeft: 10 }}>
                   API:
                 </Typography>
                 <RadioGroup
@@ -1192,6 +1015,12 @@ export default function Fiddle() {
                     state.updateOutput();
                   }}
                 >
+                  <FormControlLabel
+                    value="style-tag"
+                    control={<Radio color="primary" />}
+                    labelPlacement="start"
+                    label="Inline style tag"
+                  />
                   <FormControlLabel
                     value="emotion"
                     control={<Radio color="primary" />}
@@ -1484,97 +1313,6 @@ export default function Fiddle() {
               </div>
             </div>
           </div>
-        </div>
-
-        <div
-          css={{
-            flexShrink: 0,
-            height: `${state.builderPaneHeight}vh`,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'stretch',
-          }}
-        >
-          <div
-            css={{
-              borderBottom: `1px solid ${colors.contrast}`,
-              borderTop: `1px solid ${colors.contrast}`,
-              alignItems: 'center',
-              display: 'flex',
-              ...barStyle,
-              cursor: 'row-resize',
-            }}
-            onMouseDown={(event) => {
-              event.preventDefault();
-              state.isDraggingBuilderCodeBar = true;
-            }}
-          >
-            <Typography
-              variant="body2"
-              css={{
-                flexGrow: 1,
-                textAlign: 'left',
-                padding: '10px 15px',
-                color: theme.darkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-              }}
-            >
-              Builder.io
-            </Typography>
-            {state.pendingBuilderChange && (
-              <Button
-                size="small"
-                variant="contained"
-                color="primary"
-                css={{
-                  marginLeft: 'auto',
-                  marginTop: 'auto',
-                  marginBottom: 'auto',
-                  marginRight: 10,
-                  flexShrink: 0,
-                }}
-                onMouseDown={(e) => {
-                  // Don't trigger the drag listeners on the parent element
-                  e.stopPropagation();
-                }}
-                onClick={() => {
-                  state.applyPendingBuilderChange(state.pendingBuilderChange);
-                }}
-              >
-                Save
-              </Button>
-            )}
-          </div>
-          <style>
-            {`
-              builder-editor { 
-                flex-grow: 1; 
-                pointer-events: ${state.isDraggingBuilderCodeBar ? 'none' : 'auto'}; 
-              }
-              
-              builder-editor iframe {
-                min-width: unset
-              }
-              `}
-          </style>
-          <BuilderEditor
-            onChange={(e: CustomEvent) => {
-              if (useSaveButton) {
-                // Only run this when the iframe is focused - aka is being actively used
-                if (document.activeElement?.tagName === 'IFRAME') {
-                  if (stringify(e.detail) !== stringify(builderData)) {
-                    state.pendingBuilderChange = e.detail;
-                  } else {
-                    state.pendingBuilderChange = null;
-                  }
-                }
-              } else {
-                state.applyPendingBuilderChange(e.detail);
-              }
-            }}
-            data={builderData}
-            options={builderOptions}
-            env={builderEnvParam || undefined}
-          />
         </div>
       </div>
     );

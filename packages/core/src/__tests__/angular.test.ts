@@ -1,4 +1,4 @@
-import { componentToAngular } from '../generators/angular';
+import { componentToAngular } from '@/generators/angular';
 import { runTestsForTarget } from './test-generator';
 
 describe('Angular', () => {
@@ -11,3 +11,18 @@ describe('Angular', () => {
     generator: componentToAngular,
   });
 });
+
+/*describe('Angular local', () => {
+  runTestsForTarget({
+    options: {
+      standalone: true,
+    },
+    target: 'angular',
+    generator: componentToAngular,
+    only: [
+      // 'basicRefAttributePassing',
+      'basicRefAttributePassingCustomRef'
+    ],
+    logOutput: true,
+  });
+});*/

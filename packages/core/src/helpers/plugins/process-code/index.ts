@@ -1,6 +1,6 @@
 import { flow } from 'fp-ts/lib/function';
-import { extendedHook, MitosisComponent } from '../../../types/mitosis-component';
-import { Plugin } from '../../../types/plugins';
+import { BaseHook, MitosisComponent } from '../../../types/mitosis-component';
+import { MitosisPlugin } from '../../../types/plugins';
 import { checkIsDefined } from '../../nullable';
 import { traverseNodes } from '../../traverse-nodes';
 import { CodeProcessor } from './types';
@@ -11,7 +11,7 @@ export const createCodeProcessorPlugin =
     { processProperties }: { processProperties?: boolean } = { processProperties: false },
   ) =>
   (json: MitosisComponent): void => {
-    function processHook(key: keyof typeof json.hooks, hook: extendedHook) {
+    function processHook(key: keyof typeof json.hooks, hook: BaseHook) {
       const result = codeProcessor('hooks', json)(hook.code, key);
 
       if (typeof result === 'string') {
@@ -127,8 +127,12 @@ export const createCodeProcessorPlugin =
         }
       }
 
-      const result = codeProcessor('dynamic-jsx-elements', json)(node.name, '');
-
+      // Fix web component tag issue due to the babel transform
+      // For exmaple: we pass a tag called "swiper-container", and it will be renamed as "swiper - container" after babel transforming,
+      // because babel will automatically identify the "-" as an operator, and add a space before and after it.
+      const result = node.name.includes('-')
+        ? node.name
+        : codeProcessor('dynamic-jsx-elements', json)(node.name, '');
       if (typeof result === 'string') {
         node.name = result;
       } else {
@@ -164,6 +168,6 @@ export const createCodeProcessorPlugin =
  */
 export const CODE_PROCESSOR_PLUGIN = flow(
   createCodeProcessorPlugin,
-  (plugin): Plugin =>
+  (plugin): MitosisPlugin =>
     () => ({ json: { post: plugin } }),
 );
