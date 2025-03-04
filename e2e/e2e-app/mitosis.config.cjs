@@ -1,36 +1,10 @@
 /**
- * @param {string} string
- */
-const kebabCase = (string) => string.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
-
-/**
- * @type {MitosisConfig['getTargetPath']}
- */
-const getTargetPath = ({ target }) => {
-  switch (target) {
-    // we have to workaround a name collision, where the folder can't have the name of the `exports` property in package.json.
-    // crazy, crazy stuff.
-    case 'vue2':
-      return 'vue/packages/_vue2';
-    case 'vue':
-    case 'vue3':
-      return 'vue/packages/_vue3';
-    default:
-      return kebabCase(target);
-  }
-};
-const vueConfig = {
-  transpiler: { format: 'esm' },
-  asyncComponentImports: true,
-  typescript: true,
-};
-
-/**
  * @type {import('@builder.io/mitosis'.MitosisConfig)}
  */
 module.exports = {
   files: 'src/**',
   targets: [
+    'alpine',
     'angular',
     'customElement',
     'html',
@@ -38,18 +12,66 @@ module.exports = {
     'react',
     'reactNative',
     'solid',
+    'stencil',
     'svelte',
-    'vue2',
-    'vue3',
+    'vue',
     'webcomponent',
   ],
-  options: {
-    react: { transpiler: { format: 'esm', languages: ['ts'] }, typescript: true },
-    solid: { transpiler: { languages: ['ts'] }, typescript: true },
-    vue2: vueConfig,
-    vue3: { ...vueConfig, api: 'composition' },
-    qwik: { typescript: true },
-    svelte: { typescript: true },
+  commonOptions: {
+    typescript: true,
+    explicitBuildFileExtensions: {
+      '.md': /.*(docs\.lite\.tsx)$/g,
+    },
+    plugins: [
+      () => ({
+        code: {
+          post: (code, json) => {
+            if (json.meta?.useMetadata?.docs) {
+              return (
+                `# ${json.name} - ${json.pluginData?.target}\n\n` +
+                `${JSON.stringify(json.meta?.useMetadata?.docs)}\n\n` +
+                'This is the content:\n' +
+                '````\n' +
+                code +
+                '\n````'
+              );
+            }
+
+            return code;
+          },
+        },
+      }),
+    ],
   },
-  getTargetPath,
+  options: {
+    angular: {
+      preserveImports: true,
+      importMapper: (component, theImport, importedValues, componentsUsed) => {
+        if (theImport.path.endsWith('.lite')) {
+          const cleanPath = theImport.path.replaceAll('-', '').replace('.lite', '').toLowerCase();
+
+          const component = componentsUsed.find((componentUsed) => {
+            return cleanPath.includes(componentUsed.toLowerCase());
+          });
+          if (component) {
+            return `import {${component}Module} from "${theImport.path.replace('.lite', '')}";`;
+          }
+        }
+
+        return `import ${importedValues.namedImports} from '${theImport.path}';`;
+      },
+    },
+    react: { transpiler: { format: 'esm', languages: ['ts'] } },
+    stencil: {
+      prefix: 'e2e',
+    },
+    solid: { transpiler: { languages: ['ts'] } },
+    vue: {
+      transpiler: { format: 'esm' },
+      asyncComponentImports: true,
+      api: 'composition',
+    },
+    qwik: {},
+    svelte: {},
+  },
 };

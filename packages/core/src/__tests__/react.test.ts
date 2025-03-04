@@ -1,11 +1,25 @@
+import { componentToReact } from '@/generators/react';
 import { parseJsx } from '..';
-import { componentToReact } from '../generators/react';
 import { runTestsForTarget } from './test-generator';
 
 import stamped from './data/blocks/stamped-io.raw.tsx?raw';
 
-describe('React', () => {
-  runTestsForTarget({ options: {}, target: 'react', generator: componentToReact });
+describe('React - stateType: useState', () => {
+  runTestsForTarget({
+    options: {
+      stateType: 'useState',
+    },
+    target: 'react',
+    generator: componentToReact,
+  });
+  runTestsForTarget({
+    options: {
+      stateType: 'useState',
+      stylesType: 'styled-components',
+    },
+    target: 'react',
+    generator: componentToReact,
+  });
   test('stamped (useState)', () => {
     const component = parseJsx(stamped);
     const output = componentToReact({
@@ -24,3 +38,15 @@ describe('React', () => {
     expect(output).toMatchSnapshot();
   });
 });
+
+/*describe('React - test', () => {
+  runTestsForTarget({
+    options: {
+      stateType: 'useState',
+    },
+    target: 'react',
+    generator: componentToReact,
+    only: ['defaultProps'],
+    logOutput: true,
+  });
+});*/

@@ -1,4 +1,4 @@
-import { JSX } from '@builder.io/mitosis/jsx-runtime';
+import { JSX } from '../jsx-runtime';
 import { Dictionary } from './helpers/typescript';
 import { ComponentMetadata } from './types/metadata';
 import { ReactivityType, TargetBlock } from './types/mitosis-component';
@@ -6,6 +6,7 @@ export * from './flow';
 export * from './generators/alpine';
 export * from './generators/angular';
 export * from './generators/builder';
+export * from './generators/context/angular';
 export * from './generators/context/qwik';
 export * from './generators/context/react';
 export * from './generators/context/rsc';
@@ -24,7 +25,7 @@ export * from './generators/rsc';
 export * from './generators/solid';
 export * from './generators/stencil';
 export * from './generators/svelte';
-export * from './generators/swift-ui';
+export * from './generators/swift';
 export * from './generators/taro';
 export * from './generators/template';
 export * from './generators/vue';
@@ -34,8 +35,10 @@ export {
   checkIsSvelteComponentFilePath,
   getComponentFileExtensionForTarget,
   renameComponentFile,
+  renameComponentImport,
   renameImport,
 } from './helpers/component-file-extensions';
+export { createMitosisNode } from './helpers/create-mitosis-node';
 export * from './helpers/is-mitosis-node';
 export { checkShouldOutputTypeScript } from './helpers/output';
 export * from './helpers/signals';
@@ -92,7 +95,7 @@ export declare function setContext<T = Dictionary<any>>(
   value: Partial<T>,
   options?: { type?: ReactivityType },
 ): void;
-export declare function onMount(fn: () => any): void;
+export declare function onMount(fn: () => any, args?: { onSSR?: boolean }): void;
 export declare function onUpdate(fn: () => any, deps?: any[]): void;
 export declare function onInit(fn: () => any): void;
 export declare function onUnMount(fn: () => any): void;
@@ -101,6 +104,16 @@ export declare function onError(fn: () => any): void;
 export declare function useMetadata(obj: ComponentMetadata): void;
 export declare function useDefaultProps<T = Dictionary<any>>(value: T): T;
 export declare function useStyle(value: string): void;
+
+/**
+ * Adds an event listener to a given element ref.
+ */
+export declare function onEvent<E extends Event, T extends Element>(
+  eventName: string,
+  fn: (event: E, element: T) => any,
+  elementRef: T,
+  isRoot?: boolean,
+): void;
 
 // TO-DO: better type strictness that guarantees `Target` is a subset of `Targets`
 export declare function useTarget<Return>(dict: TargetBlock<Return>): Return;

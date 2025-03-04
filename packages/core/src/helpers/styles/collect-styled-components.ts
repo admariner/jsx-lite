@@ -1,10 +1,11 @@
 import { camelCase } from 'lodash';
+import traverse from 'neotraverse/legacy';
 import hash from 'object-hash';
-import traverse from 'traverse';
 import { MitosisComponent } from '../../types/mitosis-component';
 import { capitalize } from '../capitalize';
 import { isMitosisNode } from '../is-mitosis-node';
 import { isUpperCase } from '../is-upper-case';
+import { normalizeName } from './collect-css';
 import {
   getNestedSelectors,
   getStylesOnly,
@@ -26,14 +27,14 @@ export const collectStyledComponents = (json: MitosisComponent): string => {
         delete item.bindings.css;
 
         const normalizedNameProperty = item.properties.$name
-          ? capitalize(camelCase(item.properties.$name.replace(/[^a-z]/gi, '')))
+          ? capitalize(camelCase(normalizeName(item.properties.$name)))
           : null;
 
         const componentName = normalizedNameProperty
           ? normalizedNameProperty
           : /^h\d$/.test(item.name || '')
           ? item.name
-          : capitalize(camelCase(item.name || 'div'));
+          : capitalize(camelCase(normalizeName(item.name) || 'div'));
 
         const index = (componentIndexes[componentName] =
           (componentIndexes[componentName] || 0) + 1);
@@ -65,7 +66,7 @@ export const collectStyledComponents = (json: MitosisComponent): string => {
         item.name = className;
 
         styledComponentsCode += `
-          const ${className} = ${prefix}${str}\`
+          const ${className} = ${prefix}${str}\`;
         `;
       }
       delete item.bindings.css;

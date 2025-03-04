@@ -1,30 +1,33 @@
+import { ToLitOptions } from '@/generators/lit/types';
+import { dashCase } from '@/helpers/dash-case';
+import { dedent } from '@/helpers/dedent';
+import { checkIsEvent } from '@/helpers/event-handlers';
+import { fastClone } from '@/helpers/fast-clone';
+import { filterEmptyTextNodes } from '@/helpers/filter-empty-text-nodes';
+import { getProps } from '@/helpers/get-props';
+import { getRefs } from '@/helpers/get-refs';
+import { getStateObjectStringFromComponent } from '@/helpers/get-state-object-string';
+import { has } from '@/helpers/has';
+import { indent } from '@/helpers/indent';
+import { isUpperCase } from '@/helpers/is-upper-case';
+import { mapRefs } from '@/helpers/map-refs';
+import { initializeOptions } from '@/helpers/merge-options';
+import { renderPreComponent } from '@/helpers/render-imports';
+import { stripMetaProperties } from '@/helpers/strip-meta-properties';
+import { stripStateAndPropsRefs } from '@/helpers/strip-state-and-props-refs';
+import { collectCss } from '@/helpers/styles/collect-css';
+import { checkIsForNode, MitosisNode } from '@/types/mitosis-node';
+import { TranspilerGenerator } from '@/types/transpiler';
 import { camelCase, some } from 'lodash';
 import { format } from 'prettier/standalone';
 import { SELF_CLOSING_HTML_TAGS } from '../../constants/html_tags';
-import { dashCase } from '../../helpers/dash-case';
-import { dedent } from '../../helpers/dedent';
-import { fastClone } from '../../helpers/fast-clone';
-import { filterEmptyTextNodes } from '../../helpers/filter-empty-text-nodes';
-import { getProps } from '../../helpers/get-props';
-import { getRefs } from '../../helpers/get-refs';
-import { getStateObjectStringFromComponent } from '../../helpers/get-state-object-string';
-import { has } from '../../helpers/has';
-import { indent } from '../../helpers/indent';
-import { isUpperCase } from '../../helpers/is-upper-case';
-import { mapRefs } from '../../helpers/map-refs';
-import { initializeOptions } from '../../helpers/merge-options';
-import { renderPreComponent } from '../../helpers/render-imports';
-import { stripMetaProperties } from '../../helpers/strip-meta-properties';
-import { stripStateAndPropsRefs } from '../../helpers/strip-state-and-props-refs';
-import { collectCss } from '../../helpers/styles/collect-css';
 import {
   runPostCodePlugins,
   runPostJsonPlugins,
   runPreCodePlugins,
   runPreJsonPlugins,
 } from '../../modules/plugins';
-import { checkIsForNode, MitosisNode } from '../../types/mitosis-node';
-import { BaseTranspilerOptions, TranspilerGenerator } from '../../types/transpiler';
+import { stringifySingleScopeOnMount } from '../helpers/on-mount';
 import { collectClassString } from './collect-class-string';
 
 const getCustomTagName = (name: string, options: ToLitOptions) => {
@@ -41,10 +44,6 @@ const getCustomTagName = (name: string, options: ToLitOptions) => {
   return kebabCaseName;
 };
 
-export interface ToLitOptions extends BaseTranspilerOptions {
-  useShadowDom?: boolean;
-}
-
 const blockToLit = (json: MitosisNode, options: ToLitOptions = {}): string => {
   if (json.properties._text) {
     return json.properties._text;
@@ -55,8 +54,8 @@ const blockToLit = (json: MitosisNode, options: ToLitOptions = {}): string => {
 
   if (checkIsForNode(json)) {
     return `\${${processBinding(json.bindings.each?.code as string)}?.map((${
-      json.scope.forName
-    }, index) => (
+      json.scope.forName ?? '_'
+    }, ${json.scope.indexName ?? 'index'}) => (
       html\`${json.children
         .filter(filterEmptyTextNodes)
         .map((item) => blockToLit(item, options))
@@ -94,10 +93,13 @@ const blockToLit = (json: MitosisNode, options: ToLitOptions = {}): string => {
       // TODO: maybe use ref directive instead
       // https://lit.dev/docs/templates/directives/#ref
       str += ` ref="${code}" `;
-    } else if (key.startsWith('on')) {
-      let useKey = key === 'onChange' && json.name === 'input' ? 'onInput' : key;
-      useKey = '@' + useKey.substring(2).toLowerCase();
-      str += ` ${useKey}=\${${cusArgs.join(',')} => ${processBinding(code as string)}} `;
+    } else if (checkIsEvent(key)) {
+      const asyncKeyword = json.bindings[key]?.async ? 'async ' : '';
+      const useKey = '@' + key.substring(2).toLowerCase();
+
+      str += ` ${useKey}=\${${asyncKeyword}(${cusArgs.join(',')}) => ${processBinding(
+        code as string,
+      )}} `;
     } else {
       const value = processBinding(code as string);
       // If they key includes a '-' it's an attribute, not a property
@@ -140,7 +142,7 @@ export const componentToLit: TranspilerGenerator<ToLitOptions> =
     let css = collectCss(json);
 
     const domRefs = getRefs(json);
-    mapRefs(component, (refName) => `this.${camelCase(refName)}`);
+    mapRefs(json, (refName) => `this.${camelCase(refName)}`);
 
     if (options.plugins) {
       json = runPostJsonPlugins({ json, plugins: options.plugins });
@@ -195,13 +197,17 @@ export const componentToLit: TranspilerGenerator<ToLitOptions> =
         });
       } catch (err) {
         // If can't format HTML (this can happen with lit given it is tagged template strings),
-        // at least remove excess space
+        // at least remove excess fspace
         html = html.replace(/\n{3,}/g, '\n\n');
       }
     }
 
     let str = dedent`
-    ${renderPreComponent({ component: json, target: 'lit' })}
+    ${renderPreComponent({
+      explicitImportFileExtension: options.explicitImportFileExtension,
+      component: json,
+      target: 'lit',
+    })}
     import { LitElement, html, css } from 'lit';
     import { customElement, property, state, query } from 'lit/decorators.js';
 
@@ -247,19 +253,19 @@ export const componentToLit: TranspilerGenerator<ToLitOptions> =
           `,
         )
         .join('\n')}
-    
-  
+
+
       ${Array.from(props)
         .map((item) => `@property() ${item}: any`)
         .join('\n')}
 
         ${dataString}
         ${methodsString}
-      
+
         ${
-          !json.hooks.onMount?.code
+          json.hooks.onMount.length === 0
             ? ''
-            : `connectedCallback() { ${processBinding(json.hooks.onMount.code)} }`
+            : `connectedCallback() { ${processBinding(stringifySingleScopeOnMount(json))} }`
         }
         ${
           !json.hooks.onUnMount?.code
@@ -269,11 +275,11 @@ export const componentToLit: TranspilerGenerator<ToLitOptions> =
         ${
           !json.hooks.onUpdate?.length
             ? ''
-            : `updated() { 
-              ${json.hooks.onUpdate.map((hook) => processBinding(hook.code)).join('\n\n')} 
+            : `updated() {
+              ${json.hooks.onUpdate.map((hook) => processBinding(hook.code)).join('\n\n')}
             }`
         }
-    
+
       render() {
         return html\`
           ${options.useShadowDom || !css.length ? '' : `<style>${css}</style>`}

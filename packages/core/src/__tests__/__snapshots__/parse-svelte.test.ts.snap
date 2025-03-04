@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Parse JSX > basic 1`] = `
 {
@@ -15,10 +15,12 @@ exports[`Parse JSX > basic 1`] = `
               "arguments": [
                 "event",
               ],
+              "bindingType": "expression",
               "code": "state.name = event.target.value",
               "type": "single",
             },
             "value": {
+              "bindingType": "expression",
               "code": "state.name",
               "type": "single",
             },
@@ -28,6 +30,7 @@ exports[`Parse JSX > basic 1`] = `
           "name": "input",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
@@ -41,19 +44,24 @@ exports[`Parse JSX > basic 1`] = `
 ",
           },
           "scope": {},
+          "slots": {},
         },
       ],
       "meta": {},
       "name": "div",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
     "get": {},
     "set": {},
   },
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [],
   "inputs": [],
   "meta": {},
@@ -82,6 +90,7 @@ exports[`Parse JSX > bindGroup 1`] = `
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "checked": {
+              "bindingType": "expression",
               "code": "state.tortilla === 'Plain'",
               "type": "single",
             },
@@ -89,6 +98,7 @@ exports[`Parse JSX > bindGroup 1`] = `
               "arguments": [
                 "event",
               ],
+              "bindingType": "expression",
               "code": "state.tortilla = event.target.value",
               "type": "single",
             },
@@ -101,11 +111,13 @@ exports[`Parse JSX > bindGroup 1`] = `
             "value": "Plain",
           },
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "checked": {
+              "bindingType": "expression",
               "code": "state.tortilla === 'Whole wheat'",
               "type": "single",
             },
@@ -113,6 +125,7 @@ exports[`Parse JSX > bindGroup 1`] = `
               "arguments": [
                 "event",
               ],
+              "bindingType": "expression",
               "code": "state.tortilla = event.target.value",
               "type": "single",
             },
@@ -125,11 +138,13 @@ exports[`Parse JSX > bindGroup 1`] = `
             "value": "Whole wheat",
           },
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "checked": {
+              "bindingType": "expression",
               "code": "state.tortilla === 'Spinach'",
               "type": "single",
             },
@@ -137,6 +152,7 @@ exports[`Parse JSX > bindGroup 1`] = `
               "arguments": [
                 "event",
               ],
+              "bindingType": "expression",
               "code": "state.tortilla = event.target.value",
               "type": "single",
             },
@@ -149,6 +165,7 @@ exports[`Parse JSX > bindGroup 1`] = `
             "value": "Spinach",
           },
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
@@ -158,6 +175,7 @@ exports[`Parse JSX > bindGroup 1`] = `
           "name": "br",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
@@ -167,11 +185,13 @@ exports[`Parse JSX > bindGroup 1`] = `
           "name": "br",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "checked": {
+              "bindingType": "expression",
               "code": "state.fillings === 'Rice'",
               "type": "single",
             },
@@ -179,6 +199,7 @@ exports[`Parse JSX > bindGroup 1`] = `
               "arguments": [
                 "event",
               ],
+              "bindingType": "expression",
               "code": "state.fillings = event.target.value",
               "type": "single",
             },
@@ -191,11 +212,13 @@ exports[`Parse JSX > bindGroup 1`] = `
             "value": "Rice",
           },
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "checked": {
+              "bindingType": "expression",
               "code": "state.fillings === 'Beans'",
               "type": "single",
             },
@@ -203,6 +226,7 @@ exports[`Parse JSX > bindGroup 1`] = `
               "arguments": [
                 "event",
               ],
+              "bindingType": "expression",
               "code": "state.fillings = event.target.value",
               "type": "single",
             },
@@ -215,11 +239,13 @@ exports[`Parse JSX > bindGroup 1`] = `
             "value": "Beans",
           },
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "checked": {
+              "bindingType": "expression",
               "code": "state.fillings === 'Cheese'",
               "type": "single",
             },
@@ -227,6 +253,7 @@ exports[`Parse JSX > bindGroup 1`] = `
               "arguments": [
                 "event",
               ],
+              "bindingType": "expression",
               "code": "state.fillings = event.target.value",
               "type": "single",
             },
@@ -239,11 +266,13 @@ exports[`Parse JSX > bindGroup 1`] = `
             "value": "Cheese",
           },
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "checked": {
+              "bindingType": "expression",
               "code": "state.fillings === 'Guac (extra)'",
               "type": "single",
             },
@@ -251,6 +280,7 @@ exports[`Parse JSX > bindGroup 1`] = `
               "arguments": [
                 "event",
               ],
+              "bindingType": "expression",
               "code": "state.fillings = event.target.value",
               "type": "single",
             },
@@ -263,6 +293,7 @@ exports[`Parse JSX > bindGroup 1`] = `
             "value": "Guac (extra)",
           },
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
@@ -278,11 +309,13 @@ exports[`Parse JSX > bindGroup 1`] = `
                 "_text": "Tortilla: ",
               },
               "scope": {},
+              "slots": {},
             },
             {
               "@type": "@builder.io/mitosis/node",
               "bindings": {
                 "_text": {
+                  "bindingType": "expression",
                   "code": "state.tortilla",
                   "type": "single",
                 },
@@ -292,12 +325,14 @@ exports[`Parse JSX > bindGroup 1`] = `
               "name": "div",
               "properties": {},
               "scope": {},
+              "slots": {},
             },
           ],
           "meta": {},
           "name": "p",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
@@ -313,11 +348,13 @@ exports[`Parse JSX > bindGroup 1`] = `
                 "_text": "Fillings: ",
               },
               "scope": {},
+              "slots": {},
             },
             {
               "@type": "@builder.io/mitosis/node",
               "bindings": {
                 "_text": {
+                  "bindingType": "expression",
                   "code": "state.fillings",
                   "type": "single",
                 },
@@ -327,25 +364,31 @@ exports[`Parse JSX > bindGroup 1`] = `
               "name": "div",
               "properties": {},
               "scope": {},
+              "slots": {},
             },
           ],
           "meta": {},
           "name": "p",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
       ],
       "meta": {},
       "name": "div",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
     "get": {},
     "set": {},
   },
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [],
   "inputs": [],
   "meta": {},
@@ -374,6 +417,7 @@ exports[`Parse JSX > bindProperty 1`] = `
       "@type": "@builder.io/mitosis/node",
       "bindings": {
         "value": {
+          "bindingType": "expression",
           "code": "state.value",
           "type": "single",
         },
@@ -383,13 +427,17 @@ exports[`Parse JSX > bindProperty 1`] = `
       "name": "input",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
     "get": {},
     "set": {},
   },
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [],
   "inputs": [],
   "meta": {},
@@ -414,7 +462,8 @@ exports[`Parse JSX > classDirective 1`] = `
       "@type": "@builder.io/mitosis/node",
       "bindings": {
         "class": {
-          "code": "\`form-input \${props.disabled ? 'disabled'  : ''} \${state.focus ? 'focus'  : ''}\`",
+          "bindingType": "expression",
+          "code": "\`form-input \${props.disabled ? 'disabled' : ''} \${state.focus ? 'focus' : ''}\`",
           "type": "single",
         },
       },
@@ -423,6 +472,7 @@ exports[`Parse JSX > classDirective 1`] = `
       "name": "input",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
@@ -430,7 +480,10 @@ exports[`Parse JSX > classDirective 1`] = `
     "set": {},
   },
   "defaultProps": {},
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [],
   "inputs": [],
   "meta": {},
@@ -459,6 +512,7 @@ exports[`Parse JSX > context 1`] = `
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "_text": {
+              "bindingType": "expression",
               "code": "state.activeTab",
               "type": "single",
             },
@@ -468,12 +522,14 @@ exports[`Parse JSX > context 1`] = `
           "name": "div",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
       ],
       "meta": {},
       "name": "div",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
@@ -490,7 +546,10 @@ exports[`Parse JSX > context 1`] = `
       },
     },
   },
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [],
   "inputs": [],
   "meta": {},
@@ -519,6 +578,7 @@ exports[`Parse JSX > each 1`] = `
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "each": {
+              "bindingType": "expression",
               "code": "state.numbers",
               "type": "single",
             },
@@ -532,6 +592,7 @@ exports[`Parse JSX > each 1`] = `
                   "@type": "@builder.io/mitosis/node",
                   "bindings": {
                     "_text": {
+                      "bindingType": "expression",
                       "code": "num",
                       "type": "single",
                     },
@@ -541,12 +602,14 @@ exports[`Parse JSX > each 1`] = `
                   "name": "div",
                   "properties": {},
                   "scope": {},
+                  "slots": {},
                 },
               ],
               "meta": {},
               "name": "li",
               "properties": {},
               "scope": {},
+              "slots": {},
             },
           ],
           "meta": {},
@@ -555,19 +618,24 @@ exports[`Parse JSX > each 1`] = `
           "scope": {
             "forName": "num",
           },
+          "slots": {},
         },
       ],
       "meta": {},
       "name": "ul",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
     "get": {},
     "set": {},
   },
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [],
   "inputs": [],
   "meta": {},
@@ -599,6 +667,7 @@ exports[`Parse JSX > eventHandlers 1`] = `
               "arguments": [
                 "a",
               ],
+              "bindingType": "expression",
               "code": "state.log('hi')",
               "type": "single",
             },
@@ -614,18 +683,21 @@ exports[`Parse JSX > eventHandlers 1`] = `
                 "_text": "Log",
               },
               "scope": {},
+              "slots": {},
             },
           ],
           "meta": {},
           "name": "button",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "onClick": {
               "arguments": undefined,
+              "bindingType": "expression",
               "code": "state.log(event)",
               "type": "single",
             },
@@ -641,18 +713,21 @@ exports[`Parse JSX > eventHandlers 1`] = `
                 "_text": "Log",
               },
               "scope": {},
+              "slots": {},
             },
           ],
           "meta": {},
           "name": "button",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "onClick": {
               "arguments": undefined,
+              "bindingType": "expression",
               "code": "state.log(event)",
               "type": "single",
             },
@@ -668,25 +743,31 @@ exports[`Parse JSX > eventHandlers 1`] = `
                 "_text": "Log",
               },
               "scope": {},
+              "slots": {},
             },
           ],
           "meta": {},
           "name": "button",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
       ],
       "meta": {},
       "name": "div",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
     "get": {},
     "set": {},
   },
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [],
   "inputs": [],
   "meta": {},
@@ -716,6 +797,7 @@ exports[`Parse JSX > html 1`] = `
       "@type": "@builder.io/mitosis/node",
       "bindings": {
         "innerHTML": {
+          "bindingType": "expression",
           "code": "state.html",
           "type": "single",
         },
@@ -725,13 +807,17 @@ exports[`Parse JSX > html 1`] = `
       "name": "div",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
     "get": {},
     "set": {},
   },
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [],
   "inputs": [],
   "meta": {},
@@ -756,6 +842,7 @@ exports[`Parse JSX > ifElse 1`] = `
       "@type": "@builder.io/mitosis/node",
       "bindings": {
         "when": {
+          "bindingType": "expression",
           "code": "state.show",
           "type": "single",
         },
@@ -766,6 +853,7 @@ exports[`Parse JSX > ifElse 1`] = `
           "bindings": {
             "onClick": {
               "arguments": undefined,
+              "bindingType": "expression",
               "code": "state.toggle(event)",
               "type": "single",
             },
@@ -781,12 +869,14 @@ exports[`Parse JSX > ifElse 1`] = `
                 "_text": " Hide ",
               },
               "scope": {},
+              "slots": {},
             },
           ],
           "meta": {},
           "name": "button",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
       ],
       "meta": {
@@ -795,6 +885,7 @@ exports[`Parse JSX > ifElse 1`] = `
           "bindings": {
             "onClick": {
               "arguments": undefined,
+              "bindingType": "expression",
               "code": "state.toggle(event)",
               "type": "single",
             },
@@ -810,24 +901,30 @@ exports[`Parse JSX > ifElse 1`] = `
                 "_text": " Show ",
               },
               "scope": {},
+              "slots": {},
             },
           ],
           "meta": {},
           "name": "button",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
       },
       "name": "Show",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
     "get": {},
     "set": {},
   },
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [],
   "inputs": [],
   "meta": {},
@@ -862,6 +959,7 @@ exports[`Parse JSX > imports 1`] = `
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "disabled": {
+              "bindingType": "expression",
               "code": "state.disabled",
               "type": "single",
             },
@@ -875,6 +973,7 @@ exports[`Parse JSX > imports 1`] = `
               "name": "Slot",
               "properties": {},
               "scope": {},
+              "slots": {},
             },
           ],
           "meta": {},
@@ -883,19 +982,24 @@ exports[`Parse JSX > imports 1`] = `
             "type": "button",
           },
           "scope": {},
+          "slots": {},
         },
       ],
       "meta": {},
       "name": "div",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
     "get": {},
     "set": {},
   },
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [
     {
       "imports": {
@@ -931,6 +1035,7 @@ exports[`Parse JSX > lifecycleHooks 1`] = `
       "name": "div",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
@@ -938,23 +1043,21 @@ exports[`Parse JSX > lifecycleHooks 1`] = `
     "set": {},
   },
   "hooks": {
-    "onMount": {
-      "code": "
-  console.log('onMount');
-",
-      "deps": "",
-    },
+    "onEvent": [],
+    "onMount": [
+      {
+        "code": "console.log('onMount')",
+        "deps": "",
+      },
+    ],
     "onUnMount": {
       "code": "
   console.log('onDestroy');
 ",
-      "deps": "",
     },
     "onUpdate": [
       {
-        "code": "
-  console.log('onAfterUpdate');
-",
+        "code": "console.log('onAfterUpdate')",
         "deps": "",
       },
     ],
@@ -982,6 +1085,7 @@ exports[`Parse JSX > reactive 1`] = `
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "value": {
+              "bindingType": "expression",
               "code": "state.name",
               "type": "single",
             },
@@ -991,6 +1095,7 @@ exports[`Parse JSX > reactive 1`] = `
           "name": "input",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
@@ -1003,11 +1108,13 @@ exports[`Parse JSX > reactive 1`] = `
   Lowercase: ",
           },
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "_text": {
+              "bindingType": "expression",
               "code": "state.lowercaseName",
               "type": "single",
             },
@@ -1017,19 +1124,24 @@ exports[`Parse JSX > reactive 1`] = `
           "name": "div",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
       ],
       "meta": {},
       "name": "div",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
     "get": {},
     "set": {},
   },
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [],
   "inputs": [],
   "meta": {},
@@ -1038,7 +1150,8 @@ exports[`Parse JSX > reactive 1`] = `
   "state": {
     "lowercaseName": {
       "code": "get lowercaseName() {
- return state.name.toLowerCase()}",
+  return state.name.toLowerCase();
+}",
       "type": "getter",
     },
     "name": {
@@ -1066,10 +1179,12 @@ exports[`Parse JSX > reactiveWithFn 1`] = `
               "arguments": [
                 "event",
               ],
+              "bindingType": "expression",
               "code": "state.a = event.target.value",
               "type": "single",
             },
             "value": {
+              "bindingType": "expression",
               "code": "state.a",
               "type": "single",
             },
@@ -1081,6 +1196,7 @@ exports[`Parse JSX > reactiveWithFn 1`] = `
             "type": "number",
           },
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
@@ -1089,10 +1205,12 @@ exports[`Parse JSX > reactiveWithFn 1`] = `
               "arguments": [
                 "event",
               ],
+              "bindingType": "expression",
               "code": "state.b = event.target.value",
               "type": "single",
             },
             "value": {
+              "bindingType": "expression",
               "code": "state.b",
               "type": "single",
             },
@@ -1104,6 +1222,7 @@ exports[`Parse JSX > reactiveWithFn 1`] = `
             "type": "number",
           },
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
@@ -1116,11 +1235,13 @@ exports[`Parse JSX > reactiveWithFn 1`] = `
   Result: ",
           },
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "_text": {
+              "bindingType": "expression",
               "code": "state.result",
               "type": "single",
             },
@@ -1130,12 +1251,14 @@ exports[`Parse JSX > reactiveWithFn 1`] = `
           "name": "div",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
       ],
       "meta": {},
       "name": "div",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
@@ -1143,10 +1266,12 @@ exports[`Parse JSX > reactiveWithFn 1`] = `
     "set": {},
   },
   "hooks": {
+    "onEvent": [],
+    "onMount": [],
     "onUpdate": [
       {
-        "code": "state.calculateResult(state.a, state.b);",
-        "deps": "[state.a,state.b]",
+        "code": "state.calculateResult(state.a, state.b)",
+        "deps": "[state.a, state.b]",
       },
     ],
   },
@@ -1206,12 +1331,14 @@ exports[`Parse JSX > slots 1`] = `
                 "_text": "default",
               },
               "scope": {},
+              "slots": {},
             },
           ],
           "meta": {},
           "name": "Slot",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
@@ -1231,12 +1358,14 @@ exports[`Parse JSX > slots 1`] = `
                     "_text": "default",
                   },
                   "scope": {},
+                  "slots": {},
                 },
               ],
               "meta": {},
               "name": "div",
               "properties": {},
               "scope": {},
+              "slots": {},
             },
           ],
           "meta": {},
@@ -1245,19 +1374,24 @@ exports[`Parse JSX > slots 1`] = `
             "name": "Test",
           },
           "scope": {},
+          "slots": {},
         },
       ],
       "meta": {},
       "name": "div",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
     "get": {},
     "set": {},
   },
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [],
   "inputs": [],
   "meta": {},
@@ -1283,13 +1417,17 @@ exports[`Parse JSX > style 1`] = `
         "class": "form-input",
       },
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
     "get": {},
     "set": {},
   },
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [],
   "inputs": [],
   "meta": {},
@@ -1330,11 +1468,13 @@ exports[`Parse JSX > textExpressions 1`] = `
   ",
           },
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "_text": {
+              "bindingType": "expression",
               "code": "state.a + state.b",
               "type": "single",
             },
@@ -1344,6 +1484,7 @@ exports[`Parse JSX > textExpressions 1`] = `
           "name": "div",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
@@ -1353,6 +1494,7 @@ exports[`Parse JSX > textExpressions 1`] = `
           "name": "br",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
@@ -1366,11 +1508,13 @@ exports[`Parse JSX > textExpressions 1`] = `
   ",
           },
           "scope": {},
+          "slots": {},
         },
         {
           "@type": "@builder.io/mitosis/node",
           "bindings": {
             "_text": {
+              "bindingType": "expression",
               "code": "state.a > 2 ? 'hello' : 'bye'",
               "type": "single",
             },
@@ -1380,19 +1524,24 @@ exports[`Parse JSX > textExpressions 1`] = `
           "name": "div",
           "properties": {},
           "scope": {},
+          "slots": {},
         },
       ],
       "meta": {},
       "name": "div",
       "properties": {},
       "scope": {},
+      "slots": {},
     },
   ],
   "context": {
     "get": {},
     "set": {},
   },
-  "hooks": {},
+  "hooks": {
+    "onEvent": [],
+    "onMount": [],
+  },
   "imports": [],
   "inputs": [],
   "meta": {},
